@@ -1,0 +1,193 @@
+Analysis & Elaboration report for v1495usr_demo
+Mon Apr 24 11:25:26 2017
+Quartus II Version 10.1 Build 197 01/19/2011 Service Pack 1 SJ Web Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Elaboration Summary
+  3. Parallel Compilation
+  4. Analysis & Elaboration Settings
+  5. Analysis & Elaboration Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 1991-2011 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+
+
+
++-------------------------------------------------------------------------------+
+; Analysis & Elaboration Summary                                                ;
++-------------------------------+-----------------------------------------------+
+; Analysis & Elaboration Status ; Successful - Mon Apr 24 11:25:26 2017         ;
+; Quartus II Version            ; 10.1 Build 197 01/19/2011 SP 1 SJ Web Edition ;
+; Revision Name                 ; v1495usr_demo                                 ;
+; Top-level Entity Name         ; v1495usr_demo                                 ;
+; Family                        ; Cyclone                                       ;
+; Total logic elements          ; N/A until Partition Merge                     ;
+; Total pins                    ; N/A until Partition Merge                     ;
+; Total virtual pins            ; N/A until Partition Merge                     ;
+; Total memory bits             ; N/A until Partition Merge                     ;
+; Total PLLs                    ; N/A until Partition Merge                     ;
++-------------------------------+-----------------------------------------------+
+
+
+Parallel compilation was disabled, but you have multiple processors available. Enable parallel compilation to reduce compilation time.
++-------------------------------------+
+; Parallel Compilation                ;
++----------------------------+--------+
+; Processors                 ; Number ;
++----------------------------+--------+
+; Number detected on machine ; 2      ;
+; Maximum allowed            ; 1      ;
++----------------------------+--------+
+
+
++----------------------------------------------------------------------------------------------------------------------+
+; Analysis & Elaboration Settings                                                                                      ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+; Option                                                                     ; Setting            ; Default Value      ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+; Device                                                                     ; EP1C20F400C6       ;                    ;
+; Top-level entity name                                                      ; v1495usr_demo      ; v1495usr_demo      ;
+; Family name                                                                ; Cyclone            ; Cyclone IV GX      ;
+; Use smart compilation                                                      ; Off                ; Off                ;
+; Enable parallel Assembler and TimeQuest Timing Analyzer during compilation ; On                 ; On                 ;
+; Enable compact report table                                                ; Off                ; Off                ;
+; Restructure Multiplexers                                                   ; Auto               ; Auto               ;
+; Create Debugging Nodes for IP Cores                                        ; Off                ; Off                ;
+; Preserve fewer node names                                                  ; On                 ; On                 ;
+; Disable OpenCore Plus hardware evaluation                                  ; Off                ; Off                ;
+; Verilog Version                                                            ; Verilog_2001       ; Verilog_2001       ;
+; VHDL Version                                                               ; VHDL_1993          ; VHDL_1993          ;
+; State Machine Processing                                                   ; Auto               ; Auto               ;
+; Safe State Machine                                                         ; Off                ; Off                ;
+; Extract Verilog State Machines                                             ; On                 ; On                 ;
+; Extract VHDL State Machines                                                ; On                 ; On                 ;
+; Ignore Verilog initial constructs                                          ; Off                ; Off                ;
+; Iteration limit for constant Verilog loops                                 ; 5000               ; 5000               ;
+; Iteration limit for non-constant Verilog loops                             ; 250                ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                                    ; On                 ; On                 ;
+; Parallel Synthesis                                                         ; Off                ; Off                ;
+; NOT Gate Push-Back                                                         ; On                 ; On                 ;
+; Power-Up Don't Care                                                        ; On                 ; On                 ;
+; Remove Redundant Logic Cells                                               ; Off                ; Off                ;
+; Remove Duplicate Registers                                                 ; On                 ; On                 ;
+; Ignore CARRY Buffers                                                       ; Off                ; Off                ;
+; Ignore CASCADE Buffers                                                     ; Off                ; Off                ;
+; Ignore GLOBAL Buffers                                                      ; Off                ; Off                ;
+; Ignore ROW GLOBAL Buffers                                                  ; Off                ; Off                ;
+; Ignore LCELL Buffers                                                       ; Off                ; Off                ;
+; Ignore SOFT Buffers                                                        ; On                 ; On                 ;
+; Limit AHDL Integers to 32 Bits                                             ; Off                ; Off                ;
+; Optimization Technique                                                     ; Balanced           ; Balanced           ;
+; Carry Chain Length                                                         ; 70                 ; 70                 ;
+; Auto Carry Chains                                                          ; On                 ; On                 ;
+; Auto Open-Drain Pins                                                       ; On                 ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                                      ; Off                ; Off                ;
+; Auto ROM Replacement                                                       ; On                 ; On                 ;
+; Auto RAM Replacement                                                       ; On                 ; On                 ;
+; Auto Shift Register Replacement                                            ; Auto               ; Auto               ;
+; Auto Clock Enable Replacement                                              ; On                 ; On                 ;
+; Strict RAM Replacement                                                     ; Off                ; Off                ;
+; Allow Synchronous Control Signals                                          ; On                 ; On                 ;
+; Force Use of Synchronous Clear Signals                                     ; Off                ; Off                ;
+; Auto RAM Block Balancing                                                   ; On                 ; On                 ;
+; Auto RAM to Logic Cell Conversion                                          ; Off                ; Off                ;
+; Auto Resource Sharing                                                      ; Off                ; Off                ;
+; Allow Any RAM Size For Recognition                                         ; Off                ; Off                ;
+; Allow Any ROM Size For Recognition                                         ; Off                ; Off                ;
+; Allow Any Shift Register Size For Recognition                              ; Off                ; Off                ;
+; Use LogicLock Constraints during Resource Balancing                        ; On                 ; On                 ;
+; Ignore translate_off and synthesis_off directives                          ; Off                ; Off                ;
+; Report Parameter Settings                                                  ; On                 ; On                 ;
+; Report Source Assignments                                                  ; On                 ; On                 ;
+; Report Connectivity Checks                                                 ; On                 ; On                 ;
+; Ignore Maximum Fan-Out Assignments                                         ; Off                ; Off                ;
+; Synchronization Register Chain Length                                      ; 2                  ; 2                  ;
+; PowerPlay Power Optimization                                               ; Normal compilation ; Normal compilation ;
+; HDL message level                                                          ; Level2             ; Level2             ;
+; Suppress Register Optimization Related Messages                            ; Off                ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report                   ; 5000               ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report                  ; 100                ; 100                ;
+; Clock MUX Protection                                                       ; On                 ; On                 ;
+; Block Design Naming                                                        ; Auto               ; Auto               ;
+; Synthesis Effort                                                           ; Auto               ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal               ; On                 ; On                 ;
+; Analysis & Synthesis Message Level                                         ; Medium             ; Medium             ;
+; Disable Register Merging Across Hierarchies                                ; Auto               ; Auto               ;
+; Resource Aware Inference For Block RAM                                     ; On                 ; On                 ;
+; Synthesis Seed                                                             ; 1                  ; 1                  ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+
+
++---------------------------------+
+; Analysis & Elaboration Messages ;
++---------------------------------+
+Info: *******************************************************************
+Info: Running Quartus II Analysis & Elaboration
+    Info: Version 10.1 Build 197 01/19/2011 Service Pack 1 SJ Web Edition
+    Info: Processing started: Mon Apr 24 11:25:24 2017
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off v1495usr_dev -c v1495usr_demo --analysis_and_elaboration
+Info: Found 1 design units, including 0 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/v1495usr_pkg.vhd
+    Info: Found design unit 1: v1495pkg
+Info: Found 2 design units, including 1 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/coin_reference.vhd
+    Info: Found design unit 1: coin_reference-rtl
+    Info: Found entity 1: coin_reference
+Info: Found 2 design units, including 1 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/spare_if_rtl.vhd
+    Info: Found design unit 1: spare_if-rtl
+    Info: Found entity 1: spare_if
+Info: Found 2 design units, including 1 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/tristate_if_rtl.vhd
+    Info: Found design unit 1: tristate_if-rtl
+    Info: Found entity 1: tristate_if
+Info: Found 2 design units, including 1 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/v1495usr_demo.vhd
+    Info: Found design unit 1: v1495usr_demo-struct
+    Info: Found entity 1: v1495usr_demo
+Info: Found 7 design units, including 7 entities, in source file /home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/v1495usr_hal.vqm
+    Info: Found entity 1: a395x_if
+    Info: Found entity 2: a395x_if_1
+    Info: Found entity 3: a395x_if_2
+    Info: Found entity 4: led_if
+    Info: Found entity 5: localbusif
+    Info: Found entity 6: pdl_if
+    Info: Found entity 7: v1495usr_hal
+Info: Elaborating entity "v1495usr_demo" for the top level hierarchy
+Info: Elaborating entity "coin_reference" for hierarchy "coin_reference:I0"
+Warning (10036): Verilog HDL or VHDL warning at coin_reference.vhd(152): object "F_DATA" assigned a value but never read
+Warning (10036): Verilog HDL or VHDL warning at coin_reference.vhd(169): object "A" assigned a value but never read
+Warning (10036): Verilog HDL or VHDL warning at coin_reference.vhd(170): object "B" assigned a value but never read
+Warning (10631): VHDL Process Statement warning at coin_reference.vhd(602): inferring latch(es) for signal or variable "G_CONTROL", which holds its previous value in one or more paths through the process
+Warning (10873): Using initial value X (don't care) for net "F[31..8]" at coin_reference.vhd(173)
+Info: Elaborating entity "spare_if" for hierarchy "spare_if:I2"
+Info: Elaborating entity "tristate_if" for hierarchy "tristate_if:I3"
+Info: Elaborating entity "v1495usr_hal" for hierarchy "v1495usr_hal:I1"
+Info: Elaborating entity "a395x_if" for hierarchy "v1495usr_hal:I1|a395x_if:I2"
+Info: Elaborating entity "a395x_if_1" for hierarchy "v1495usr_hal:I1|a395x_if_1:I3"
+Info: Elaborating entity "a395x_if_2" for hierarchy "v1495usr_hal:I1|a395x_if_2:I4"
+Info: Elaborating entity "led_if" for hierarchy "v1495usr_hal:I1|led_if:I8"
+Info: Elaborating entity "localbusif" for hierarchy "v1495usr_hal:I1|localbusif:I1"
+Info: Elaborating entity "pdl_if" for hierarchy "v1495usr_hal:I1|pdl_if:I5"
+Info: Quartus II Analysis & Elaboration was successful. 0 errors, 5 warnings
+    Info: Peak virtual memory: 269 megabytes
+    Info: Processing ended: Mon Apr 24 11:25:26 2017
+    Info: Elapsed time: 00:00:02
+    Info: Total CPU time (on all processors): 00:00:01
+
+

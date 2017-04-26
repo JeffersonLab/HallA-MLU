@@ -1,0 +1,69 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Setup 'LCLK'
+Slack : -8.661
+TNS   : -1764.548
+
+Type  : Setup 'PULSE[2]'
+Slack : -3.148
+TNS   : -21.017
+
+Type  : Hold 'PULSE[2]'
+Slack : -2.111
+TNS   : -4.039
+
+Type  : Hold 'LCLK'
+Slack : 0.633
+TNS   : 0.000
+
+Type  : Recovery 'LCLK'
+Slack : -11.657
+TNS   : -22.778
+
+Type  : Recovery 'PULSE[0]'
+Slack : -9.027
+TNS   : -9.027
+
+Type  : Recovery 'PULSE[2]'
+Slack : -7.730
+TNS   : -139.118
+
+Type  : Recovery 'IDE[0]'
+Slack : 0.186
+TNS   : 0.000
+
+Type  : Removal 'IDE[0]'
+Slack : -1.655
+TNS   : -1.655
+
+Type  : Removal 'LCLK'
+Slack : 3.305
+TNS   : 0.000
+
+Type  : Removal 'PULSE[2]'
+Slack : 6.835
+TNS   : 0.000
+
+Type  : Removal 'PULSE[0]'
+Slack : 8.135
+TNS   : 0.000
+
+Type  : Minimum Pulse Width 'IDE[0]'
+Slack : -2.585
+TNS   : -16.481
+
+Type  : Minimum Pulse Width 'LCLK'
+Slack : -1.155
+TNS   : -528.167
+
+Type  : Minimum Pulse Width 'PULSE[2]'
+Slack : -1.155
+TNS   : -27.579
+
+Type  : Minimum Pulse Width 'PULSE[0]'
+Slack : -1.155
+TNS   : -2.623
+
+------------------------------------------------------------

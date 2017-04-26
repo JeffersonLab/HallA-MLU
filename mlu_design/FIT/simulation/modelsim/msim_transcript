@@ -1,0 +1,349 @@
+# do v1495usr_demo_run_msim_rtl_vhdl.do 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Copying /home/randallm/altera/13.0sp1/modelsim_ase/linux/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# ** Warning: Copied /home/randallm/altera/13.0sp1/modelsim_ase/linux/../modelsim.ini to modelsim.ini.
+#          Updated modelsim.ini.
+# 
+# vcom -93 -work work {/home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/v1495usr_pkg.vhd}
+# Model Technology ModelSim ALTERA vcom 10.1d Compiler 2012.11 Nov  2 2012
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling package v1495pkg
+# vcom -93 -work work {/home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/spare_if_rtl.vhd}
+# Model Technology ModelSim ALTERA vcom 10.1d Compiler 2012.11 Nov  2 2012
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Compiling entity spare_if
+# -- Compiling architecture rtl of spare_if
+# vcom -93 -work work {/home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/tristate_if_rtl.vhd}
+# Model Technology ModelSim ALTERA vcom 10.1d Compiler 2012.11 Nov  2 2012
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Compiling entity tristate_if
+# -- Compiling architecture rtl of tristate_if
+# vcom -93 -work work {/home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/v1495usr_demo.vhd}
+# Model Technology ModelSim ALTERA vcom 10.1d Compiler 2012.11 Nov  2 2012
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling entity v1495usr_demo
+# -- Loading package std_logic_arith
+# -- Loading package ATTRIBUTES
+# -- Loading package std_logic_misc
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Compiling architecture struct of v1495usr_demo
+# vcom -93 -work work {/home/randallm/MLU/bob/Development1/SRC/v1495usr_demo/coin_reference.vhd}
+# Model Technology ModelSim ALTERA vcom 10.1d Compiler 2012.11 Nov  2 2012
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package std_logic_arith
+# -- Loading package STD_LOGIC_UNSIGNED
+# -- Loading package ATTRIBUTES
+# -- Loading package std_logic_misc
+# -- Loading package v1495pkg
+# -- Compiling entity coin_reference
+# -- Compiling architecture rtl of coin_reference
+# 
+wave create -pattern none -portmode in -language vhdl /coin_reference/nLBRES
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/LCLK
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/REG_WREN
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/REG_RDEN
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 15 0 /coin_reference/REG_ADDR
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 15 0 /coin_reference/REG_DIN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 15 0 /coin_reference/REG_DOUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/USR_ACCESS
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/A_DIN
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/B_DIN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/C_DOUT
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/G_LEV
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/G_DIR
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 1 0 /coin_reference/G_DOUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 1 0 /coin_reference/G_DIN
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/D_IDCODE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/D_LEV
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/D_DIR
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/D_DIN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/D_DOUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/E_IDCODE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/E_LEV
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/E_DIR
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/E_DIN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/E_DOUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/F_IDCODE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/F_LEV
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/F_DIR
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/F_DIN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/F_DOUT
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_WR
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_SEL
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 7 0 /coin_reference/PDL_READ
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 7 0 /coin_reference/PDL_WRITE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_DIR
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/PDL0_OUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/PDL1_OUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/DLO0_OUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/DLO1_OUT
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL0_IN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL1_IN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/DLO0_GATE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/DLO1_GATE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 11 0 /coin_reference/SPARE_OUT
+# coin_reference
+wave create -pattern none -portmode in -language vhdl -range 11 0 /coin_reference/SPARE_IN
+# coin_reference
+wave create -pattern none -portmode out -language vhdl -range 11 0 /coin_reference/SPARE_DIR
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/RED_PULSE
+# coin_reference
+wave create -pattern none -portmode out -language vhdl /coin_reference/GREEN_PULSE
+# coin_reference
+wave create -pattern none -portmode in -language vhdl /coin_reference/nLBRES
+# /coin_reference/nlbres already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/LCLK
+# /coin_reference/lclk already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/REG_WREN
+# /coin_reference/reg_wren already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/REG_RDEN
+# /coin_reference/reg_rden already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 15 0 /coin_reference/REG_ADDR
+# /coin_reference/reg_addr already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 15 0 /coin_reference/REG_DIN
+# /coin_reference/reg_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 15 0 /coin_reference/REG_DOUT
+# /coin_reference/reg_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/USR_ACCESS
+# /coin_reference/usr_access already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/A_DIN
+# /coin_reference/a_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/B_DIN
+# /coin_reference/b_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/C_DOUT
+# /coin_reference/c_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/G_LEV
+# /coin_reference/g_lev already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/G_DIR
+# /coin_reference/g_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 1 0 /coin_reference/G_DOUT
+# /coin_reference/g_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 1 0 /coin_reference/G_DIN
+# /coin_reference/g_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/D_IDCODE
+# /coin_reference/d_idcode already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/D_LEV
+# /coin_reference/d_lev already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/D_DIR
+# /coin_reference/d_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/D_DIN
+# /coin_reference/d_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/D_DOUT
+# /coin_reference/d_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/E_IDCODE
+# /coin_reference/e_idcode already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/E_LEV
+# /coin_reference/e_lev already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/E_DIR
+# /coin_reference/e_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/E_DIN
+# /coin_reference/e_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/E_DOUT
+# /coin_reference/e_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 2 0 /coin_reference/F_IDCODE
+# /coin_reference/f_idcode already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/F_LEV
+# /coin_reference/f_lev already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/F_DIR
+# /coin_reference/f_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 31 0 /coin_reference/F_DIN
+# /coin_reference/f_din already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 31 0 /coin_reference/F_DOUT
+# /coin_reference/f_dout already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_WR
+# /coin_reference/pdl_wr already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_SEL
+# /coin_reference/pdl_sel already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 7 0 /coin_reference/PDL_READ
+# /coin_reference/pdl_read already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 7 0 /coin_reference/PDL_WRITE
+# /coin_reference/pdl_write already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL_DIR
+# /coin_reference/pdl_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/PDL0_OUT
+# /coin_reference/pdl0_out already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/PDL1_OUT
+# /coin_reference/pdl1_out already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/DLO0_OUT
+# /coin_reference/dlo0_out already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl /coin_reference/DLO1_OUT
+# /coin_reference/dlo1_out already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL0_IN
+# /coin_reference/pdl0_in already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/PDL1_IN
+# /coin_reference/pdl1_in already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/DLO0_GATE
+# /coin_reference/dlo0_gate already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/DLO1_GATE
+# /coin_reference/dlo1_gate already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 11 0 /coin_reference/SPARE_OUT
+# /coin_reference/spare_out already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode in -language vhdl -range 11 0 /coin_reference/SPARE_IN
+# /coin_reference/spare_in already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl -range 11 0 /coin_reference/SPARE_DIR
+# /coin_reference/spare_dir already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/RED_PULSE
+# /coin_reference/red_pulse already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave create -pattern none -portmode out -language vhdl /coin_reference/GREEN_PULSE
+# /coin_reference/green_pulse already exists in the wave, cannot add twice
+# Usage: wave create -pattern <clock|constant|random|repeater|counter|none> <args>
+# See Command Reference manual for pattern specific <args>
+wave modify -driver freeze -pattern clock -initialvalue 0 -period 100ns -dutycycle 50 -starttime 0ns -endtime 1000ns NewSig:/coin_reference/lclk
+# coin_reference
+wave modify -driver freeze -pattern clock -initialvalue 0 -period 4ns -dutycycle 50 -starttime 0ns -endtime 1000ns NewSig:/coin_reference/lclk
+# coin_reference

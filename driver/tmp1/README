@@ -1,0 +1,10 @@
+Dec 3, 2013
+
+Here I am attempting to make a platform-indp't 
+version of the FPGA writing software.
+
+The VXWORKS version works on adaql1:~adaq/vme/progflash
+
+The Intel_vme version almost works in ~/linuxvme/progflash,
+but not quite yet.
+

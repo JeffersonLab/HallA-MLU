@@ -1,0 +1,21 @@
+Apr 14, 2014
+
+Copied from ~adev/bob/mlu and modified/updated.
+
+An older, VXWORKS version was on adaql1:~adaq/vme/progflash
+
+The Intel_vme version is mainly what we support here.
+
+
+Must put v1495.so into 
+intehal3:/root/linuxvme/jvme  
+(and same for halladaq8, these are local filesystems)
+
+because root's LD_LIBRARY_PATH looks there.
+It already had the jvme.so there.
+
+
+
+
+
+

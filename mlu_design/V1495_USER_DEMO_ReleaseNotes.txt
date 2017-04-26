@@ -1,0 +1,91 @@
+
+  -----------------------------------------------------------------------------
+
+                   --- CAEN SpA - Front End R&D Division --- 
+
+  -----------------------------------------------------------------------------
+
+  V1495 USER DEMO QuartusII project Release Notes
+
+  -----------------------------------------------------------------------------
+
+  Rel. 2.0 - July     2010
+  Rel. 1.1 - March    2008  
+  Rel. 1.0 - July     2006
+
+  -----------------------------------------------------------------------------
+ 
+
+  Description
+  -----------
+
+  This file describes the revision history of the V1495_USER_DEMO project for
+  Altera QuartusII.
+
+ System Requirements
+ -------------------
+ 
+   - Altera QuartusII 8.0 or later (Web/Full edition)
+
+
+  What's New in Rel. 2.0
+  --------------------------
+
+   Important Notes
+   --------------------------------
+                    
+   - Release 2.0 changes the User Register mapping to comply with
+     VME interface FPGA release 1.0:
+     User FPGA registers are now mapped into the 0x1000 - 0x7FFE address
+     range. 
+     Please upgrade your VME FPGA firmware to release 1.0 or later 
+     before testing the User Fpga demo reference design or a custom design
+     that is based on this firmware release.
+      
+    - REVISION register content changed to 0x0200    
+   
+  What's New in Rel. 1.1
+  --------------------------
+
+   Important Notes
+   --------------------------------
+   
+   - QuartusII project now supports QuartusII release 7.1 or later.
+   
+   - Quartus project constraints updated: weka pull up added on selected
+     signals to fix mezzanine ID readout.
+                 
+   - REVISION register content changed to 0x0101 to replect
+     project revision change. No changements in coin_reference code.
+   
+   New Features 
+   --------------------------------
+   
+   - None
+   
+   Bug fix 
+   --------------------------------
+   
+   - Weak pull-up resistor on IDD, IDE and IDF ports added in QuartusII settings
+     file, to fix IDCODE readout errors.
+
+  What's New in Rel. 1.0
+  --------------------------
+
+   New Features and Important Notes
+   --------------------------------
+
+   - First release            
+   - QuartusII 7.0 project.  
+                        
+
+  How to get support
+  ------------------
+
+  Our Software Support Group is available for questions, support and any other 
+  software related issue concerning CAEN products; for software support
+  visit the page www.caen.it/computing/support.php.
+
+
+
+

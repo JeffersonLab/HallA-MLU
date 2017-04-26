@@ -1,0 +1,469 @@
+Quartus II
+Version 10.1 Build 197 01/19/2011 Service Pack 1 SJ Web Edition
+48
+4206
+OFF
+OFF
+OFF
+ON
+ON
+ON
+FV_OFF
+Level2
+0
+0
+VRSM_ON
+VHSM_ON
+0
+-- Start Library Paths --
+-- End Library Paths --
+-- Start VHDL Libraries --
+-- End VHDL Libraries --
+# entity
+v1495usr_demo
+# storage
+db|v1495usr_demo.(0).cnf
+db|v1495usr_demo.(0).cnf
+# logic_option {
+AUTO_RAM_RECOGNITION
+ON
+}
+# case_insensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_demo.vhd
+f4ceb41fd42ae8fcc06a42338241beaa
+5
+# internal_option {
+HDL_INITIAL_FANOUT_LIMIT
+OFF
+AUTO_RESOURCE_SHARING
+OFF
+AUTO_RAM_RECOGNITION
+ON
+AUTO_ROM_RECOGNITION
+ON
+}
+# hierarchies {
+|
+}
+# lmf
+|home|randallm|altera|10.1sp1|quartus|lmf|maxplus2.lmf
+9a59d39b0706640b4b2718e8a1ff1f
+# macro_sequence
+
+# end
+# entity
+coin_reference
+# storage
+db|v1495usr_demo.(1).cnf
+db|v1495usr_demo.(1).cnf
+# logic_option {
+AUTO_RAM_RECOGNITION
+ON
+}
+# case_insensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|coin_reference.vhd
+da2edcc66aea4286c037402e528e40
+5
+# internal_option {
+HDL_INITIAL_FANOUT_LIMIT
+OFF
+AUTO_RESOURCE_SHARING
+OFF
+AUTO_RAM_RECOGNITION
+ON
+AUTO_ROM_RECOGNITION
+ON
+}
+# user_parameter {
+ constraint(reg_addr)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(reg_din)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(reg_dout)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(a_din)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(b_din)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(c_dout)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(g_dout)
+1 downto 0
+PARAMETER_STRING
+USR
+ constraint(g_din)
+1 downto 0
+PARAMETER_STRING
+USR
+ constraint(d_idcode)
+2 downto 0
+PARAMETER_STRING
+USR
+ constraint(d_din)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(d_dout)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_idcode)
+2 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_din)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_dout)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_idcode)
+2 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_din)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_dout)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(pdl_read)
+7 downto 0
+PARAMETER_STRING
+USR
+ constraint(pdl_write)
+7 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare_out)
+11 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare_in)
+11 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare_dir)
+11 downto 0
+PARAMETER_STRING
+USR
+}
+# include_file {
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_pkg.vhd
+c382762a737a1086e6a459dda9657e
+}
+# hierarchies {
+coin_reference:I0
+}
+# lmf
+|home|randallm|altera|10.1sp1|quartus|lmf|maxplus2.lmf
+9a59d39b0706640b4b2718e8a1ff1f
+# macro_sequence
+
+# end
+# entity
+spare_if
+# storage
+db|v1495usr_demo.(2).cnf
+db|v1495usr_demo.(2).cnf
+# logic_option {
+AUTO_RAM_RECOGNITION
+ON
+}
+# case_insensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|spare_if_rtl.vhd
+437f22233cc3c0ccc8730548974f4f5
+5
+# internal_option {
+HDL_INITIAL_FANOUT_LIMIT
+OFF
+AUTO_RESOURCE_SHARING
+OFF
+AUTO_RAM_RECOGNITION
+ON
+AUTO_ROM_RECOGNITION
+ON
+}
+# user_parameter {
+ constraint(spare_out)
+11 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare_in)
+11 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare_dir)
+11 downto 0
+PARAMETER_STRING
+USR
+ constraint(spare)
+11 downto 0
+PARAMETER_STRING
+USR
+}
+# hierarchies {
+spare_if:I2
+}
+# lmf
+|home|randallm|altera|10.1sp1|quartus|lmf|maxplus2.lmf
+9a59d39b0706640b4b2718e8a1ff1f
+# macro_sequence
+
+# end
+# entity
+tristate_if
+# storage
+db|v1495usr_demo.(3).cnf
+db|v1495usr_demo.(3).cnf
+# logic_option {
+AUTO_RAM_RECOGNITION
+ON
+}
+# case_insensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|tristate_if_rtl.vhd
+4bbc6d3d9ae398ec85377f3494cbd0
+5
+# internal_option {
+HDL_INITIAL_FANOUT_LIMIT
+OFF
+AUTO_RESOURCE_SHARING
+OFF
+AUTO_RAM_RECOGNITION
+ON
+AUTO_ROM_RECOGNITION
+ON
+}
+# user_parameter {
+ constraint(d_data_in)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(d_data_oe)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(d_data_out)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_data_in)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_data_oe)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(e_data_out)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_data_in)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_data_oe)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f_data_out)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(lad_in)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(lad_out)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(ddly_out)
+7 downto 0
+PARAMETER_STRING
+USR
+ constraint(ddly_in)
+7 downto 0
+PARAMETER_STRING
+USR
+ constraint(fpga_in)
+3 downto 0
+PARAMETER_STRING
+USR
+ constraint(fpga_out)
+3 downto 0
+PARAMETER_STRING
+USR
+ constraint(fpga_dir)
+3 downto 0
+PARAMETER_STRING
+USR
+ constraint(d)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(ddly)
+7 downto 0
+PARAMETER_STRING
+USR
+ constraint(e)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(f)
+31 downto 0
+PARAMETER_STRING
+USR
+ constraint(lad)
+15 downto 0
+PARAMETER_STRING
+USR
+ constraint(fpga)
+3 downto 0
+PARAMETER_STRING
+USR
+}
+# hierarchies {
+tristate_if:I3
+}
+# lmf
+|home|randallm|altera|10.1sp1|quartus|lmf|maxplus2.lmf
+9a59d39b0706640b4b2718e8a1ff1f
+# macro_sequence
+
+# end
+# entity
+v1495usr_hal
+# storage
+db|v1495usr_demo.(4).cnf
+db|v1495usr_demo.(4).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1
+}
+# macro_sequence
+
+# end
+# entity
+a395x_if
+# storage
+db|v1495usr_demo.(5).cnf
+db|v1495usr_demo.(5).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|a395x_if:I2
+}
+# macro_sequence
+
+# end
+# entity
+a395x_if_1
+# storage
+db|v1495usr_demo.(6).cnf
+db|v1495usr_demo.(6).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|a395x_if_1:I3
+}
+# macro_sequence
+
+# end
+# entity
+a395x_if_2
+# storage
+db|v1495usr_demo.(7).cnf
+db|v1495usr_demo.(7).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|a395x_if_2:I4
+}
+# macro_sequence
+
+# end
+# entity
+led_if
+# storage
+db|v1495usr_demo.(8).cnf
+db|v1495usr_demo.(8).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|led_if:I8
+}
+# macro_sequence
+
+# end
+# entity
+localbusif
+# storage
+db|v1495usr_demo.(9).cnf
+db|v1495usr_demo.(9).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|localbusif:I1
+}
+# macro_sequence
+
+# end
+# entity
+pdl_if
+# storage
+db|v1495usr_demo.(10).cnf
+db|v1495usr_demo.(10).cnf
+# case_sensitive
+# source_file
+|home|randallm|MLU|bob|Development1|SRC|v1495usr_demo|v1495usr_hal.vqm
+993aa309747342e595db992542cd8f
+28
+# hierarchies {
+v1495usr_hal:I1|pdl_if:I5
+}
+# macro_sequence
+
+# end
+# complete
+

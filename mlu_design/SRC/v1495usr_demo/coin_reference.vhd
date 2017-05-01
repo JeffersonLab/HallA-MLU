@@ -25,6 +25,7 @@
 --   Date         Author          Revision             Comments
 --   02 Mar 06    LC              1.0                  Creation
 --   03 Feb 14    R.M.            2.0                  Bob's MLU design
+--   26 Apr 17    REM & TH        2.1?                 Evan and Tyler begin tinkering for Tritium
 -- ############################################################################
 
 LIBRARY ieee;
@@ -133,7 +134,16 @@ ENTITY coin_reference IS
 END coin_reference ;
 
 ARCHITECTURE rtl OF coin_reference IS
-
+	component trigger is
+	  port(
+	    OPERATOR	: in std_logic;
+		 E				: in std_logic_vector(31 downto 0);
+		 
+		 C				: out std_logic_vector(31 downto 0);
+		 F				: out std_logic_vector(31 downto 0)
+	  );
+	end component;
+	
 -- Registers
 signal A_STATUS   : std_logic_vector(31 downto 0); -- R
 signal B_STATUS   : std_logic_vector(31 downto 0); -- R
@@ -306,93 +316,15 @@ BEGIN
    --    to use "or" instead of "and", and vice versa.  And then do
    --    NOT at the end to flip it.  
    
-   P_OPER_SEL : process(OPERATOR, E)
-   begin
-     if OPERATOR = '1' then 
-        C(0) <= NOT(E(0));
-        C(1) <= NOT(E(1));
-        C(2) <= NOT(E(2));
-        C(3) <= NOT(E(3));
-        C(4) <= NOT(E(0) and E(1));
-        C(5) <= NOT((E(0) or E(1)) and (E(0) or E(2)) and (E(1) or E(2)));
-        C(6) <= NOT(E(4));
-        C(7) <= NOT(E(5));
-        C(8) <= NOT(E(0));
-        C(9) <= NOT(E(1));
-        C(10) <= NOT(E(2));
-        C(11) <= NOT(E(3));
-        C(12) <= NOT(E(0) and E(1));
-        C(13) <= NOT((E(0) or E(1)) and (E(0) or E(2)) and (E(1) or E(2)));
-        C(14) <= NOT(E(4));
-        C(15) <= NOT(E(5));
-        C(16) <= NOT(E(0));
-        C(17) <= NOT(E(1));
-        C(18) <= NOT(E(2));
-        C(19) <= NOT(E(3));
-        C(20) <= NOT(E(0) and E(1));
-        C(21) <= NOT((E(0) or E(1)) and (E(0) or E(2)) and (E(1) or E(2)));
-        C(22) <= NOT(E(4));
-        C(23) <= NOT(E(5));
-        C(24) <= NOT(E(0));
-        C(25) <= NOT(E(1));
-        C(26) <= NOT(E(2));
-        C(27) <= NOT(E(3));
-        C(28) <= NOT(E(0) and E(1));
-        C(29) <= NOT((E(0) or E(1)) and (E(0) or E(2)) and (E(1) or E(2)));
-        C(30) <= NOT(E(4));
-        C(31) <= NOT(E(5));
-        F(0) <= E(0);
-        F(1) <= E(1);
-        F(2) <= E(2);
-        F(3) <= E(3);
-        F(4) <= E(0) or E(1);
-        F(5) <= ((E(0) and E(1)) or (E(0) and E(2)) or (E(1) and E(2)));
-        F(6) <= E(4);
-        F(7) <= E(5);
-    else
-        C(0) <= E(0) nand E(1);
-        C(1) <= E(0) nand E(2);
-        C(2) <= E(1) nand E(2);
-        C(3) <= E(0) nand E(3);
-        C(4) <= E(1) nand E(3);
-        C(5) <= E(2) nand E(3);
-        C(6) <= NOT(E(4));
-        C(7) <= NOT(E(5));
-        C(8) <= E(0) nand E(1);
-        C(9) <= E(0) nand E(2);
-        C(10) <= E(1) nand E(2);
-        C(11) <= E(0) nand E(3);
-        C(12) <= E(1) nand E(3);
-        C(13) <= E(2) nand E(3);
-        C(14) <= NOT(E(4));
-        C(15) <= NOT(E(5));
-        C(16) <= E(0) nand E(1);
-        C(17) <= E(0) nand E(2);
-        C(18) <= E(1) nand E(2);
-        C(19) <= E(0) nand E(3);
-        C(20) <= E(1) nand E(3);
-        C(21) <= E(2) nand E(3);
-        C(22) <= NOT(E(4));
-        C(23) <= NOT(E(5));
-        C(24) <= E(0) nand E(1);
-        C(25) <= E(0) nand E(2);
-        C(26) <= E(1) nand E(2);
-        C(27) <= E(0) nand E(3);
-        C(28) <= E(1) nand E(3);
-        C(29) <= E(2) nand E(3);
-        C(30) <= NOT(E(4));
-        C(31) <= NOT(E(5));
-        F(0) <= E(0) and E(1);
-        F(1) <= E(0) and E(2);
-        F(2) <= E(1) and E(2);
-        F(3) <= E(0) and E(3);
-        F(4) <= E(1) and E(3);
-        F(5) <= E(2) and E(3);
-        F(6) <= E(4);
-        F(7) <= E(5);
-    end if;
-   end process;
-
+   --   Moved Trigger logic to its own source file for simplicity in simulation -- REM -- 2017-04-26
+   trigger_inst: trigger
+   port map(
+     OPERATOR  => OPERATOR,
+     E  =>  E,
+     C  =>  C,
+     F  =>  F
+     );
+	
    
    -- Select Port C driver based on a configuration bit.
    P_C_DRIVE: process(UNIT_MODE, C, C_MASK, C_CONTROL)

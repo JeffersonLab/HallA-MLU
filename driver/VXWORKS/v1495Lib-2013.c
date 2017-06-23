@@ -234,6 +234,7 @@ v1495Status (int id)
   short b_sta_l, c_sta_l, a_mask_l, b_mask_l, c_mask_l;
   short b_sta_h, c_sta_h, a_mask_h, b_mask_h, c_mask_h;
   short revision, d_id, e_id, f_id;
+  short e_ctrl_l, f_ctrl_l;
 
   if ((id < 0) || (v1495[id] == NULL))
     {
@@ -267,6 +268,8 @@ v1495Status (int id)
   e_id = v1495[id]->e_id;
   f_id = v1495[id]->f_id;
 
+  e_ctrl_l = v1495[id]->e_ctrl_l;
+  f_ctrl_l = v1495[id]->f_ctrl_l;
 
   printf ("\nSTATUS for v1495 id %d at base address 0x%x \n", id,
 	  (UINT32) v1495[id]);
@@ -289,6 +292,8 @@ v1495Status (int id)
   printf ("  V1495 D_ID = 0x%04x \n", d_id);
   printf ("  V1495 E_ID = 0x%04x \n", e_id);
   printf ("  V1495 F_ID = 0x%04x \n", f_id);
+  printf ("  V1495 E_CTRL_L = 0x%08x \n", e_ctrl_l);
+  printf ("  V1495 F_CTRL_L = 0x%08x \n", f_ctrl_l);
 
 }
 
@@ -723,6 +728,34 @@ v1495Reload (int id)
     }
   v1495s[id]->fpgaconf = 0x1;
   return;
+}
+
+void v1495Enable(int id, int ectrl, int fctrl, int operator){
+  if ((id < 0) || (v1495s[id] == NULL))
+    {
+      logMsg ("v1495Reload ERROR : v1495 id %d not initialized \n", id, 0, 0,
+	      0, 0, 0);
+      return;
+    }
+
+  if(ectrl==1){
+    v1495[id]->e_ctrl_l = 0x1;
+  }else{
+    v1495[id]->e_ctrl_l=0x0;
+  }
+
+  if(fctrl==1){
+    v1495[id]->f_ctrl_l = 0x1;
+  }else{
+    v1495[id]->f_ctrl_l=0x0;
+  }
+
+  if(operator==1){
+    v1495[id]->mode=0x10;
+  }else{
+    v1495[id]->mode=0x00;
+  }
+
 }
 
 void

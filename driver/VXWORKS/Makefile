@@ -40,7 +40,7 @@ CFLAGS = -O $(DEFS) $(INCS)
 
 
 
-all: echoarch v1495Lib-2011.o
+all: echoarch v1495Lib-2013.o
 
 sis3610Lib.o: sis3610Lib.c sis3610.h
 	$(CC) -c $(CFLAGS) -o $@ sis3610Lib.c

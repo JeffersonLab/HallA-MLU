@@ -24,14 +24,14 @@ architecture synthesis of trigger is
     P_OPER_SEL : process(OPERATOR, E)
       begin
         if OPERATOR = '1' then
-          F(0) <= E(0);
-          F(1) <= E(1);
-          F(2) <= E(2);
-          F(3) <= E(3);
-          F(4) <= E(0) or E(1);
-          F(5) <= (E(0) and E(1)) or (E(0) and E(2)) or (E(1) and E(2));
-          F(6) <= E(4);
-          F(7) <= E(5);
+          F(0) <= E(0) and E(1);
+          F(1) <= (E(0) or E(1)) and E(2);
+          F(2) <= E(0) and E(1) and E(2);
+          F(3) <= E(0) and E(1);
+          F(4) <= (E(0) or E(1)) and E(2);
+          F(5) <= E(0) and E(1) and E(2);
+          F(6) <= E(6);
+	  F(7) <= E(7);
         else
           F(0) <= E(0) and E(1);
           F(1) <= E(0) and E(2);

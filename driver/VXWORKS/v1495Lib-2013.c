@@ -730,13 +730,19 @@ v1495Reload (int id)
   return;
 }
 
-void v1495Enable(int id, int ectrl, int fctrl, int operator){
+void v1495Enable(int id, int dctrl, int ectrl, int fctrl, int operator){
   if ((id < 0) || (v1495s[id] == NULL))
     {
       logMsg ("v1495Reload ERROR : v1495 id %d not initialized \n", id, 0, 0,
 	      0, 0, 0);
       return;
     }
+
+  if(dctrl==1){
+    v1495[id]->d_ctrl_l = 0x1;
+  }else{
+    v1495[id]->d_ctrl_l=0x0;
+  }
 
   if(ectrl==1){
     v1495[id]->e_ctrl_l = 0x1;

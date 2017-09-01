@@ -140,6 +140,7 @@ ARCHITECTURE rtl OF coin_reference IS
 		 E				: in std_logic_vector(31 downto 0);
 		 
 		 C				: out std_logic_vector(31 downto 0);
+		 D				: out std_logic_vector(31 downto 0);
 		 F				: out std_logic_vector(31 downto 0)
 	  );
 	end component;
@@ -179,6 +180,7 @@ signal PULSE_MODE : std_logic; --
 signal A     : std_logic_vector(31 downto 0);
 signal B     : std_logic_vector(31 downto 0);
 signal C   : std_logic_vector(31 downto 0);
+signal D   : std_logic_vector(31 downto 0);
 signal E   : std_logic_vector(31 downto 0);
 signal F   : std_logic_vector(31 downto 0);
 
@@ -247,7 +249,8 @@ BEGIN
    -- PORT DATA OUT
    --*************************************************
    -- Ports D,E,F are driven by registers.
-   D_DOUT <= D_DATA;
+   --D_DOUT <= D_DATA;
+   D_DOUT <= D;
    E_DOUT <= E_DATA;
 	E <= E_DIN;
    F_DOUT <= F and C_MASK;
@@ -322,6 +325,7 @@ BEGIN
      OPERATOR  => OPERATOR,
      E  =>  E,
      C  =>  C,
+	  D  =>  D,
      F  =>  F
      );
 	

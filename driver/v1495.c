@@ -374,7 +374,8 @@ v1495initMlu(unsigned int address, int mode)
 
   vmeWrite16(&v1495->mode, mode); 
   vmeWrite16(&v1495->fctrl_l, 1);  /* NIM output */ 
-  vmeWrite16(&v1495->ectrl_l, 1); 
+  vmeWrite16(&v1495->ectrl_l, 1);  /* NIM input  */
+  vmeWrite16(&v1495->dctrl_l, 1);  /* ECL output */
 
   close_vme();
 
@@ -790,6 +791,8 @@ v1495initMlu(unsigned int address)
   volatile V1495 *v1495 = (V1495 *) address;
   v1495->mode = 0;
   v1495->ectrl_l = 1;
+  v1495->fctrl_l = 1;
+  v1495->dctrl_l = 1;
   return 0;
 }
 

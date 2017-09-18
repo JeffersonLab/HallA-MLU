@@ -6,7 +6,7 @@
 # VXWORKS=1
 INTELVME=1
 
-MLUDIR=/adaqfs/home/dvcs/IntelCPU/MLU/driver
+MLUDIR=/adaqfs/home/dvcs/IntelCPU/HallA-MLU/driver
 #LOCALDIR=/adaqfs/home/atrig/mlu
 #for compliling on haplix6
 #LOCALDIR=/home/randallm/MLU/driver

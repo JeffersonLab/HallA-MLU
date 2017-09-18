@@ -6,10 +6,10 @@
 # VXWORKS=1
 INTELVME=1
 
-
+MLUDIR=/adaqfs/home/dvcs/IntelCPU/MLU/driver
 #LOCALDIR=/adaqfs/home/atrig/mlu
 #for compliling on haplix6
-LOCALDIR=/home/randallm/MLU/driver
+#LOCALDIR=/home/randallm/MLU/driver
 
 ifdef VXWORKS
 
@@ -29,23 +29,23 @@ endif
 
 ifdef INTELVME
 
-CAEN1495LIB     = v1495.so
+CAEN1495LIB     = ./v1495.so
 
-ifndef LINUXVME_LIB
-        LINUXVME_LIB    = ${LOCALDIR}/vmelib/lib
+ifndef MLU_LIB
+        MLU_LIB    = ${MLUDIR}/vmelib/lib
 endif
-ifndef LINUXVME_INC
-        LINUXVME_INC    = ${LOCALDIR}/vmeinc/include
+ifndef MLU_INC
+        MLU_INC    = ${MLUDIR}/vmeinc/include
 endif
 
 # libs for the client
-LIBS  = ${CAEN1495LIB} ${LINUXVME_LIB}/libjvme.so
+LIBS  = ${CAEN1495LIB} ${MLU_LIB}/libjvme.so
 
 # DEFs for compiling primary readout lists
 CC                      = gcc
 AR                      = ar
 RANLIB                  = ranlib
-CFLAGS                  = -O3 -w -I${LINUXVME_INC} -I. -I/usr/include -L${LINUXVME_LIB} -L. -DJLAB
+CFLAGS                  = -m32 -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
 CFLAGS                  += -DLINUX -DDAYTIME=\""`date`"\"
 ifdef DEBUG
 CFLAGS                  += -Wall -g

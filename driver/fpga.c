@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
   if (argc < 2) {
     printf("V1495: About to write FPGA file \n");
-    v1495firmware(address,"/mlu/gmp_mlu.rbf",0,0);
+    v1495firmware(address,"../LHRStest1.rbf",0,0);
   }
 
   if (argc >= 2) {

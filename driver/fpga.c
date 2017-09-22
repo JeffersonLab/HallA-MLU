@@ -6,6 +6,11 @@
 * if you pass an argument, the firmware is NOT loaded; instead,
 * the "mode" register is set.
 *
+************************************************************
+*
+* Currently being updated by Tyler Hague Sep 2017
+* Adding flags so that it can be used for more control
+*
 */
 
 #include <string.h>
@@ -23,7 +28,32 @@ int main(int argc, char *argv[]) {
   char modefile[]="/root/mlu/modefile";
   char *strin;
 
-  if (argc < 2) {
+  int args_processed = 1;
+
+  while(args_processed<argc){
+    int start_args = args_processed;
+    if(strcmp(argv[args_processed],"firmware")==0||strcmp(argv[args_processed],"Firmware")==0||strcmp(argv[args_processed],"FIRMWARE")==0){
+      args_processed++;
+      printf("v1495: About to write FPGA firmware \n File to be written is: %s \n",argv[args_processed]);
+      v1495firmware(address,argv[args_processed],0,0);
+      args_processed++;
+    }else if(strcmp(argv[args_processed],"mode")==0||strcmp(argv[args_processed],"Mode")==0||strcmp(argv[args_processed],"MODE")==0){
+      args_processed++;
+      printf("v1495: Setting to mode %i and turning on I/O \n", atoi(argv[args_processed]));
+      v1495initMlu(address, atoi(argv[args_processed]));
+      args_processed++;
+    }else if(strcmp(argv[args_processed],"off")==0||strcmp(argv[args_processed],"Off")==0||strcmp(argv[args_processed],"OFF")==0){
+      args_processed++;
+      printf("v1495: Turning off I/O \n");
+      v1495turnOff(address);
+    }
+    if(start_args==args_processed){ //didn't process anything because typo
+      exit(0);
+    }
+  }
+
+  //Old Code - Keeping here for now for reference of what works - Tyler sep 2017
+  /*if (argc < 2) {
     printf("V1495: About to write FPGA file \n");
     v1495firmware(address,"../LHRStest1.rbf",0,0);
   }
@@ -48,11 +78,11 @@ int main(int argc, char *argv[]) {
       exit(0);
     }
     printf("V1495: Setting mode to %d\n",mode);
-    if (mode == 1) mode = 0x10; /* 0x10 means 5th bit = 1 */
+    if (mode == 1) mode = 0x10; // 0x10 means 5th bit = 1 
     v1495initMlu(address, mode); 
     if (mask < 0x20000) v1495WriteCmask(address, mask);
 
-  }
+  }*/
 
  
   exit(0);

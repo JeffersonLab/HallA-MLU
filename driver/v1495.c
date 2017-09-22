@@ -364,7 +364,11 @@ v1495initMlu(unsigned int address, int mode)
   printf("\nInitializing MLU.  CAEN V1495 address = 0x%x\n",address);
   printf("mode register = 0x%x \n",mode);
 
+  printf("about to open vme \n");
+
   open_vme(address);
+
+  printf("opened vme \n");
 
   if (!v1495) {
     printf("v1495 not initialized.  must open_vme. \n");
@@ -372,16 +376,63 @@ v1495initMlu(unsigned int address, int mode)
     exit(0);
   }
 
+  printf("about to set bits \n");
+
   vmeWrite16(&v1495->mode, mode); 
   vmeWrite16(&v1495->fctrl_l, 1);  /* NIM output */ 
   vmeWrite16(&v1495->ectrl_l, 1);  /* NIM input  */
   vmeWrite16(&v1495->dctrl_l, 1);  /* ECL output */
 
+  printf("about to close vme \n");
+
   close_vme();
+
+  printf("closing time \n");
 
   return 0;
 }
 
+int
+v1495status(unsigned int address){
+  printf("\nReading out control registers\n");
+  
+  open_vme(address);
+  
+  if (!v1495) {
+    printf("v1495 not initialized.  must open_vme. \n");
+    printf(" ... quitting ... \n");
+    exit(0);
+  }
+  
+  printf("dcrtl_l= 0x%x\n",vmeRead16(&v1495->dctrl_l));
+  printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495->ectrl_l));
+  printf("fcrtl_l= 0x%x\n",vmeRead16(&v1495->fctrl_l));
+  
+  close_vme();
+  
+  return 0;
+}
+
+//Turns off MLU I/O
+int
+v1495turnOff(unsigned int address)
+{
+  open_vme(address);
+
+  if(!v1495) {
+    printf("v1495 not initialized. must open_vme. \n");
+    printf(" ... quitting ... \n");
+    exit(0);
+  }
+
+  vmeWrite16(&v1495->dctrl_l, 0);
+  vmeWrite16(&v1495->ectrl_l, 0);
+  vmeWrite16(&v1495->fctrl_l, 0);
+
+  close_vme();
+
+  return 0;
+}
 
 int
 v1495WriteCmask(unsigned int address, int cmask_l)
@@ -529,7 +580,9 @@ v1495firmware(unsigned int baseaddr, char *filename, int page, int user_vme)
     {
       write_flash_page1(baseaddr, pdw, pa, user_vme);
       read_flash_page1(baseaddr, pdr, pa, user_vme);
-      printf("working ... be patient ...\n");
+      if(pa % 16 == 0){
+	printf("working ... be patient ...\n");
+      }
       for(i=0; i<PAGE_SIZE; i++)
       {
 	/*        printf("pdr[%d] = 0x%x  =?=  0x%x  pdw?\n",

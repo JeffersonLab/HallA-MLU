@@ -382,6 +382,26 @@ v1495initMlu(unsigned int address, int mode)
   return 0;
 }
 
+int
+v1495status(unsigned int address){
+  printf("\nReading out control registers\n");
+  
+  open_vme(address);
+  
+  if (!v1495) {
+    printf("v1495 not initialized.  must open_vme. \n");
+    printf(" ... quitting ... \n");
+    exit(0);
+  }
+  
+  printf("dcrtl_l= 0x%x\n",vmeRead16(&v1495->dctrl_l));
+  printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495->ectrl_l));
+  printf("fcrtl_l= 0x%x\n",vmeRead16(&v1495->fctrl_l));
+  
+  close_vme();
+  
+  return 0;
+}
 
 int
 v1495WriteCmask(unsigned int address, int cmask_l)

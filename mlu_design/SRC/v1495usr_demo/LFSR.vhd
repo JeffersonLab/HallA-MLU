@@ -17,7 +17,7 @@ entity LFSR is
     i_Clk : in std_logic;
 
     --Output Bit
-    o_Random : out std_logic := '0';
+    o_Random : out std_logic := '0'
 
     );
 end entity LFSR;
@@ -42,6 +42,7 @@ begin
     variable myline : line;
   begin
     if rising_edge(i_Clk) then
+
       if r_Calc_Delay = '1' then
         o_Random <= '0';
         if r_Clk_Cnt < 13 then
@@ -53,11 +54,13 @@ begin
           r_Clk_Cnt <= "00000000000000";
         end if;
       end if;
+
       if r_Set_Delay = '1' then
         r_Delay <= r_lfsr(12 downto 0);			--delay is set by 13 lowest LFSR bits
         r_Set_Delay <= '0';
         r_Go_Count <= '1';
       end if;
+
       if r_Go_Count = '1' then
         if r_Clk_Cnt < r_Delay then
           r_Clk_Cnt <= r_Clk_Cnt + 1;
@@ -70,6 +73,7 @@ begin
           r_Go_Count <= '0';
         end if;
       end if;
+
     end if;
   end process p_Delay;
 

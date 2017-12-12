@@ -46,10 +46,6 @@ int main(int argc, char *argv[]) {
       args_processed++;
       printf("v1495: Turning off I/O \n");
       v1495turnOff(address);
-    }else if(strcmp(argv[args_processed],"status")==0||strcmp(argv[args_processed],"Status")==0||strcmp(argv[args_processed],"STATUS")==0){
-      args_processed++;
-      printf("v1495: Reading control registers \n");
-      v1495status(address);
     }
     if(start_args==args_processed){ //didn't process anything because typo
       exit(0);

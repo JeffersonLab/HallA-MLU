@@ -136,12 +136,20 @@ END coin_reference ;
 ARCHITECTURE rtl OF coin_reference IS
 	component trigger is
 	  port(
-	    OPERATOR	: in std_logic;
+	    OPERATOR				: in std_logic;
+            Random				: in std_logic;
 		 E				: in std_logic_vector(31 downto 0);
 		 
 		 C				: out std_logic_vector(31 downto 0);
 		 D				: out std_logic_vector(31 downto 0);
 		 F				: out std_logic_vector(31 downto 0)
+	  );
+	end component;
+
+	component LFSR is
+	  port(
+	    i_Clk : in std_logic;
+	    o_Random : out std_logic := '0'
 	  );
 	end component;
 	
@@ -174,6 +182,7 @@ signal DELAY_SEL  : std_logic_vector(1 downto 0); -- "00" : PDL0 => Programmable
                                                   -- "11" : DLO1  => Gated Delay Line Oscillator 1
 signal UNIT_MODE  : std_logic; -- '0' : Coincidence Unit; '1' : I/O Register
 signal OPERATOR   : std_logic; -- '0' : AND ; '1' : OR
+signal RANDOM   : std_logic; -- LFSR random trigger signal
 signal PULSE_MODE : std_logic; --
 
 -- Local Signals
@@ -323,12 +332,18 @@ BEGIN
    trigger_inst: trigger
    port map(
      OPERATOR  => OPERATOR,
+     RANDOM  => RANDOM,
      E  =>  E,
      C  =>  C,
-	  D  =>  D,
+     D  =>  D,
      F  =>  F
      );
-	
+
+  LFSR_inst: LFSR
+  port map(
+  i_Clk => LCLK,
+  o_Random => RANDOM
+  );	
    
    -- Select Port C driver based on a configuration bit.
    P_C_DRIVE: process(UNIT_MODE, C, C_MASK, C_CONTROL)

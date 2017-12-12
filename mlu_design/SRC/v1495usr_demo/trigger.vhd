@@ -12,6 +12,7 @@ USE work.v1495pkg.all;
 entity trigger is
   port(
     OPERATOR			: in std_logic;
+    RANDOM			: in std_logic;
     E				: in std_logic_vector(31 downto 0);
 	 
     C				: out std_logic_vector(31 downto 0);
@@ -31,7 +32,7 @@ architecture synthesis of trigger is
           F(3) <= E(0) and E(1);
           F(4) <= (E(0) or E(1)) and E(2);
           F(5) <= E(0) and E(1) and E(2);
-          F(6) <= E(6);
+          F(6) <= RANDOM;
 			 F(7) <= E(7);
 			 D(0) <= E(0);
 			 D(1) <= E(1);
@@ -72,7 +73,7 @@ architecture synthesis of trigger is
           F(3) <= E(4) and E(0) and E(1);
           F(4) <= E(4) and E(1);
           F(5) <= E(4) and E(0);
-          F(6) <= E(6);
+          F(6) <= RANDOM;
           F(7) <= E(7);
 			 D(0) <= E(0);
 			 D(1) <= E(1);

@@ -451,6 +451,7 @@ set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE ../SRC/v1495usr_demo/LFSR_geo.vhd
 set_global_assignment -name VHDL_FILE ../SRC/v1495usr_demo/trigger.vhd
 set_global_assignment -name VHDL_FILE ../SRC/v1495usr_demo/v1495usr_pkg.vhd
 set_global_assignment -name VHDL_FILE ../SRC/v1495usr_demo/coin_reference.vhd

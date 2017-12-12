@@ -45,7 +45,7 @@ LIBS  = ${CAEN1495LIB} ${LINUXVME_LIB}/libjvme.so
 CC                      = gcc
 AR                      = ar
 RANLIB                  = ranlib
-CFLAGS                  = -O3 -w -I${LINUXVME_INC} -I. -I/usr/include -L${LINUXVME_LIB} -L. -DJLAB
+CFLAGS                  = -m32 -O3 -w -I${LINUXVME_INC} -I. -I/usr/include -L${LINUXVME_LIB} -L. -DJLAB
 CFLAGS                  += -DLINUX -DDAYTIME=\""`date`"\"
 ifdef DEBUG
 CFLAGS                  += -Wall -g

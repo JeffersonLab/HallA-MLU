@@ -30,29 +30,30 @@ architecture rtl of count32 is
   signal r_Output : unsigned (31 downto 0) := (others => '0');
   signal r_OldRead : std_logic := '0';
   signal r_Read : std_logic := '0';
+  signal r_OldClk : std_logic := '0';
+  signal r_Clk : std_logic := '0';
 
 begin
 
-  p_Output : process(i_Read, i_Reset) is
+  p_New : process(i_LCLK, i_Reset) is
   begin
     if i_Reset = '1' then
       o_Count <= to_unsigned(0,32);
+      r_Count <= to_unsigned(0,32);
       r_Output <= to_unsigned(0,32);
-    else
+    elsif rising_edge(i_LCLK) then
       o_Count <= r_Output;
-      if rising_edge(i_Read) then
+      r_OldRead <= r_Read;
+      r_Read <= i_Read;
+      r_OldClk <= r_Clk;
+      r_Clk <= i_Clk;
+      if (r_OldRead = '0' and r_Read = '1') then
         r_Output <= r_Count;
       end if;
+      if (r_OldClk = '0' and r_Clk = '1') then
+        r_Count <= r_Count + 1;
+      end if;
     end if;
-  end process p_Count;
-
-  p_Count : process(i_Clk, i_Reset) is
-  begin
-    if i_Reset = '1' then
-      r_Count <= to_unsigned(0,32);
-    elsif rising_edge(i_Clk) then
-      r_Count <= r_Count + 1;
-    end if;
-  end process p_Count;
+  end process p_New;
 
 end architecture rtl;

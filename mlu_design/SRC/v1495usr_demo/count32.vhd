@@ -17,7 +17,7 @@ entity count32 is
     i_Read : in std_logic;
 
     --Output Bit
-    o_Count : out unsigned (31 downto 0) := (others => '0')
+    o_Count : out std_logic_vector (31 downto 0) := (others => '0')
 
     );
 end entity count32;
@@ -38,11 +38,11 @@ begin
   p_New : process(i_LCLK, i_Reset) is
   begin
     if i_Reset = '1' then
-      o_Count <= to_unsigned(0,32);
+      o_Count <= std_logic_vector(to_unsigned(0,32));
       r_Count <= to_unsigned(0,32);
       r_Output <= to_unsigned(0,32);
     elsif rising_edge(i_LCLK) then
-      o_Count <= r_Output;
+      o_Count <= std_logic_vector(r_Output);
       r_OldRead <= r_Read;
       r_Read <= i_Read;
       r_OldClk <= r_Clk;

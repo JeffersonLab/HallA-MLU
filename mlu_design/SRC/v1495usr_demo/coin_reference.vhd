@@ -141,7 +141,7 @@ ARCHITECTURE rtl OF coin_reference IS
 		 E				: in std_logic_vector(31 downto 0);
 		 
 		 C				: out std_logic_vector(31 downto 0);
-		 D				: out std_logic_vector(31 downto 0);
+--		 D				: out std_logic_vector(31 downto 0);
 		 F				: out std_logic_vector(31 downto 0)
 	  );
 	end component;
@@ -152,7 +152,17 @@ ARCHITECTURE rtl OF coin_reference IS
 	    o_Random : out std_logic := '0'
 	  );
 	end component;
-	
+
+	component count32 is
+	  port(
+	    i_LCLK : in std_logic;
+	    i_Clk : in std_logic;
+	    i_Reset : in std_logic;
+	    i_Read : in std_logic;
+	    o_Count : out std_logic_vector (31 downto 0)
+	  );
+	end component;	
+
 -- Registers
 signal A_STATUS   : std_logic_vector(31 downto 0); -- R
 signal B_STATUS   : std_logic_vector(31 downto 0); -- R
@@ -335,16 +345,25 @@ BEGIN
      RANDOM  => RANDOM,
      E  =>  E,
      C  =>  C,
-     D  =>  D,
+   --  D  =>  D,
      F  =>  F
      );
 
-  LFSR_inst: LFSR
-  port map(
-  i_Clk => LCLK,
-  o_Random => RANDOM
-  );	
-   
+   LFSR_inst: LFSR
+   port map(
+   i_Clk => LCLK,
+   o_Random => RANDOM
+   );	
+  
+   count32_inst: count32
+   port map(
+   i_LCLK => LCLK,
+   i_Clk => E(0),
+   i_Reset => E(1),
+   i_Read => E(2),
+   o_Count => D
+   );
+ 
    -- Select Port C driver based on a configuration bit.
    P_C_DRIVE: process(UNIT_MODE, C, C_MASK, C_CONTROL)
    begin

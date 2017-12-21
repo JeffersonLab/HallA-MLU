@@ -407,6 +407,8 @@ v1495status(unsigned int address){
   printf("\ndcrtl_l= 0x%x\n",vmeRead16(&v1495->dctrl_l));
   printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495->ectrl_l));
   printf("fcrtl_l= 0x%x\n\n",vmeRead16(&v1495->fctrl_l));
+  printf("ddata_l= 0x%x\n\n",vmeRead16(&v1495->ddata_l));
+  printf("ddata_h= 0x%x\n\n",vmeRead16(&v1495->ddata_h));
   
   close_vme();
   

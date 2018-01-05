@@ -43,6 +43,7 @@ begin
       r_Output <= to_unsigned(0,32);
     elsif rising_edge(i_LCLK) then
       o_Count <= std_logic_vector(r_Output);
+--      o_Count <= X"DEADBEEF";
       r_OldRead <= r_Read;
       r_Read <= i_Read;
       r_OldClk <= r_Clk;

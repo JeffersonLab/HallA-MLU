@@ -66,5 +66,7 @@ constant A_PDL_DATA   : std_logic_vector(15 downto 0) := X"1040";
 constant A_DIDCODE    : std_logic_vector(15 downto 0) := X"1042";
 constant A_EIDCODE    : std_logic_vector(15 downto 0) := X"1044";
 constant A_FIDCODE    : std_logic_vector(15 downto 0) := X"1046";
+constant A_COUNT_L    : std_logic_vector(15 downto 0) := X"1048";
+constant A_COUNT_H    : std_logic_vector(15 downto 0) := X"104A";
          
 END v1495pkg;

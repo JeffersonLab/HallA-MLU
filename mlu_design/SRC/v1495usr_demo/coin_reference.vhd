@@ -136,6 +136,7 @@ END coin_reference ;
 ARCHITECTURE rtl OF coin_reference IS
 	component trigger is
 	  port(
+            i_Clk				: in std_logic;
 	    OPERATOR				: in std_logic;
             Random				: in std_logic;
 		 E				: in std_logic_vector(31 downto 0);
@@ -183,6 +184,7 @@ signal MODE       : std_logic_vector(15 downto 0); -- W
 signal SCRATCH    : std_logic_vector(15 downto 0); -- R/W
 signal PDL_CONTROL: std_logic_vector(15 downto 0); -- W
 signal PDL_DATA   : std_logic_vector(15 downto 0); -- R/W
+signal MLU_COUNT  : std_logic_vector(31 downto 0); -- R
 
 -- Register Bits
 -- MODE Register
@@ -194,6 +196,9 @@ signal UNIT_MODE  : std_logic; -- '0' : Coincidence Unit; '1' : I/O Register
 signal OPERATOR   : std_logic; -- '0' : AND ; '1' : OR
 signal RANDOM   : std_logic; -- LFSR random trigger signal
 signal PULSE_MODE : std_logic; --
+signal MLU_COUNT_SYNC : std_logic; -- Sync reset for MLU clock counter
+signal MLU_COUNT_TRIG : std_logic; -- Trigger to update counter output to current clock count
+
 
 -- Local Signals
 signal A     : std_logic_vector(31 downto 0);
@@ -313,7 +318,8 @@ BEGIN
    UNIT_MODE    <= MODE(3);
    OPERATOR     <= MODE(4);
    PULSE_MODE   <= MODE(5);
-   
+   MLU_COUNT_SYNC	<= MODE(6);
+   MLU_COUNT_TRIG	<= MODE(7);
    
    --*************************************************
    -- Inport Port (A,B) Masking
@@ -341,6 +347,7 @@ BEGIN
    --   Moved Trigger logic to its own source file for simplicity in simulation -- REM -- 2017-04-26
    trigger_inst: trigger
    port map(
+     i_Clk => LCLK,
      OPERATOR  => OPERATOR,
      RANDOM  => RANDOM,
      E  =>  E,
@@ -359,9 +366,11 @@ BEGIN
    port map(
    i_LCLK => LCLK,
    i_Clk => E(0),
-   i_Reset => E(1),
-   i_Read => E(2),
-   o_Count => D
+--   i_Reset => E(1),
+--   i_Read => E(2),
+   i_Reset => MLU_COUNT_SYNC,	--MODE(6)
+   i_Read => MLU_COUNT_TRIG,	--MODE(7)
+   o_Count => MLU_COUNT
    );
  
    -- Select Port C driver based on a configuration bit.
@@ -639,6 +648,8 @@ BEGIN
              when A_CSTATUS_L   => REG_DOUT   <= C_STATUS (15 downto 0);
              when A_CSTATUS_H   => REG_DOUT   <= C_STATUS (31 downto 16);
              when A_SCRATCH     => REG_DOUT   <= SCRATCH; 
+             when A_COUNT_L     => REG_DOUT   <= MLU_COUNT (15 downto 0); 
+             when A_COUNT_H     => REG_DOUT   <= MLU_COUNT (31 downto 16); 
              when A_DCTRL_L     => REG_DOUT   <= D_CONTROL(15 downto  0);
              when A_DCTRL_H     => REG_DOUT   <= D_CONTROL(31 downto 16);
              when A_DDATA_L     => REG_DOUT   <= D_DIN    (15 downto  0);

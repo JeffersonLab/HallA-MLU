@@ -45,7 +45,8 @@ LIBS  = ${CAEN1495LIB} ${MLU_LIB}/libjvme.so
 CC                      = gcc
 AR                      = ar
 RANLIB                  = ranlib
-CFLAGS                  = -m32 -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
+#CFLAGS                  = -m32 -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
+CFLAGS                  = -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
 CFLAGS                  += -DLINUX -DDAYTIME=\""`date`"\"
 ifdef DEBUG
 CFLAGS                  += -Wall -g

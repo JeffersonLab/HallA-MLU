@@ -52,7 +52,8 @@ int main(int argc, char *argv[]) {
       v1495status(address);
     }
     if(start_args==args_processed){ //didn't process anything because typo
-      exit(0);
+//      exit(0);
+      printf("Fail 1\n");
     }
   }
 
@@ -89,7 +90,8 @@ int main(int argc, char *argv[]) {
   }*/
 
  
-  exit(0);
+//  exit(0);
+  printf("Fail 2\n");
 
 }
 

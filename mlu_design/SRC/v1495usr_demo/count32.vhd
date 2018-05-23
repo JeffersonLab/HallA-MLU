@@ -26,7 +26,7 @@ end entity count32;
 
 architecture rtl of count32 is
 
-  signal r_Count : unsigned (31 downto 0) := (others => '0');
+  signal r_Count : unsigned (63 downto 0) := (others => '0');
   signal r_Output : unsigned (31 downto 0) := (others => '0');
   signal r_OldRead : std_logic := '0';
   signal r_Read : std_logic := '0';
@@ -39,7 +39,7 @@ begin
   begin
     if i_Reset = '1' then
       o_Count <= std_logic_vector(to_unsigned(0,32));
-      r_Count <= to_unsigned(0,32);
+      r_Count <= to_unsigned(0,64);
       r_Output <= to_unsigned(0,32);
     elsif rising_edge(i_LCLK) then
       o_Count <= std_logic_vector(r_Output);
@@ -49,7 +49,7 @@ begin
       r_OldClk <= r_Clk;
       r_Clk <= i_Clk;
       if (r_OldRead = '0' and r_Read = '1') then
-        r_Output <= r_Count;
+        r_Output <= r_Count(31 downto 0);
       end if;
       if (r_OldClk = '0' and r_Clk = '1') then
         r_Count <= r_Count + 1;

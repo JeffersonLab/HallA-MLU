@@ -136,6 +136,7 @@ END coin_reference ;
 ARCHITECTURE rtl OF coin_reference IS
 	component trigger is
 	  port(
+            i_Clk				: in std_logic;
 	    OPERATOR				: in std_logic;
             Random				: in std_logic;
 		 E				: in std_logic_vector(31 downto 0);
@@ -346,6 +347,7 @@ BEGIN
    --   Moved Trigger logic to its own source file for simplicity in simulation -- REM -- 2017-04-26
    trigger_inst: trigger
    port map(
+     i_Clk => LCLK,
      OPERATOR  => OPERATOR,
      RANDOM  => RANDOM,
      E  =>  E,

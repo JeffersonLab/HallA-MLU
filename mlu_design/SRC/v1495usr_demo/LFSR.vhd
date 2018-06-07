@@ -1,9 +1,13 @@
+--This module uses an 18bit LFSR generate an 17bit pseudo-random
+--number, and every 18 clock cycles will transmit a data-valid pulse
+
+--Adam Kobert
+--6/6/2018
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
---This module uses an 18bit LFSR generate an 18bit pseudo-random
---number, and every 18 clock cycles will transmit a data-valid pulse
 
 entity LFSR is
   	port 
@@ -12,17 +16,16 @@ entity LFSR is
     		i_Clk		: in std_logic;
 
     		--Output
-    		o_Random	: out std_logic_vector(17 downto 0);	--Number Transmitted
+    		o_Random	: out std_logic_vector(16 downto 0);	--Number Transmitted
 		o_DV		: out std_logic				--Data valid pulse
 
     	);
 end entity LFSR;
 
 
-
 architecture rtl of LFSR is
 
-	constant c_Wait		: integer := 18;	--Number of clock cycles to wait between trasmissions
+	constant c_Wait		: integer := 17;	--Number of clock cycles to wait between trasmissions
 
   	signal r_lfsr		: unsigned (17 downto 0) := "000000000000000001";	--Contains random number
 	signal r_Count		: integer range 0 to c_Wait := 0;	
@@ -46,7 +49,7 @@ begin
   	end process p_Rand;
 
 	o_DV <= r_State;
-	o_Random <= std_logic_vector(r_lfsr);
+	o_Random <= std_logic_vector(r_lfsr(16 downto 0)); --transmits 17 bit
 
 
 end architecture rtl;

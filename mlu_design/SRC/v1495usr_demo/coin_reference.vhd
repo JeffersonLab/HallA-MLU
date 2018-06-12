@@ -26,108 +26,107 @@
 --   02 Mar 06    LC              1.0                  Creation
 --   03 Feb 14    R.M.            2.0                  Bob's MLU design
 --   26 Apr 17    REM & TH        2.1?                 Evan and Tyler begin tinkering for Tritium
+--   08 Jun 18    AK		  2.2?		       Adam rewrites to conform to new design
 -- ############################################################################
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_arith.all;
-USE ieee.std_logic_unsigned.all;
-USE ieee.std_logic_misc.all;  -- Use OR_REDUCE function
+use ieee.numeric_std.all;
 
 USE work.v1495pkg.all;
 
 ENTITY coin_reference IS
-   PORT( 
-      nLBRES      : IN     std_logic;                       -- Async Reset (active low)
-      LCLK        : IN     std_logic;                       -- Local Bus Clock
-      --*************************************************
-      -- REGISTER INTERFACE
-      --*************************************************
-      REG_WREN    : IN     std_logic;                       -- Write pulse (active high)
-      REG_RDEN    : IN     std_logic;                       -- Read  pulse (active high)
-      REG_ADDR    : IN     std_logic_vector (15 DOWNTO 0);  -- Register address
-      REG_DIN     : IN     std_logic_vector (15 DOWNTO 0);  -- Data from CAEN Local Bus
-      REG_DOUT    : OUT    std_logic_vector (15 DOWNTO 0);  -- Data to   CAEN Local Bus
-      USR_ACCESS  : IN     std_logic;                       -- Current register access is 
+   	PORT( 
+      		nLBRES      : IN     std_logic;                       -- Async Reset (active low)
+      		LCLK        : IN     std_logic;                       -- Local Bus Clock
+      		--*************************************************
+      		-- REGISTER INTERFACE
+      		--*************************************************
+      		REG_WREN    : IN     std_logic;                       -- Write pulse (active high)
+      		REG_RDEN    : IN     std_logic;                       -- Read  pulse (active high)
+      		REG_ADDR    : IN     std_logic_vector (15 DOWNTO 0);  -- Register address
+      		REG_DIN     : IN     std_logic_vector (15 DOWNTO 0);  -- Data from CAEN Local Bus
+      		REG_DOUT    : OUT    std_logic_vector (15 DOWNTO 0);  -- Data to   CAEN Local Bus
+      		USR_ACCESS  : IN     std_logic;                       -- Current register access is 
                                                             -- at user address space(Active high)
-      --*************************************************
-      -- V1495 Front Panel Ports (PORT A,B,C,G)
-      --*************************************************
-      A_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- In A (32 x LVDS/ECL)
-      B_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- In B (32 x LVDS/ECL) 
-      C_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- Out C (32 x LVDS)
-      G_LEV       : OUT    std_logic;                       -- Output Level Select (NIM/TTL)
-      G_DIR       : OUT    std_logic;                       -- Output Enable
-      G_DOUT      : OUT    std_logic_vector (1 DOWNTO 0);   -- Out G - LEMO (2 x NIM/TTL)
-      G_DIN       : IN     std_logic_vector (1 DOWNTO 0);   -- In G - LEMO (2 x NIM/TTL)
-      --*************************************************
-      -- A395x MEZZANINES INTERFACES (PORT D,E,F)
-      --*************************************************
-      -- Expansion Mezzanine Identifier:
-      -- x_IDCODE :
-      -- 000 : A395A (32 x IN LVDS/ECL)
-      -- 001 : A395B (32 x OUT LVDS)
-      -- 010 : A395C (32 x OUT ECL)
-      -- 011 : A395D (8  x IN/OUT NIM/TTL)
+      		--*************************************************
+      		-- V1495 Front Panel Ports (PORT A,B,C,G)
+      		--*************************************************
+      		A_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- In A (32 x LVDS/ECL)
+      		B_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- In B (32 x LVDS/ECL) 
+      		C_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- Out C (32 x LVDS)
+      		G_LEV       : OUT    std_logic;                       -- Output Level Select (NIM/TTL)
+      		G_DIR       : OUT    std_logic;                       -- Output Enable
+      		G_DOUT      : OUT    std_logic_vector (1 DOWNTO 0);   -- Out G - LEMO (2 x NIM/TTL)
+      		G_DIN       : IN     std_logic_vector (1 DOWNTO 0);   -- In G - LEMO (2 x NIM/TTL)
+      		--*************************************************
+      		-- A395x MEZZANINES INTERFACES (PORT D,E,F)
+      		--*************************************************
+      		-- Expansion Mezzanine Identifier:
+      		-- x_IDCODE :
+      		-- 000 : A395A (32 x IN LVDS/ECL)
+      		-- 001 : A395B (32 x OUT LVDS)
+      		-- 010 : A395C (32 x OUT ECL)
+      		-- 011 : A395D (8  x IN/OUT NIM/TTL)
       
-      -- Expansion Mezzanine Port Signal Standard Select
-      -- x_LEV : 
-      --    0=>TTL,1=>NIM
+      		-- Expansion Mezzanine Port Signal Standard Select
+      		-- x_LEV : 
+      		--    0=>TTL,1=>NIM
 
-      -- Expansion Mezzanine Port Direction
-      -- x_DIR : 
-      --    0=>OUT,1=>IN
+      		-- Expansion Mezzanine Port Direction
+      		-- x_DIR : 
+      		--    0=>OUT,1=>IN
 
-      -- In/Out D (I/O Expansion)
-      D_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- D slot mezzanine Identifier
-      D_LEV       : OUT    std_logic;                       -- D slot Port Signal Level Select 
-      D_DIR       : OUT    std_logic;                       -- D slot Port Direction
-      D_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- D slot Data In  Bus
-      D_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- D slot Data Out Bus
-      -- In/Out E (I/O Expansion)
-      E_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- E slot mezzanine Identifier
-      E_LEV       : OUT    std_logic;                       -- E slot Port Signal Level Select
-      E_DIR       : OUT    std_logic;                       -- E slot Port Direction
-      E_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- E slot Data In  Bus
-      E_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- E slot Data Out Bus
-      -- In/Out F (I/O Expansion)
-      F_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- F slot mezzanine Identifier
-      F_LEV       : OUT    std_logic;                       -- F slot Port Signal Level Select
-      F_DIR       : OUT    std_logic;                       -- F slot Port Direction
-      F_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- F slot Data In  Bus
-      F_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- F slot Data Out Bus
-      --*************************************************
-      -- DELAY LINES
-      --*************************************************
-      -- PDL = Programmable Delay Lines  (Step = 0.25ns / FSR = 64ns)
-      -- DLO = Delay Line Oscillator     (Half Period ~ 10 ns)
-      -- 3D3428 PDL (PROGRAMMABLE DELAY LINE) CONFIGURATION
-      PDL_WR      : OUT    std_logic;                       -- Write Enable
-      PDL_SEL     : OUT    std_logic;                       -- PDL Selection (0=>PDL0, 1=>PDL1)
-      PDL_READ    : IN     std_logic_vector ( 7 DOWNTO 0);  -- Read Data
-      PDL_WRITE   : OUT    std_logic_vector ( 7 DOWNTO 0);  -- Write Data
-      PDL_DIR     : OUT    std_logic;                       -- Direction (0=>Write, 1=>Read)
-      -- DELAY I/O
-      PDL0_OUT    : IN     std_logic;                       -- Signal from PDL0 Output
-      PDL1_OUT    : IN     std_logic;                       -- Signal from PDL1 Output
-      DLO0_OUT    : IN     std_logic;                       -- Signal from DLO0 Output
-      DLO1_OUT    : IN     std_logic;                       -- Signal from DLO1 Output
-      PDL0_IN     : OUT    std_logic;                       -- Signal to   PDL0 Input
-      PDL1_IN     : OUT    std_logic;                       -- Signal to   PDL1 Input
-      DLO0_GATE   : OUT    std_logic;                       -- DLO0 Gate (active high)
-      DLO1_GATE   : OUT    std_logic;                       -- DLO1 Gate (active high)
-      --*************************************************
-      -- SPARE PORTS
-      --*************************************************
-      SPARE_OUT    : OUT   std_logic_vector(11 downto 0);   -- SPARE Data Out 
-      SPARE_IN     : IN    std_logic_vector(11 downto 0);   -- SPARE Data In
-      SPARE_DIR    : OUT   std_logic_vector(11 downto 0);   -- SPARE Direction (0 => OUT, 1 => IN)   
-      --*************************************************
-      -- LED
-      --*************************************************
-      RED_PULSE       : OUT    std_logic;                   -- RED   Led Pulse (active high)
-      GREEN_PULSE     : OUT    std_logic                    -- GREEN Led Pulse (active high)
-   );
+      		-- In/Out D (I/O Expansion)
+      		D_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- D slot mezzanine Identifier
+      		D_LEV       : OUT    std_logic;                       -- D slot Port Signal Level Select 
+      		D_DIR       : OUT    std_logic;                       -- D slot Port Direction
+      		D_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- D slot Data In  Bus
+      		D_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- D slot Data Out Bus
+      		-- In/Out E (I/O Expansion)
+      		E_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- E slot mezzanine Identifier
+      		E_LEV       : OUT    std_logic;                       -- E slot Port Signal Level Select
+      		E_DIR       : OUT    std_logic;                       -- E slot Port Direction
+      		E_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- E slot Data In  Bus
+      		E_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- E slot Data Out Bus
+      		-- In/Out F (I/O Expansion)
+      		F_IDCODE    : IN     std_logic_vector ( 2 DOWNTO 0);  -- F slot mezzanine Identifier
+      		F_LEV       : OUT    std_logic;                       -- F slot Port Signal Level Select
+      		F_DIR       : OUT    std_logic;                       -- F slot Port Direction
+      		F_DIN       : IN     std_logic_vector (31 DOWNTO 0);  -- F slot Data In  Bus
+      		F_DOUT      : OUT    std_logic_vector (31 DOWNTO 0);  -- F slot Data Out Bus
+      		--*************************************************
+      		-- DELAY LINES
+      		--*************************************************
+      		-- PDL = Programmable Delay Lines  (Step = 0.25ns / FSR = 64ns)
+      		-- DLO = Delay Line Oscillator     (Half Period ~ 10 ns)
+      		-- 3D3428 PDL (PROGRAMMABLE DELAY LINE) CONFIGURATION
+      		PDL_WR      : OUT    std_logic;                       -- Write Enable
+      		PDL_SEL     : OUT    std_logic;                       -- PDL Selection (0=>PDL0, 1=>PDL1)
+      		PDL_READ    : IN     std_logic_vector ( 7 DOWNTO 0);  -- Read Data
+      		PDL_WRITE   : OUT    std_logic_vector ( 7 DOWNTO 0);  -- Write Data
+      		PDL_DIR     : OUT    std_logic;                       -- Direction (0=>Write, 1=>Read)
+      		-- DELAY I/O
+      		PDL0_OUT    : IN     std_logic;                       -- Signal from PDL0 Output
+      		PDL1_OUT    : IN     std_logic;                       -- Signal from PDL1 Output
+      		DLO0_OUT    : IN     std_logic;                       -- Signal from DLO0 Output
+      		DLO1_OUT    : IN     std_logic;                       -- Signal from DLO1 Output
+      		PDL0_IN     : OUT    std_logic;                       -- Signal to   PDL0 Input
+      		PDL1_IN     : OUT    std_logic;                       -- Signal to   PDL1 Input
+      		DLO0_GATE   : OUT    std_logic;                       -- DLO0 Gate (active high)
+      		DLO1_GATE   : OUT    std_logic;                       -- DLO1 Gate (active high)
+      		--*************************************************
+      		-- SPARE PORTS
+      		--*************************************************
+      		SPARE_OUT    : OUT   std_logic_vector(11 downto 0);   -- SPARE Data Out 
+      		SPARE_IN     : IN    std_logic_vector(11 downto 0);   -- SPARE Data In
+      		SPARE_DIR    : OUT   std_logic_vector(11 downto 0);   -- SPARE Direction (0 => OUT, 1 => IN)   
+      		--*************************************************
+      		-- LED
+      		--*************************************************
+      		RED_PULSE       : OUT    std_logic;                   -- RED   Led Pulse (active high)
+      		GREEN_PULSE     : OUT    std_logic                    -- GREEN Led Pulse (active high)
+   	);
 
 -- Declarations
 
@@ -135,33 +134,72 @@ END coin_reference ;
 
 ARCHITECTURE rtl OF coin_reference IS
 	component trigger is
-	  port(
-            i_Clk				: in std_logic;
-	    OPERATOR				: in std_logic;
-            Random				: in std_logic;
-		 E				: in std_logic_vector(31 downto 0);
-		 
-		 C				: out std_logic_vector(31 downto 0);
---		 D				: out std_logic_vector(31 downto 0);
-		 F				: out std_logic_vector(31 downto 0)
-	  );
+	  	port
+		(
+                	i_Clk           : in std_logic;
+                	OPERATOR        : in std_logic;
+
+                	i_trig23        : in std_logic;         --Trigger for LFSR23
+                	i_trig22        : in std_logic;         --Trigger for LFSR22
+                	i_trig21        : in std_logic;         --Trigger for LFSR21
+                	i_trig20        : in std_logic;         --Trigger for LFSR20
+
+                	E               : in std_logic_vector(31 downto 0);
+
+                	C               : out std_logic_vector(31 downto 0);
+--              	D               : out std_logic_vector(31 downto 0);
+                	F               : out std_logic_vector(31 downto 0)
+	  	);
 	end component;
 
 	component LFSR is
-	  port(
-	    i_Clk : in std_logic;
-	    o_Random : out std_logic := '0'
-	  );
+	  	port
+		(
+                	--Clock
+                	i_Clk           : in std_logic;
+	
+                	--Output
+                	o_Rand23        : out std_logic_vector(15 downto 0);    --LFSR23 output
+                	o_Rand22        : out std_logic_vector(15 downto 0);    --LFSR22 output
+                	o_Rand21        : out std_logic_vector(15 downto 0);    --LFSR21 output
+                	o_Rand20        : out std_logic_vector(15 downto 0);    --LFSR20 output
+                	o_DV            : out std_logic                         --Data valid pulse
+	  	);
+	end component;
+
+	component comp_logic is
+		port
+		(
+                	--Input
+                	i_Rand23        : in std_logic_vector(15 downto 0);     --Number from LFSR23
+                	i_Rand22        : in std_logic_vector(15 downto 0);     --Number from LFSR22
+                	i_Rand21        : in std_logic_vector(15 downto 0);     --Number from LFSR21
+                	i_Rand20        : in std_logic_vector(15 downto 0);     --Number from LFSR20
+
+                	i_DV            : in std_logic;                         --Data valid pulse
+
+                	i_val23         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR23
+                	i_val22         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR22
+                	i_val21         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR21
+                	i_val20         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR20
+
+                	--Output
+                	o_trig23        : out std_logic := '0';                 --trigger for LFSR23
+                	o_trig22        : out std_logic := '0';                 --trigger for LFSR22
+                	o_trig21        : out std_logic := '0';                 --trigger for LFSR21
+                	o_trig20        : out std_logic := '0'                  --trigger for LFSR20	
+		);
 	end component;
 
 	component count32 is
-	  port(
-	    i_LCLK : in std_logic;
-	    i_Clk : in std_logic;
-	    i_Reset : in std_logic;
-	    i_Read : in std_logic;
-	    o_Count : out std_logic_vector (31 downto 0)
-	  );
+	  	port
+	  	(
+	    		i_LCLK 		: in std_logic;
+	    		i_Clk 		: in std_logic;
+	    		i_Reset 	: in std_logic;
+	    		i_Read 		: in std_logic;
+	    		o_Count		: out std_logic_vector (31 downto 0)
+	  	);
 	end component;	
 
 -- Registers
@@ -194,7 +232,25 @@ signal DELAY_SEL  : std_logic_vector(1 downto 0); -- "00" : PDL0 => Programmable
                                                   -- "11" : DLO1  => Gated Delay Line Oscillator 1
 signal UNIT_MODE  : std_logic; -- '0' : Coincidence Unit; '1' : I/O Register
 signal OPERATOR   : std_logic; -- '0' : AND ; '1' : OR
-signal RANDOM   : std_logic; -- LFSR random trigger signal
+
+
+signal w_Rand23		: std_logic_vector(15 downto 0);	-- LFSR23 random number register
+signal w_Rand22         : std_logic_vector(15 downto 0);        -- LFSR22 random number register
+signal w_Rand21         : std_logic_vector(15 downto 0);        -- LFSR21 random number register
+signal w_Rand20         : std_logic_vector(15 downto 0);        -- LFSR20 random number register
+
+signal w_DV		: std_logic;				--LFSR Data Valid wire
+
+signal w_trig23		: std_logic;				--Trigger wire
+signal w_trig22         : std_logic;                            --Trigger wire
+signal w_trig21         : std_logic;                            --Trigger wire
+signal w_trig20         : std_logic;                            --Trigger wire
+
+signal r_val23		: std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));	--User input value to be compared to LFSR23
+signal r_val22          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR22
+signal r_val21          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR21
+signal r_val20          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR20
+
 signal PULSE_MODE : std_logic; --
 signal MLU_COUNT_SYNC : std_logic; -- Sync reset for MLU clock counter
 signal MLU_COUNT_TRIG : std_logic; -- Trigger to update counter output to current clock count
@@ -345,34 +401,69 @@ BEGIN
    --    NOT at the end to flip it.  
    
    --   Moved Trigger logic to its own source file for simplicity in simulation -- REM -- 2017-04-26
-   trigger_inst: trigger
-   port map(
-     i_Clk => LCLK,
-     OPERATOR  => OPERATOR,
-     RANDOM  => RANDOM,
-     E  =>  E,
-     C  =>  C,
-   --  D  =>  D,
-     F  =>  F
-     );
+   	trigger_inst: trigger
+   	port map(
+     		i_Clk 		=> LCLK,
+     		OPERATOR  	=> OPERATOR,
 
-   LFSR_inst: LFSR
-   port map(
-   i_Clk => LCLK,
-   o_Random => RANDOM
-   );	
+     		i_trig23  	=> w_trig23,
+		i_trig22	=> w_trig22,
+		i_trig21	=> w_trig21,
+		i_trig20	=> w_trig20,
+
+     		E  		=>  E,
+     		C  		=>  C,
+   		--  D  =>  D,
+     		F  		=>  F
+     	);
+
+   	LFSR_inst	: LFSR
+   	port map
+	(
+   		i_Clk 		=> LCLK,
+
+   		o_Rand23 	=> w_Rand23,
+   		o_Rand22	=> w_Rand22,
+		o_Rand21	=> w_Rand21,
+		o_Rand20	=> w_Rand20,
+
+		o_DV		=> w_DV
+   	);	
   
-   count32_inst: count32
-   port map(
-   i_LCLK => LCLK,
-   i_Clk => E(0),
---   i_Reset => E(1),
---   i_Read => E(2),
-   i_Reset => MLU_COUNT_SYNC,	--MODE(6)
-   i_Read => MLU_COUNT_TRIG,	--MODE(7)
-   o_Count => MLU_COUNT
-   );
- 
+	comp_logic_inst	: comp_logic
+	port map
+	(
+		i_Rand23	=> w_Rand23,
+		i_Rand22	=> w_Rand22,
+		i_Rand21	=> w_Rand21,
+		i_Rand20	=> w_Rand20,
+
+		i_DV		=> w_DV,
+
+		i_val23		=> r_val23,
+		i_val22		=> r_val22,
+		i_val21		=> r_val21,
+		i_val20		=> r_val20,
+
+		o_trig23	=> w_trig23,
+		o_trig22	=> w_trig22,
+		o_trig21	=> w_trig21,
+		o_trig20	=> w_trig20
+	);
+
+   	count32_inst: count32
+   	port map
+	(
+   		i_LCLK 		=> LCLK,
+   		i_Clk 		=> E(0),
+--   		i_Reset 	=> E(1),
+--   		i_Read 		=> E(2),
+   		i_Reset 	=> MLU_COUNT_SYNC,	--MODE(6)
+   		i_Read 		=> MLU_COUNT_TRIG,	--MODE(7)
+   		o_Count 	=> MLU_COUNT
+   	);
+
+
    -- Select Port C driver based on a configuration bit.
    P_C_DRIVE: process(UNIT_MODE, C, C_MASK, C_CONTROL)
    begin
@@ -386,8 +477,8 @@ BEGIN
    --**********************************************************
    -- Coincidence Processing     
    --**********************************************************
-   -- COINC signal is a '1' whenever one bit of C is '1'.
-   COINC <= OR_REDUCE(C);
+   -- COINC signal is the first bit of 0
+   COINC <= C(0);
    
    STOPDELAY <= STOP_PDL or STOP_DLO;
    
@@ -457,7 +548,7 @@ BEGIN
          ENABLE_CNT <= '1';
        end if;
        if ENABLE_CNT = '1' then
-          WVF_CNT <= WVF_CNT + 1;
+          WVF_CNT <= std_logic_vector(unsigned(WVF_CNT) + 1);
        end if;
        if WVF_CNT = "01101" then
          PDL_IN_i <= '0';
@@ -480,7 +571,7 @@ BEGIN
        STOP_DLO     <= '0';
        DLO_PULSEOUT <= '0';
     elsif DLO_PULSE'event and DLO_PULSE = '1' then
-         CNT          <= CNT + 1;
+         CNT          <= std_logic_vector(unsigned(CNT) + 1);
          DLO_PULSEOUT <= '1';
          if CNT = GATEWIDTH then
             STOP_DLO     <= '1';
@@ -626,7 +717,13 @@ BEGIN
              when A_FDATA_H   => F_DATA   (31 downto 16)  <= REG_DIN;
              when A_PDL_CTRL  => PDL_CONTROL              <= REG_DIN;
              when A_PDL_DATA  => PDL_DATA                 <= REG_DIN;
-             when others      => null;
+
+	     when A_VAL23	=> r_val23	<= REG_DIN;
+	     when A_VAL22	=> r_val22	<= REG_DIN;
+	     when A_VAL21	=> r_val21	<= REG_DIN;
+	     when A_VAL20	=> r_val20	<= REG_DIN;
+             
+	     when others      => null;
            end case;
          end if;
        end if;

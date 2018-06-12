@@ -65,9 +65,9 @@ ENTITY v1495usr_demo IS
 END v1495usr_demo ;
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_arith.all;
-USE ieee.std_logic_misc.all;
-USE ieee.std_logic_unsigned.all;
+--USE ieee.std_logic_arith.all;
+--USE ieee.std_logic_misc.all;
+--USE ieee.std_logic_unsigned.all;
 
 
 ARCHITECTURE struct OF v1495usr_demo IS

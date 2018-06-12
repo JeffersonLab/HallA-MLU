@@ -68,5 +68,11 @@ constant A_EIDCODE    : std_logic_vector(15 downto 0) := X"1044";
 constant A_FIDCODE    : std_logic_vector(15 downto 0) := X"1046";
 constant A_COUNT_L    : std_logic_vector(15 downto 0) := X"1048";
 constant A_COUNT_H    : std_logic_vector(15 downto 0) := X"104A";
-         
+
+--User defined comparison number addresses
+constant A_VAL23	: std_logic_vector(15 downto 0) := X"104C";
+constant A_VAL22        : std_logic_vector(15 downto 0) := X"104E";
+constant A_VAL21        : std_logic_vector(15 downto 0) := X"1050";
+constant A_VAL20        : std_logic_vector(15 downto 0) := X"1052";
+
 END v1495pkg;

@@ -39,22 +39,22 @@ begin
 	p_Logic : process (i_DV) is
 	begin
 		if rising_edge(i_DV) then
-			if to_integer(unsigned(i_Rand23)) <= to_integer((unsigned(i_val23))) then
+			if to_integer(unsigned(i_Rand23)) < to_integer((unsigned(i_val23))) then
 				o_trig23 <= '1';
 			else
 				o_trig23 <= '0';
 			end if;
-                        if to_integer(unsigned(i_Rand22)) <= to_integer((unsigned(i_val22))) then
+                        if to_integer(unsigned(i_Rand22)) < to_integer((unsigned(i_val22))) then
                                 o_trig22 <= '1';
                         else
                                 o_trig22 <= '0';
                         end if;
-                        if to_integer(unsigned(i_Rand21)) <= to_integer((unsigned(i_val21))) then
+                        if to_integer(unsigned(i_Rand21)) < to_integer((unsigned(i_val21))) then
                                 o_trig21 <= '1';
                         else
                                 o_trig21 <= '0';
                         end if;
-                        if to_integer(unsigned(i_Rand20)) <= to_integer((unsigned(i_val20))) then
+                        if to_integer(unsigned(i_Rand20)) < to_integer((unsigned(i_val20))) then
                                 o_trig20 <= '1';
                         else
                                 o_trig20 <= '0';

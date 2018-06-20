@@ -35,37 +35,48 @@ end entity comp_logic;
 
 
 architecture rtl of comp_logic is
+
+	signal r_trig159	: std_logic	:= '0';
+	signal r_trig161	: std_logic	:= '0';
+        signal r_trig167        : std_logic     := '0';
+        signal r_trig94        	: std_logic     := '0';
 begin
 	p_Logic : process (i_DV) is
 	begin
 		if rising_edge(i_DV) then
 			if to_integer(unsigned(i_Rand1)) < to_integer((unsigned(i_val159))) then
-				o_trig159 <= '1';
+				r_trig159 <= '1';
 			else
-				o_trig159 <= '0';
+				r_trig159 <= '0';
 			end if;
                         if to_integer(unsigned(i_Rand2)) < to_integer((unsigned(i_val161))) then
-                                o_trig161 <= '1';
+                                r_trig161 <= '1';
                         else
-                                o_trig161 <= '0';
+                                r_trig161 <= '0';
                         end if;
                         if to_integer(unsigned(i_Rand3)) < to_integer((unsigned(i_val167))) then
-                                o_trig167 <= '1';
+                                r_trig167 <= '1';
                         else
-                                o_trig167 <= '0';
+                                r_trig167 <= '0';
                         end if;
                         if to_integer(unsigned(i_Rand4)) < to_integer((unsigned(i_val94))) then
-                                o_trig94 <= '1';
+                                r_trig94 <= '1';
                         else
-                                o_trig94 <= '0';
+                                r_trig94 <= '0';
                         end if;
 
 		else
-			o_trig159 	<= '0';
-                        o_trig161 	<= '0';
-                        o_trig167 	<= '0';
-                        o_trig94 	<= '0';
+			r_trig159 	<= '0';
+                        r_trig161 	<= '0';
+                        r_trig167 	<= '0';
+                        r_trig94 	<= '0';
 		end if;
-
 	end process p_Logic;
+
+	o_trig159	<= r_trig159;
+        o_trig161       <= r_trig161;
+        o_trig167       <= r_trig167;
+        o_trig94       	<= r_trig94;
+
+
 end architecture rtl;

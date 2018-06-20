@@ -170,6 +170,9 @@ ARCHITECTURE rtl OF coin_reference IS
 	component comp_logic is
 		port
 		(
+			--Clock
+			i_Clk		: in std_logic;				--Clock
+
                 	--Input
                 	i_Rand1        	: in std_logic_vector(15 downto 0);     --Number from LFSR159
                 	i_Rand2        	: in std_logic_vector(15 downto 0);     --Number from LFSR161
@@ -433,6 +436,8 @@ BEGIN
 	comp_logic_inst	: comp_logic
 	port map
 	(
+		i_Clk		=> LCLK,
+
 		i_Rand1		=> w_Rand1,
 		i_Rand2		=> w_Rand2,
 		i_Rand3		=> w_Rand3,

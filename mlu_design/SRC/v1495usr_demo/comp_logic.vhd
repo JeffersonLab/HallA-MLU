@@ -12,6 +12,9 @@ use ieee.numeric_std.all;
 entity comp_logic is
 	port
 	(
+		--Clock
+		i_Clk		: in std_logic;				--Clock	
+
 		--Input
 		i_Rand1		: in std_logic_vector(15 downto 0);	--Number from LFSR159
                 i_Rand2        	: in std_logic_vector(15 downto 0);     --Number from LFSR161
@@ -41,35 +44,37 @@ architecture rtl of comp_logic is
         signal r_trig167        : std_logic     := '0';
         signal r_trig94        	: std_logic     := '0';
 begin
-	p_Logic : process (i_DV) is
+	p_Logic : process (i_Clk) is
 	begin
-		if rising_edge(i_DV) then
-			if to_integer(unsigned(i_Rand1)) < to_integer((unsigned(i_val159))) then
-				r_trig159 <= '1';
-			else
-				r_trig159 <= '0';
-			end if;
-                        if to_integer(unsigned(i_Rand2)) < to_integer((unsigned(i_val161))) then
-                                r_trig161 <= '1';
-                        else
-                                r_trig161 <= '0';
-                        end if;
-                        if to_integer(unsigned(i_Rand3)) < to_integer((unsigned(i_val167))) then
-                                r_trig167 <= '1';
-                        else
-                                r_trig167 <= '0';
-                        end if;
-                        if to_integer(unsigned(i_Rand4)) < to_integer((unsigned(i_val94))) then
-                                r_trig94 <= '1';
-                        else
-                                r_trig94 <= '0';
-                        end if;
+		if rising_edge(i_Clk) then
+			if i_DV = '1' then
+				if to_integer(unsigned(i_Rand1)) < to_integer((unsigned(i_val159))) then
+					r_trig159 <= '1';
+				else
+					r_trig159 <= '0';
+				end if;
+                        	if to_integer(unsigned(i_Rand2)) < to_integer((unsigned(i_val161))) then
+                        	        r_trig161 <= '1';
+                        	else
+                        	        r_trig161 <= '0';
+                        	end if;
+                        	if to_integer(unsigned(i_Rand3)) < to_integer((unsigned(i_val167))) then
+                        	        r_trig167 <= '1';
+                        	else
+                        	        r_trig167 <= '0';
+                        	end if;
+                        	if to_integer(unsigned(i_Rand4)) < to_integer((unsigned(i_val94))) then
+                        	        r_trig94 <= '1';
+                        	else
+                        	        r_trig94 <= '0';
+                        	end if;
 
-		else
-			r_trig159 	<= '0';
-                        r_trig161 	<= '0';
-                        r_trig167 	<= '0';
-                        r_trig94 	<= '0';
+			else
+				r_trig159 	<= '0';
+                        	r_trig161 	<= '0';
+                        	r_trig167 	<= '0';
+                        	r_trig94 	<= '0';
+			end if;
 		end if;
 	end process p_Logic;
 

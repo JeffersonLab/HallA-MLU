@@ -14,10 +14,10 @@ entity trigger is
     		i_Clk		: in std_logic;
     		OPERATOR	: in std_logic;
 
-    		i_trig23	: in std_logic;		--Trigger for LFSR23
-                i_trig22        : in std_logic;         --Trigger for LFSR22
-                i_trig21        : in std_logic;         --Trigger for LFSR21
-                i_trig20        : in std_logic;         --Trigger for LFSR20
+    		i_trig159	: in std_logic;		--Trigger for LFSR159
+                i_trig161       : in std_logic;         --Trigger for LFSR161
+                i_trig167       : in std_logic;         --Trigger for LFSR167
+                i_trig94        : in std_logic;         --Trigger for LFSR94
 
     		E		: in std_logic_vector(31 downto 0);
 	 
@@ -29,12 +29,12 @@ end trigger;
 
 architecture synthesis of trigger is
 begin
-	P_TRIG : process(i_trig23, i_trig22, i_trig21, i_trig20)
+	P_TRIG : process(i_trig159, i_trig161, i_trig167, i_trig94)
       	begin
-        	F(0) <= i_trig23;
-		F(1) <= i_trig22;
-		F(2) <= i_trig21;
-		F(3) <= i_trig20;
+        	F(0) <= i_trig159;
+		F(1) <= i_trig161;
+		F(2) <= i_trig167;
+		F(3) <= i_trig94;
 
 		F(4) <= '0';
                 F(5) <= '0';

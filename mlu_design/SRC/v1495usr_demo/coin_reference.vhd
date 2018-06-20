@@ -139,10 +139,10 @@ ARCHITECTURE rtl OF coin_reference IS
                 	i_Clk           : in std_logic;
                 	OPERATOR        : in std_logic;
 
-                	i_trig23        : in std_logic;         --Trigger for LFSR23
-                	i_trig22        : in std_logic;         --Trigger for LFSR22
-                	i_trig21        : in std_logic;         --Trigger for LFSR21
-                	i_trig20        : in std_logic;         --Trigger for LFSR20
+                	i_trig159       : in std_logic;         --Trigger for LFSR159
+                	i_trig161       : in std_logic;         --Trigger for LFSR161
+                	i_trig167       : in std_logic;         --Trigger for LFSR167
+                	i_trig94        : in std_logic;         --Trigger for LFSR94
 
                 	E               : in std_logic_vector(31 downto 0);
 
@@ -159,10 +159,10 @@ ARCHITECTURE rtl OF coin_reference IS
                 	i_Clk           : in std_logic;
 	
                 	--Output
-                	o_Rand23        : out std_logic_vector(15 downto 0);    --LFSR23 output
-                	o_Rand22        : out std_logic_vector(15 downto 0);    --LFSR22 output
-                	o_Rand21        : out std_logic_vector(15 downto 0);    --LFSR21 output
-                	o_Rand20        : out std_logic_vector(15 downto 0);    --LFSR20 output
+                	o_Rand1        	: out std_logic_vector(15 downto 0);    --LFSR159 output
+                	o_Rand2        	: out std_logic_vector(15 downto 0);    --LFSR161 output
+                	o_Rand3        	: out std_logic_vector(15 downto 0);    --LFSR167 output
+                	o_Rand4        	: out std_logic_vector(15 downto 0);    --LFSR94 output
                 	o_DV            : out std_logic                         --Data valid pulse
 	  	);
 	end component;
@@ -171,23 +171,23 @@ ARCHITECTURE rtl OF coin_reference IS
 		port
 		(
                 	--Input
-                	i_Rand23        : in std_logic_vector(15 downto 0);     --Number from LFSR23
-                	i_Rand22        : in std_logic_vector(15 downto 0);     --Number from LFSR22
-                	i_Rand21        : in std_logic_vector(15 downto 0);     --Number from LFSR21
-                	i_Rand20        : in std_logic_vector(15 downto 0);     --Number from LFSR20
+                	i_Rand1        	: in std_logic_vector(15 downto 0);     --Number from LFSR159
+                	i_Rand2        	: in std_logic_vector(15 downto 0);     --Number from LFSR161
+                	i_Rand3        	: in std_logic_vector(15 downto 0);     --Number from LFSR167
+                	i_Rand4        	: in std_logic_vector(15 downto 0);     --Number from LFSR94
 
                 	i_DV            : in std_logic;                         --Data valid pulse
 
-                	i_val23         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR23
-                	i_val22         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR22
-                	i_val21         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR21
-                	i_val20         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR20
+                	i_val159        : in std_logic_vector(15 downto 0);     --Number to compare to LFSR159
+                	i_val161        : in std_logic_vector(15 downto 0);     --Number to compare to LFSR161
+                	i_val167        : in std_logic_vector(15 downto 0);     --Number to compare to LFSR167
+                	i_val94         : in std_logic_vector(15 downto 0);     --Number to compare to LFSR94
 
                 	--Output
-                	o_trig23        : out std_logic := '0';                 --trigger for LFSR23
-                	o_trig22        : out std_logic := '0';                 --trigger for LFSR22
-                	o_trig21        : out std_logic := '0';                 --trigger for LFSR21
-                	o_trig20        : out std_logic := '0'                  --trigger for LFSR20	
+                	o_trig159       : out std_logic := '0';                 --trigger for LFSR159
+                	o_trig161       : out std_logic := '0';                 --trigger for LFSR161
+                	o_trig167       : out std_logic := '0';                 --trigger for LFSR167
+                	o_trig94        : out std_logic := '0'                  --trigger for LFSR94	
 		);
 	end component;
 
@@ -234,22 +234,22 @@ signal UNIT_MODE  : std_logic; -- '0' : Coincidence Unit; '1' : I/O Register
 signal OPERATOR   : std_logic; -- '0' : AND ; '1' : OR
 
 
-signal w_Rand23		: std_logic_vector(15 downto 0);	-- LFSR23 random number register
-signal w_Rand22         : std_logic_vector(15 downto 0);        -- LFSR22 random number register
-signal w_Rand21         : std_logic_vector(15 downto 0);        -- LFSR21 random number register
-signal w_Rand20         : std_logic_vector(15 downto 0);        -- LFSR20 random number register
+signal w_Rand1		: std_logic_vector(15 downto 0);	-- LFSR159 random number register
+signal w_Rand2         	: std_logic_vector(15 downto 0);        -- LFSR161 random number register
+signal w_Rand3         	: std_logic_vector(15 downto 0);        -- LFSR167 random number register
+signal w_Rand4         	: std_logic_vector(15 downto 0);        -- LFSR94 random number register
 
 signal w_DV		: std_logic;				--LFSR Data Valid wire
 
-signal w_trig23		: std_logic;				--Trigger wire
-signal w_trig22         : std_logic;                            --Trigger wire
-signal w_trig21         : std_logic;                            --Trigger wire
-signal w_trig20         : std_logic;                            --Trigger wire
+signal w_trig159	: std_logic;				--Trigger wire
+signal w_trig161        : std_logic;                            --Trigger wire
+signal w_trig167        : std_logic;                            --Trigger wire
+signal w_trig94         : std_logic;                            --Trigger wire
 
-signal r_val23		: std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));	--User input value to be compared to LFSR23
-signal r_val22          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR22
-signal r_val21          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR21
-signal r_val20          : std_logic_vector(15 downto 0) --:= std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR20
+signal r_val159		: std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));	--User input value to be compared to LFSR159
+signal r_val161         : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));       --User input value to be compared to LFSR161
+signal r_val167         : std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));       --User input value to be compared to LFSR167
+signal r_val94		: std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR94
 
 signal PULSE_MODE : std_logic; --
 signal MLU_COUNT_SYNC : std_logic; -- Sync reset for MLU clock counter
@@ -406,10 +406,10 @@ BEGIN
      		i_Clk 		=> LCLK,
      		OPERATOR  	=> OPERATOR,
 
-     		i_trig23  	=> w_trig23,
-		i_trig22	=> w_trig22,
-		i_trig21	=> w_trig21,
-		i_trig20	=> w_trig20,
+     		i_trig159  	=> w_trig159,
+		i_trig161	=> w_trig161,
+		i_trig167	=> w_trig167,
+		i_trig94	=> w_trig94,
 
      		E  		=>  E,
      		C  		=>  C,
@@ -422,10 +422,10 @@ BEGIN
 	(
    		i_Clk 		=> LCLK,
 
-   		o_Rand23 	=> w_Rand23,
-   		o_Rand22	=> w_Rand22,
-		o_Rand21	=> w_Rand21,
-		o_Rand20	=> w_Rand20,
+   		o_Rand1 	=> w_Rand1,
+   		o_Rand2		=> w_Rand2,
+		o_Rand3		=> w_Rand3,
+		o_Rand4		=> w_Rand4,
 
 		o_DV		=> w_DV
    	);	
@@ -433,22 +433,22 @@ BEGIN
 	comp_logic_inst	: comp_logic
 	port map
 	(
-		i_Rand23	=> w_Rand23,
-		i_Rand22	=> w_Rand22,
-		i_Rand21	=> w_Rand21,
-		i_Rand20	=> w_Rand20,
+		i_Rand1		=> w_Rand1,
+		i_Rand2		=> w_Rand2,
+		i_Rand3		=> w_Rand3,
+		i_Rand4		=> w_Rand4,
 
 		i_DV		=> w_DV,
 
-		i_val23		=> r_val23,
-		i_val22		=> r_val22,
-		i_val21		=> r_val21,
-		i_val20		=> r_val20,
+		i_val159	=> r_val159,
+		i_val161	=> r_val161,
+		i_val167	=> r_val167,
+		i_val94		=> r_val94,
 
-		o_trig23	=> w_trig23,
-		o_trig22	=> w_trig22,
-		o_trig21	=> w_trig21,
-		o_trig20	=> w_trig20
+		o_trig159	=> w_trig159,
+		o_trig161	=> w_trig161,
+		o_trig167	=> w_trig167,
+		o_trig94	=> w_trig94
 	);
 
    	count32_inst: count32
@@ -718,10 +718,10 @@ BEGIN
              when A_PDL_CTRL  => PDL_CONTROL              <= REG_DIN;
              when A_PDL_DATA  => PDL_DATA                 <= REG_DIN;
 
-	     when A_VAL23	=> r_val23	<= REG_DIN;
-	     when A_VAL22	=> r_val22	<= REG_DIN;
-	     when A_VAL21	=> r_val21	<= REG_DIN;
-	     when A_VAL20	=> r_val20	<= REG_DIN;
+	     when A_VAL159	=> r_val159	<= REG_DIN;
+	     when A_VAL161	=> r_val161	<= REG_DIN;
+	     when A_VAL167	=> r_val167	<= REG_DIN;
+	     when A_VAL94	=> r_val94	<= REG_DIN;
              
 	     when others      => null;
            end case;

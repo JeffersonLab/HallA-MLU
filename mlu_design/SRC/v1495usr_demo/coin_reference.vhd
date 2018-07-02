@@ -776,7 +776,7 @@ BEGIN
 
              when A_VAL159      => REG_DOUT     <= r_val159;
              when A_VAL161      => REG_DOUT     <= r_val161;
-             when A_VAL167      => REG_DOUT     <= r_val169;
+             when A_VAL167      => REG_DOUT     <= r_val167;
              when A_VAL94       => REG_DOUT     <= r_val94;
 
 	     when others        => REG_DOUT   	<= (others => '0');

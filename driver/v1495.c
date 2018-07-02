@@ -60,6 +60,7 @@ More adjustment by R. Michaels, Jan 2014 for using 1495 as an MLU
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #include "v1495.h"
 
@@ -459,6 +460,83 @@ v1495WriteCmask(unsigned int address, int cmask_l)
   return 0;
 }
 
+//New code by Adam Kobert
+void
+v1495SetTriggerRate(unsigned short LFSR, int thresh)
+{
+	/* Assigns threshold value to specified LFSR
+	*/
+
+	unsigned short address;
+	if(thresh < 0)
+	{
+		printf("Negative thresholds are invalid.\nThreshold set to 0.\n");
+		thresh = 0;
+	}
+	else if (thresh > 65535)
+	{
+		printf("Warning, threshold being set exceeds 16bit limit.\nSetting threshold to maximum allowed.\n");
+		thresh = 65535;
+	}
+
+	switch (LFSR)
+	{
+		case 0:
+			address = &v1495->aval94;
+			printf("LFSR94 assigned threshold value: ");
+			break;
+
+		case 1:
+                        address = &v1495->aval159;
+                        printf("LFSR159 assigned threshold value: ");
+			break;
+
+		case 2:
+                        address = &v1495->aval161;
+                        printf("LFSR161 assigned threshold value: ");
+			break;
+
+		case 3:
+                        address = &v1495->aval167;
+                        printf("LFSR167 assigned threshold value: ");			
+			break;
+
+		default:
+			printf("Invalid LFSR ID #, choose 0-3 (LFSR 94, 159, 161, 167)\n");
+			return;
+	}
+	printf("%d\n", thresh);
+	printf("Probability of trigger is: %f%s", ((float)thresh/65536.0)*100.0, "%\n");
+	printf("Average Frequency is: %f%s", (float)thresh/(16.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
+	
+	vmeWrite16(address, thresh);
+}
+
+void
+v1495SetTriggerFrequency(unsigned short LFSR, float freq)
+{
+	/* Assigns frequency value to specified LFSR as close
+	 * to specified as possible
+	 * freq entered in Hertz
+	*/
+
+	if(freq < 0.0)
+	{
+		printf("Negative Frequencies are invalid.\nFrequency set to 0\n");
+		freq = 0.0;
+	}
+	else if (freq > 2499942.7)
+	{
+		printf("Frequency exceeds allowed limits.\nFrequency set to maximum allowed.\n");
+		freq = 2499943.0;
+	}
+
+	printf("Setting to closest possible frequency...\n");
+
+	unsigned short n = round(freq * 16.0 * 65536.0 * .000000025);
+	v1495SetTriggerRate(LFSR, n);
+
+}
 
 
 /*****************************************************************************

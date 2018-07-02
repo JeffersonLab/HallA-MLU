@@ -51,10 +51,19 @@ typedef struct v1495_struct
   /*0x1042*/ volatile unsigned short didcode;    /*  RO  */
   /*0x1044*/ volatile unsigned short eidcode;    /*  RO  */
   /*0x1046*/ volatile unsigned short fidcode;    /*  RO  */
+  /*0x1048*/ volatile unsigned short acount_l;
+  /*0x104A*/ volatile unsigned short acount_h;
+
+  /*0x104C*/ volatile unsigned short aval159;
+  /*0x104E*/ volatile unsigned short aval161;
+  /*0x1050*/ volatile unsigned short aval167;
+  /*0x1052*/ volatile unsigned short aval94;
+  /*0x1054*/ volatile unsigned short abcm_l;
+  /*0x1056*/ volatile unsigned short abcm_h;
 
   /* end of COIN_REFERENCE */ 
 
-  /*0x0000*/ volatile unsigned short data[14300];    /* R/W */
+  /*0x0000*/ volatile unsigned short data[0x8000 - 0x1056];    /* R/W */
   /*0x8000*/ volatile unsigned short control;        /* R/W */
   /*0x8002*/ volatile unsigned short status;         /* R */
   /*0x8004*/ volatile unsigned short intLevel;       /* R/W */

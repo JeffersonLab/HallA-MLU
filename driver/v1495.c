@@ -517,7 +517,7 @@ v1495SetTriggerFrequency(unsigned short LFSR, float freq)
 {
 	/* Assigns frequency value to specified LFSR as close
 	 * to specified as possible
-	 * freq entered in Hertz
+	 * freq entered in Kilohertz
 	*/
 
 	if(freq < 0.0)
@@ -525,15 +525,15 @@ v1495SetTriggerFrequency(unsigned short LFSR, float freq)
 		printf("Negative Frequencies are invalid.\nFrequency set to 0\n");
 		freq = 0.0;
 	}
-	else if (freq > 2499942.7)
+	else if (freq > 2499.9427)
 	{
 		printf("Frequency exceeds allowed limits.\nFrequency set to maximum allowed.\n");
-		freq = 2499943.0;
+		freq = 2499.943;
 	}
 
 	printf("Setting to closest possible frequency...\n");
 
-	unsigned short n = round(freq * 16.0 * 65536.0 * .000000025);
+	unsigned short n = round(freq * 16.0 * 65536.0 * .000000025 * 1000.0);
 	v1495SetTriggerRate(LFSR, n);
 
 }

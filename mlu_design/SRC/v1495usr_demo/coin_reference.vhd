@@ -696,39 +696,39 @@ BEGIN
        elsif LCLK'event and LCLK = '1' then
          if (REG_WREN = '1') and (USR_ACCESS = '1') then
            case REG_ADDR is
-             when A_AMASK_L   => A_MASK(15 downto 0)      <= REG_DIN;
-             when A_AMASK_H   => A_MASK(31 downto 16)     <= REG_DIN;
-             when A_BMASK_L   => B_MASK(15 downto 0)      <= REG_DIN;
-             when A_BMASK_H   => B_MASK(31 downto 16)     <= REG_DIN;
-             when A_CMASK_L   => C_MASK(15 downto 0)      <= REG_DIN;
-             when A_CMASK_H   => C_MASK(31 downto 16)     <= REG_DIN;
-             when A_GATEWIDTH => GATEWIDTH                <= REG_DIN;
-             when A_CCTRL_L   => C_CONTROL(15 downto 0)   <= REG_DIN;
-             when A_CCTRL_H   => C_CONTROL(31 downto 16)  <= REG_DIN;   
-             when A_MODE      => MODE                     <= REG_DIN;
-             when A_SCRATCH   => SCRATCH                  <= REG_DIN; 
-             when A_GCTRL     => G_CONTROL(15 downto 0)   <= REG_DIN; 
-             when A_DCTRL_L   => D_CONTROL(15 downto  0)  <= REG_DIN;
-             when A_DCTRL_H   => D_CONTROL(31 downto 16)  <= REG_DIN;
-             when A_DDATA_L   => D_DATA   (15 downto  0)  <= REG_DIN;
-             when A_DDATA_H   => D_DATA   (31 downto 16)  <= REG_DIN;
-             when A_ECTRL_L   => E_CONTROL(15 downto  0)  <= REG_DIN;
-             when A_ECTRL_H   => E_CONTROL(31 downto 16)  <= REG_DIN;
-             when A_EDATA_L   => E_DATA   (15 downto  0)  <= REG_DIN;
-             when A_EDATA_H   => E_DATA   (31 downto 16)  <= REG_DIN;
-             when A_FCTRL_L   => F_CONTROL(15 downto  0)  <= REG_DIN;
-             when A_FCTRL_H   => F_CONTROL(31 downto 16)  <= REG_DIN;
-             when A_FDATA_L   => F_DATA   (15 downto  0)  <= REG_DIN;
-             when A_FDATA_H   => F_DATA   (31 downto 16)  <= REG_DIN;
-             when A_PDL_CTRL  => PDL_CONTROL              <= REG_DIN;
-             when A_PDL_DATA  => PDL_DATA                 <= REG_DIN;
+             when A_AMASK_L   	=> A_MASK(15 downto 0)      <= REG_DIN;
+             when A_AMASK_H   	=> A_MASK(31 downto 16)     <= REG_DIN;
+             when A_BMASK_L   	=> B_MASK(15 downto 0)      <= REG_DIN;
+             when A_BMASK_H   	=> B_MASK(31 downto 16)     <= REG_DIN;
+             when A_CMASK_L   	=> C_MASK(15 downto 0)      <= REG_DIN;
+             when A_CMASK_H   	=> C_MASK(31 downto 16)     <= REG_DIN;
+             when A_GATEWIDTH 	=> GATEWIDTH                <= REG_DIN;
+             when A_CCTRL_L   	=> C_CONTROL(15 downto 0)   <= REG_DIN;
+             when A_CCTRL_H   	=> C_CONTROL(31 downto 16)  <= REG_DIN;   
+             when A_MODE      	=> MODE                     <= REG_DIN;
+             when A_SCRATCH   	=> SCRATCH                  <= REG_DIN; 
+             when A_GCTRL     	=> G_CONTROL(15 downto 0)   <= REG_DIN; 
+             when A_DCTRL_L   	=> D_CONTROL(15 downto  0)  <= REG_DIN;
+             when A_DCTRL_H   	=> D_CONTROL(31 downto 16)  <= REG_DIN;
+             when A_DDATA_L   	=> D_DATA   (15 downto  0)  <= REG_DIN;
+             when A_DDATA_H   	=> D_DATA   (31 downto 16)  <= REG_DIN;
+             when A_ECTRL_L   	=> E_CONTROL(15 downto  0)  <= REG_DIN;
+             when A_ECTRL_H   	=> E_CONTROL(31 downto 16)  <= REG_DIN;
+             when A_EDATA_L   	=> E_DATA   (15 downto  0)  <= REG_DIN;
+             when A_EDATA_H   	=> E_DATA   (31 downto 16)  <= REG_DIN;
+             when A_FCTRL_L   	=> F_CONTROL(15 downto  0)  <= REG_DIN;
+             when A_FCTRL_H   	=> F_CONTROL(31 downto 16)  <= REG_DIN;
+             when A_FDATA_L   	=> F_DATA   (15 downto  0)  <= REG_DIN;
+             when A_FDATA_H   	=> F_DATA   (31 downto 16)  <= REG_DIN;
+             when A_PDL_CTRL  	=> PDL_CONTROL              <= REG_DIN;
+             when A_PDL_DATA  	=> PDL_DATA                 <= REG_DIN;
 
 	     when A_VAL159	=> r_val159	<= REG_DIN;
 	     when A_VAL161	=> r_val161	<= REG_DIN;
 	     when A_VAL167	=> r_val167	<= REG_DIN;
 	     when A_VAL94	=> r_val94	<= REG_DIN;
              
-	     when others      => null;
+	     when others      	=> null;
            end case;
          end if;
        end if;
@@ -743,34 +743,43 @@ BEGIN
        elsif LCLK'event and LCLK = '1' then
          if (REG_RDEN = '1') and (USR_ACCESS = '1') then
            case REG_ADDR is
-             when A_ASTATUS_L   => REG_DOUT   <= A_STATUS (15 downto 0);
-             when A_ASTATUS_H   => REG_DOUT   <= A_STATUS (31 downto 16);
-             when A_BSTATUS_L   => REG_DOUT   <= B_STATUS (15 downto 0);
-             when A_BSTATUS_H   => REG_DOUT   <= B_STATUS (31 downto 16);
-             when A_CSTATUS_L   => REG_DOUT   <= C_STATUS (15 downto 0);
-             when A_CSTATUS_H   => REG_DOUT   <= C_STATUS (31 downto 16);
-             when A_SCRATCH     => REG_DOUT   <= SCRATCH; 
-             when A_COUNT_L     => REG_DOUT   <= MLU_COUNT (15 downto 0); 
-             when A_COUNT_H     => REG_DOUT   <= MLU_COUNT (31 downto 16); 
-             when A_DCTRL_L     => REG_DOUT   <= D_CONTROL(15 downto  0);
-             when A_DCTRL_H     => REG_DOUT   <= D_CONTROL(31 downto 16);
-             when A_DDATA_L     => REG_DOUT   <= D_DIN    (15 downto  0);
-             when A_DDATA_H     => REG_DOUT   <= D_DIN    (31 downto 16);
-             when A_ECTRL_L     => REG_DOUT   <= E_CONTROL(15 downto  0);
-             when A_ECTRL_H     => REG_DOUT   <= E_CONTROL(31 downto 16);
-             when A_EDATA_L     => REG_DOUT   <= E_DIN    (15 downto  0);
-             when A_EDATA_H     => REG_DOUT   <= E_DIN    (31 downto 16);
-             when A_FCTRL_L     => REG_DOUT   <= F_CONTROL(15 downto  0);
-             when A_FCTRL_H     => REG_DOUT   <= F_CONTROL(31 downto 16);
-             when A_FDATA_L     => REG_DOUT   <= F_DIN    (15 downto  0);
-             when A_FDATA_H     => REG_DOUT   <= F_DIN    (31 downto 16);
-             when A_REVISION    => REG_DOUT   <= REVISION;
-             when A_PDL_CTRL    => REG_DOUT   <= PDL_CONTROL;
-             when A_PDL_DATA    => REG_DOUT   <= X"00"  & PDL_READ;
-             when A_DIDCODE     => REG_DOUT   <= X"000" & '0' & D_IDCODE;
-             when A_EIDCODE     => REG_DOUT   <= X"000" & '0' & E_IDCODE;
-             when A_FIDCODE     => REG_DOUT   <= X"000" & '0' & F_IDCODE;
-             when others        => REG_DOUT   <= (others => '0');
+             when A_ASTATUS_L   => REG_DOUT   	<= A_STATUS (15 downto 0);
+             when A_ASTATUS_H   => REG_DOUT   	<= A_STATUS (31 downto 16);
+             when A_BSTATUS_L   => REG_DOUT   	<= B_STATUS (15 downto 0);
+             when A_BSTATUS_H   => REG_DOUT   	<= B_STATUS (31 downto 16);
+             when A_CSTATUS_L   => REG_DOUT   	<= C_STATUS (15 downto 0);
+             when A_CSTATUS_H   => REG_DOUT   	<= C_STATUS (31 downto 16);
+             when A_SCRATCH     => REG_DOUT   	<= SCRATCH; 
+             when A_COUNT_L     => REG_DOUT   	<= MLU_COUNT (15 downto 0); 
+             when A_COUNT_H     => REG_DOUT   	<= MLU_COUNT (31 downto 16); 
+             when A_DCTRL_L     => REG_DOUT   	<= D_CONTROL(15 downto  0);
+             when A_DCTRL_H     => REG_DOUT   	<= D_CONTROL(31 downto 16);
+             when A_DDATA_L     => REG_DOUT   	<= D_DIN    (15 downto  0);
+             when A_DDATA_H     => REG_DOUT   	<= D_DIN    (31 downto 16);
+             when A_ECTRL_L     => REG_DOUT   	<= E_CONTROL(15 downto  0);
+             when A_ECTRL_H     => REG_DOUT   	<= E_CONTROL(31 downto 16);
+             when A_EDATA_L     => REG_DOUT   	<= E_DIN    (15 downto  0);
+             when A_EDATA_H     => REG_DOUT   	<= E_DIN    (31 downto 16);
+             when A_FCTRL_L     => REG_DOUT   	<= F_CONTROL(15 downto  0);
+             when A_FCTRL_H     => REG_DOUT   	<= F_CONTROL(31 downto 16);
+             when A_FDATA_L     => REG_DOUT   	<= F_DIN    (15 downto  0);
+             when A_FDATA_H     => REG_DOUT   	<= F_DIN    (31 downto 16);
+             when A_REVISION    => REG_DOUT   	<= REVISION;
+             when A_PDL_CTRL    => REG_DOUT   	<= PDL_CONTROL;
+             when A_PDL_DATA    => REG_DOUT   	<= X"00"  & PDL_READ;
+             when A_DIDCODE     => REG_DOUT   	<= X"000" & '0' & D_IDCODE;
+             when A_EIDCODE     => REG_DOUT   	<= X"000" & '0' & E_IDCODE;
+             when A_FIDCODE     => REG_DOUT   	<= X"000" & '0' & F_IDCODE;
+             
+--	     when A_BCM_L	=> REG_DOUT	<=  (15 downto 0); 	--Ask where to read from
+--	     when A_BCM_H	=> REG_DOUT	<=  (31 downto 16);	--Ask where to read from
+
+             when A_VAL159      => REG_DOUT     <= r_val159;
+             when A_VAL161      => REG_DOUT     <= r_val161;
+             when A_VAL167      => REG_DOUT     <= r_val169;
+             when A_VAL94       => REG_DOUT     <= r_val94;
+
+	     when others        => REG_DOUT   	<= (others => '0');
            end case;
          end if;
        end if;

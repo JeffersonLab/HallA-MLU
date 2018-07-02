@@ -6,7 +6,7 @@
 # VXWORKS=1
 INTELVME=1
 
-MLUDIR=/adaqfs/home/dvcs/IntelCPU/HallA-MLU/driver
+MLUDIR=/adaqfs/home/dvcs/IntelCPU/MLU/driver
 #LOCALDIR=/adaqfs/home/atrig/mlu
 #for compliling on haplix6
 #LOCALDIR=/home/randallm/MLU/driver
@@ -33,9 +33,11 @@ CAEN1495LIB     = ./v1495.so
 
 ifndef MLU_LIB
         MLU_LIB    = ${MLUDIR}/vmelib/lib
+#	MLU_LIB = ${LINUXVME_LIB}	#use same libs as ROC20 ROL build
 endif
 ifndef MLU_INC
-        MLU_INC    = ${MLUDIR}/vmeinc/include
+#        MLU_INC    = ${MLUDIR}/vmeinc/include
+	MLU_INC=${LINUXVME_INC}		#use same includes as roc20 ROL build
 endif
 
 # libs for the client
@@ -45,8 +47,7 @@ LIBS  = ${CAEN1495LIB} ${MLU_LIB}/libjvme.so
 CC                      = gcc
 AR                      = ar
 RANLIB                  = ranlib
-#CFLAGS                  = -m32 -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
-CFLAGS                  = -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
+CFLAGS                  = -m32 -lm -O3 -w -I${MLU_INC} -I. -I/usr/include -L${MLU_LIB} -L. -DJLAB
 CFLAGS                  += -DLINUX -DDAYTIME=\""`date`"\"
 ifdef DEBUG
 CFLAGS                  += -Wall -g

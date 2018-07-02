@@ -17,7 +17,8 @@
 #include <stdio.h>
 #include "v1495.h"
 
-int address=0x520000;
+//int address=0x530000;
+int address=0x130000;
 
 int main(int argc, char *argv[]) {
 
@@ -25,10 +26,12 @@ int main(int argc, char *argv[]) {
 
   int mode, mask;
   FILE *fd;
-  char modefile[]="/root/mlu/modefile";
+//  char modefile[]="/root/mlu/modefile";
   char *strin;
 
   int args_processed = 1;
+
+  unsigned int count_output = 0;
 
   while(args_processed<argc){
     int start_args = args_processed;
@@ -37,23 +40,49 @@ int main(int argc, char *argv[]) {
       printf("v1495: About to write FPGA firmware \n File to be written is: %s \n",argv[args_processed]);
       v1495firmware(address,argv[args_processed],0,0);
       args_processed++;
+
     }else if(strcmp(argv[args_processed],"mode")==0||strcmp(argv[args_processed],"Mode")==0||strcmp(argv[args_processed],"MODE")==0){
       args_processed++;
       printf("v1495: Setting to mode %i and turning on I/O \n", atoi(argv[args_processed]));
       v1495initMlu(address, atoi(argv[args_processed]));
       args_processed++;
+
+    }else if(strcmp(argv[args_processed],"thresh")==0||strcmp(argv[args_processed],"Thresh")==0||strcmp(argv[args_processed],"THRESH")==0){
+      args_processed++;
+      int LFSRid = atoi(argv[args_processed++]);
+      printf("v1495: Setting LFSR #%i trigger threshold to %i \n", LFSRid, atoi(argv[args_processed]));
+      v1495SetTriggerRate(address, LFSRid, atoi(argv[args_processed++]));
+
     }else if(strcmp(argv[args_processed],"off")==0||strcmp(argv[args_processed],"Off")==0||strcmp(argv[args_processed],"OFF")==0){
       args_processed++;
       printf("v1495: Turning off I/O \n");
       v1495turnOff(address);
+
+    }else if(strcmp(argv[args_processed],"sync")==0||strcmp(argv[args_processed],"Sync")==0||strcmp(argv[args_processed],"SYNC")==0){
+      args_processed++;
+      printf("v1495: Resetting Clock Counter \n");
+      v1495ClockCountSync(address);
+
+    }else if(strcmp(argv[args_processed],"lock")==0){
+      args_processed++;
+      printf("Testing Lock/Unlock \n");
+      MLU_lock_test(address);
+
+    }else if(strcmp(argv[args_processed],"trig")==0||strcmp(argv[args_processed],"Trig")==0||strcmp(argv[args_processed],"TRIG")==0){
+      args_processed++;
+      printf("v1495: Reading Clock Counter \n");
+      count_output = v1495ClockCountRead(address);
+      printf("v1495: Clock Counter = %u\n",count_output);
+
     }else if(strcmp(argv[args_processed],"status")==0||strcmp(argv[args_processed],"Status")==0||strcmp(argv[args_processed],"STATUS")==0){
       args_processed++;
       printf("v1495: Reading control registers \n");
       v1495status(address);
     }
+
     if(start_args==args_processed){ //didn't process anything because typo
-//      exit(0);
-      printf("Fail 1\n");
+      printf("v1495: Not a valid option! \n");
+      break;
     }
   }
 
@@ -90,8 +119,7 @@ int main(int argc, char *argv[]) {
   }*/
 
  
-//  exit(0);
-  printf("Fail 2\n");
+  printf("Done\n");
 
 }
 

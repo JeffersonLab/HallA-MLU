@@ -771,8 +771,8 @@ BEGIN
              when A_EIDCODE     => REG_DOUT   	<= X"000" & '0' & E_IDCODE;
              when A_FIDCODE     => REG_DOUT   	<= X"000" & '0' & F_IDCODE;
              
---	     when A_BCM_L	=> REG_DOUT	<=  (15 downto 0); 	--Ask where to read from
---	     when A_BCM_H	=> REG_DOUT	<=  (31 downto 16);	--Ask where to read from
+	     when A_BCM_L	=> REG_DOUT	<=  X"DEAD";	--Place holder value for testing 	
+	     when A_BCM_H	=> REG_DOUT	<=  X"BEEF";
 
              when A_VAL159      => REG_DOUT     <= r_val159;
              when A_VAL161      => REG_DOUT     <= r_val161;

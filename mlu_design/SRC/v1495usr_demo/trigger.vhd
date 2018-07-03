@@ -31,10 +31,10 @@ architecture synthesis of trigger is
 begin
 	P_TRIG : process(i_trig159, i_trig161, i_trig167, i_trig94)
       	begin
-        	F(0) <= i_trig159;
-		F(1) <= i_trig161;
-		F(2) <= i_trig167;
-		F(3) <= i_trig94;
+        	F(0) <= i_trig94;
+		F(1) <= i_trig159;
+		F(2) <= i_trig161;
+		F(3) <= i_trig167;
 
 		F(4) <= '0';
                 F(5) <= '0';

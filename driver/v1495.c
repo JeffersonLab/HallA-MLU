@@ -510,6 +510,53 @@ v1495ClockCountRead(unsigned int address)
   return a_count;
 }
 
+unsigned int
+v1495BCM_ReadCODA()
+{
+	/*
+	 * Return bcm data
+	 */
+
+  	if (!v1495) 
+	{
+    		printf("v1495 not initialized.  must open_vme. \n");
+    		printf(" ... quitting ... \n");
+    		exit(0);
+  	}
+
+  	int mode = 0x0080;    /*trig bit high, all others low*/
+	unsigned short a_bcm_l = 0;
+	unsigned short a_bcm_h = 0;
+	unsigned int a_bcm = 0;
+	
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);     /*twice, to make sure we wait long enough*/
+
+ 	mode = 0x0000;
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);
+
+  	a_bcm_l = v1495Read16(&v1495->abcm_l);
+  	a_bcm_h = v1495Read16(&v1495->abcm_h);
+  	a_bcm = a_bcm_l + (a_bcm_h<<16);
+
+  	return a_bcm;
+
+}
+
+unsigned int
+v1495BCM_Read(unsigned int address)
+{
+	open_vme(address);	
+	
+	a_bcm = v1495BCM_ReadCODA();
+	printf("BCM Value = 0x%x\n\n",a_bcm);
+
+	close_vme();
+
+	return a_bcm;
+}
+
 int
 v1495ClockCountSyncCODA(unsigned int address)
 { 
@@ -757,7 +804,7 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 }
 
 void
-v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, float freq)
+v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, double freq)
 {
 	/* Assigns frequency value to specified LFSR as close
 	 * to specified as possible

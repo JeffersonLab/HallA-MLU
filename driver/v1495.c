@@ -705,6 +705,8 @@ void
 v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 {
 	/* Assigns threshold value to specified LFSR
+	 *
+	 * Assumes Clock Period of 25 ns
 	*/
 
         open_vme(address);
@@ -760,6 +762,8 @@ v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, float freq)
 	/* Assigns frequency value to specified LFSR as close
 	 * to specified as possible
 	 * freq entered in Kilohertz
+	 *
+	 * Assumes Clock Period of 25 ns
 	*/
 
 	if(freq < 0.0)

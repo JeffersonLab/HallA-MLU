@@ -799,6 +799,7 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 	printf("Probability of trigger is: %f%s", ((float)thresh/65536.0)*100.0, "%\n");
 	printf("Average Frequency is: %f%s", (float)thresh/(16.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
 
+        printf("LFSRadd = 0x%x\n",LFSRadd);	
 	vmeWrite16(LFSRadd, thresh);
         close_vme();
 }
@@ -826,7 +827,8 @@ v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, double freq)
 
 	printf("Setting to closest possible frequency...\n");
 
-	unsigned short n = round(freq * 16.0 * 65536.0 * .000000025 * 1000.0);
+        double nfloat = freq * 16.0 * 65536.0 * .000000025 * 1000.0;
+	unsigned short n = round(nfloat);
 	v1495SetTriggerRate(address, LFSR, n);
 
 }
@@ -957,8 +959,8 @@ v1495firmware(unsigned int baseaddr, char *filename, int page, int user_vme)
       }
       for(i=0; i<PAGE_SIZE; i++)
       {
-	        printf("pdr[%d] = 0x%x  =?=  0x%x  pdw?\n",
-		  i,pdr[i],pdw[i]); 
+	//        printf("pdr[%d] = 0x%x  =?=  0x%x  pdw?\n",
+	//	  i,pdr[i],pdw[i]); 
    //     if(pdr[i] != pdw[i])
    //     {
    //       printf("[%3d] written 0x%02x, read back 0x%02x",i,pdw[i],pdr[i]);

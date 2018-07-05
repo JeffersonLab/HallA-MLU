@@ -15,10 +15,10 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "v1495.h"
 
-//int address=0x530000;
-int address=0x130000;
+int address=0x530000;
 
 int main(int argc, char *argv[]) {
 
@@ -52,6 +52,14 @@ int main(int argc, char *argv[]) {
       int LFSRid = atoi(argv[args_processed++]);
       printf("v1495: Setting LFSR #%i trigger threshold to %i \n", LFSRid, atoi(argv[args_processed]));
       v1495SetTriggerRate(address, LFSRid, atoi(argv[args_processed++]));
+
+    }else if(strcmp(argv[args_processed],"freq")==0||strcmp(argv[args_processed],"Freq")==0||strcmp(argv[args_processed],"FREQ")==0){
+      args_processed++;
+      int LFSRid = atoi(argv[args_processed++]);
+      printf("v1495: Setting LFSR #%i trigger frequency to %s \n", LFSRid, argv[args_processed]);
+      double freq = atof(argv[args_processed]);
+      v1495SetTriggerFrequency(address, LFSRid, freq);
+      args_processed++;
 
     }else if(strcmp(argv[args_processed],"off")==0||strcmp(argv[args_processed],"Off")==0||strcmp(argv[args_processed],"OFF")==0){
       args_processed++;

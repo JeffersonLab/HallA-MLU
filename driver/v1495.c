@@ -549,7 +549,7 @@ v1495BCM_Read(unsigned int address)
 {
 	open_vme(address);	
 	
-	a_bcm = v1495BCM_ReadCODA();
+	unsigned int a_bcm = v1495BCM_ReadCODA();
 	printf("BCM Value = 0x%x\n\n",a_bcm);
 
 	close_vme();

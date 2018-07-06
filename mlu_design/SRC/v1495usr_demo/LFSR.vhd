@@ -57,7 +57,7 @@ begin
 				r_Count <= r_Count + 1;
 				r_State <= '0';
 			else
-				r_Count <= 1;
+				r_Count <= 0;
 				r_State <= '1';
 			end if;
 

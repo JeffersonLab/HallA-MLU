@@ -797,7 +797,7 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 	}
 	printf("%d\n", thresh);
 	printf("Probability of trigger is: %f%s", ((float)thresh/65536.0)*100.0, "%\n");
-	printf("Average Frequency is: %f%s", (float)thresh/(16.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
+	printf("Average Frequency is: %f%s", (float)thresh/(17.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
 
         printf("LFSRadd = 0x%x\n",LFSRadd);	
 	vmeWrite16(LFSRadd, thresh);
@@ -819,15 +819,15 @@ v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, double freq)
 		printf("Negative Frequencies are invalid.\nFrequency set to 0\n");
 		freq = 0.0;
 	}
-	else if (freq > 2499.9427)
+	else if (freq > 2352.9)
 	{
 		printf("Frequency exceeds allowed limits.\nFrequency set to maximum allowed.\n");
-		freq = 2499.943;
+		freq = 2352.905;
 	}
 
 	printf("Setting to closest possible frequency...\n");
 
-        double nfloat = freq * 16.0 * 65536.0 * .000000025 * 1000.0;
+        double nfloat = freq * 17.0 * 65536.0 * .000000025 * 1000.0;
 	unsigned short n = round(nfloat);
 	v1495SetTriggerRate(address, LFSR, n);
 

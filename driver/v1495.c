@@ -511,7 +511,7 @@ v1495ClockCountRead(unsigned int address)
 }
 
 unsigned int
-v1495BCM_ReadCODA()
+v1495BCM_ReadCODA(unsigned int id)
 {
 	/*
 	 * Return bcm data
@@ -523,6 +523,13 @@ v1495BCM_ReadCODA()
     		printf(" ... quitting ... \n");
     		exit(0);
   	}
+
+	if (id != 0 && id != 1)
+	{
+		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+		return 0xBEEFDEAD;
+
+	}
 
   	int mode = 0x0080;    /*trig bit high, all others low*/
 	unsigned short a_bcm_l = 0;
@@ -536,20 +543,35 @@ v1495BCM_ReadCODA()
   	v1495Write16(&v1495->mode, mode);
   	v1495Write16(&v1495->mode, mode);
 
-  	a_bcm_l = v1495Read16(&v1495->abcm_l);
-  	a_bcm_h = v1495Read16(&v1495->abcm_h);
-  	a_bcm = a_bcm_l + (a_bcm_h<<16);
+	switch(id)
+	{
+		case 0:
+  			a_bcm_l = v1495Read16(&v1495->abcmu_l);
+  			a_bcm_h = v1495Read16(&v1495->abcmu_h);
+  			a_bcm = a_bcm_l + (a_bcm_h<<16);
+			break;
 
+		case 1:
+                        a_bcm_l = v1495Read16(&v1495->abcmd_l);
+                        a_bcm_h = v1495Read16(&v1495->abcmd_h);
+                        a_bcm = a_bcm_l + (a_bcm_h<<16);
+			break;
+
+		default:
+			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+                	a_bcm = 0xBEEFDEAD;
+
+	}
   	return a_bcm;
 
 }
 
 unsigned int
-v1495BCM_Read(unsigned int address)
+v1495BCM_Read(unsigned int address, unsigned int id)
 {
 	open_vme(address);	
 	
-	unsigned int a_bcm = v1495BCM_ReadCODA();
+	unsigned int a_bcm = v1495BCM_ReadCODA(id);
 	printf("BCM Value = 0x%x\n\n",a_bcm);
 
 	close_vme();
@@ -797,7 +819,7 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 	}
 	printf("%d\n", thresh);
 	printf("Probability of trigger is: %f%s", ((float)thresh/65536.0)*100.0, "%\n");
-	printf("Average Frequency is: %f%s", (float)thresh/(16.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
+	printf("Average Frequency is: %f%s", (float)thresh/(17.0 * 65536.0 * .000000025 * 1000.0), " Kilohertz\n");
 
         printf("LFSRadd = 0x%x\n",LFSRadd);	
 	vmeWrite16(LFSRadd, thresh);
@@ -819,15 +841,15 @@ v1495SetTriggerFrequency(unsigned int address, unsigned short LFSR, double freq)
 		printf("Negative Frequencies are invalid.\nFrequency set to 0\n");
 		freq = 0.0;
 	}
-	else if (freq > 2499.9427)
+	else if (freq > 2352.9)
 	{
 		printf("Frequency exceeds allowed limits.\nFrequency set to maximum allowed.\n");
-		freq = 2499.943;
+		freq = 2352.905;
 	}
 
 	printf("Setting to closest possible frequency...\n");
 
-        double nfloat = freq * 16.0 * 65536.0 * .000000025 * 1000.0;
+        double nfloat = freq * 17.0 * 65536.0 * .000000025 * 1000.0;
 	unsigned short n = round(nfloat);
 	v1495SetTriggerRate(address, LFSR, n);
 

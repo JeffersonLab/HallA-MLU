@@ -58,12 +58,14 @@ typedef struct v1495_struct
   /*0x104E*/ volatile unsigned short aval161;
   /*0x1050*/ volatile unsigned short aval167;
   /*0x1052*/ volatile unsigned short aval94;
-  /*0x1054*/ volatile unsigned short abcm_l;
-  /*0x1056*/ volatile unsigned short abcm_h;
+  /*0x1054*/ volatile unsigned short abcmu_l;
+  /*0x1056*/ volatile unsigned short abcmu_h;
+  /*0x1058*/ volatile unsigned short abcmd_l;
+  /*0x1060*/ volatile unsigned short abcmd_h;
 
   /* end of COIN_REFERENCE */ 
 
-  /*0x1058*/ volatile unsigned char data[0x8000 - 0x1058];    /* R/W  skip ahead to 'bridge fpga' address space*/
+  /*0x1062*/ volatile unsigned char data[0x8000 - 0x1062];    /* R/W  skip ahead to 'bridge fpga' address space*/
   /*0x8000*/ volatile unsigned short control;        /* R/W */
   /*0x8002*/ volatile unsigned short status;         /* R */
   /*0x8004*/ volatile unsigned short intLevel;       /* R/W */

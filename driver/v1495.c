@@ -511,7 +511,7 @@ v1495ClockCountRead(unsigned int address)
 }
 
 unsigned int
-v1495BCM_ReadCODA()
+v1495BCM_ReadCODA(unsigned int id)
 {
 	/*
 	 * Return bcm data
@@ -523,6 +523,13 @@ v1495BCM_ReadCODA()
     		printf(" ... quitting ... \n");
     		exit(0);
   	}
+
+	if (id != 0 && id != 1)
+	{
+		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+		return 0xBEEFDEAD;
+
+	}
 
   	int mode = 0x0080;    /*trig bit high, all others low*/
 	unsigned short a_bcm_l = 0;
@@ -536,20 +543,35 @@ v1495BCM_ReadCODA()
   	v1495Write16(&v1495->mode, mode);
   	v1495Write16(&v1495->mode, mode);
 
-  	a_bcm_l = v1495Read16(&v1495->abcm_l);
-  	a_bcm_h = v1495Read16(&v1495->abcm_h);
-  	a_bcm = a_bcm_l + (a_bcm_h<<16);
+	switch(id)
+	{
+		case 0:
+  			a_bcm_l = v1495Read16(&v1495->abcmu_l);
+  			a_bcm_h = v1495Read16(&v1495->abcmu_h);
+  			a_bcm = a_bcm_l + (a_bcm_h<<16);
+			break;
 
+		case 1:
+                        a_bcm_l = v1495Read16(&v1495->abcmd_l);
+                        a_bcm_h = v1495Read16(&v1495->abcmd_h);
+                        a_bcm = a_bcm_l + (a_bcm_h<<16);
+			break;
+
+		default:
+			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+                	a_bcm = 0xBEEFDEAD;
+
+	}
   	return a_bcm;
 
 }
 
 unsigned int
-v1495BCM_Read(unsigned int address)
+v1495BCM_Read(unsigned int address, unsigned int id)
 {
 	open_vme(address);	
 	
-	unsigned int a_bcm = v1495BCM_ReadCODA();
+	unsigned int a_bcm = v1495BCM_ReadCODA(id);
 	printf("BCM Value = 0x%x\n\n",a_bcm);
 
 	close_vme();

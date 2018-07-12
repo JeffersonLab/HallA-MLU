@@ -205,6 +205,18 @@ ARCHITECTURE rtl OF coin_reference IS
 	  	);
 	end component;	
 
+	component bcm_integrator is
+	        port
+        	(
+        	        i_data          : in std_logic_vector(31 downto 0);     --Data Input
+        	        i_DV            : in std_logic;                         --Data Valid
+        	        i_read          : in std_logic;                         --Read Command
+        	        i_reset         : in std_logic;                         --Reset Command
+	
+        	        o_sum           : out std_logic_vector(63 downto 0)     --Data Output
+	        );
+	end component;
+
 -- Registers
 signal A_STATUS   : std_logic_vector(31 downto 0); -- R
 signal B_STATUS   : std_logic_vector(31 downto 0); -- R
@@ -226,6 +238,10 @@ signal SCRATCH    : std_logic_vector(15 downto 0); -- R/W
 signal PDL_CONTROL: std_logic_vector(15 downto 0); -- W
 signal PDL_DATA   : std_logic_vector(15 downto 0); -- R/W
 signal MLU_COUNT  : std_logic_vector(31 downto 0); -- R
+
+--Registers containing bcm data
+signal A_BCMu_DATA	: std_logic_vector(63 downto 0); --R
+signal A_BCMd_DATA	: std_logic_vector(63 downto 0); --R
 
 -- Register Bits
 -- MODE Register
@@ -467,6 +483,30 @@ BEGIN
    		i_Read 		=> MLU_COUNT_TRIG,	--MODE(7)
    		o_Count 	=> MLU_COUNT
    	);
+
+	bcmu_integrator_inst: bcm_integrator
+	port map
+	(
+		i_data		=> std_logic_vector(to_unsigned(1, 64)),
+		i_DV		=> E(0),
+		i_read		=> MLU_COUNT_TRIG,	--MODE(7)
+		i_reset		=> MLU_COUNT_SYNC,	--MODE(6)
+
+		o_sum		=> A_BCMu_DATA
+
+	);
+
+        bcmd_integrator_inst: bcm_integrator
+        port map
+        (
+                i_data          => std_logic_vector(to_unsigned(1, 64)),
+                i_DV            => E(0),
+                i_read          => MLU_COUNT_TRIG,      --MODE(7)
+                i_reset         => MLU_COUNT_SYNC,      --MODE(6)
+
+                o_sum           => A_BCMd_DATA
+
+        );
 
 
    -- Select Port C driver based on a configuration bit.
@@ -771,10 +811,15 @@ BEGIN
              when A_EIDCODE     => REG_DOUT   	<= X"000" & '0' & E_IDCODE;
              when A_FIDCODE     => REG_DOUT   	<= X"000" & '0' & F_IDCODE;
              
-	     when A_BCMu_L	=> REG_DOUT	<=  X"DEAD";	--Place holder value for testing 	
-	     when A_BCMu_H	=> REG_DOUT	<=  X"BEEF";
-	     when A_BCMd_L	=> REG_DOUT	<=  X"DEAD";
-	     when A_BCMd_H	=> REG_DOUT	<=  X"BEEF";
+	     when A_BCMu_LL	=> REG_DOUT	<= A_BCMu_DATA(15 downto 0);	
+	     when A_BCMu_ML	=> REG_DOUT	<= A_BCMu_DATA(31 downto 16);
+	     when A_BCMu_MH	=> REG_DOUT	<= A_BCMu_DATA(47 downto 32);
+	     when A_BCMu_HH	=> REG_DOUT	<= A_BCMu_DATA(63 downto 48);
+	     
+             when A_BCMd_LL     => REG_DOUT     <= A_BCMd_DATA(15 downto 0);
+             when A_BCMd_ML     => REG_DOUT     <= A_BCMd_DATA(31 downto 16);
+             when A_BCMd_MH     => REG_DOUT     <= A_BCMd_DATA(47 downto 32);
+             when A_BCMd_HH     => REG_DOUT     <= A_BCMd_DATA(63 downto 48);
 
              when A_VAL159      => REG_DOUT     <= r_val159;
              when A_VAL161      => REG_DOUT     <= r_val161;

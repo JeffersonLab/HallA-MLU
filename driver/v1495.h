@@ -58,10 +58,17 @@ typedef struct v1495_struct
   /*0x104E*/ volatile unsigned short aval161;
   /*0x1050*/ volatile unsigned short aval167;
   /*0x1052*/ volatile unsigned short aval94;
-  /*0x1054*/ volatile unsigned short abcmu_l;
-  /*0x1056*/ volatile unsigned short abcmu_h;
-  /*0x1058*/ volatile unsigned short abcmd_l;
-  /*0x1060*/ volatile unsigned short abcmd_h;
+
+  /*0x1054*/ volatile unsigned short abcmu_ll;
+  /*0x1056*/ volatile unsigned short abcmu_ml;
+  /*0x1054*/ volatile unsigned short abcmu_mh;
+  /*0x1056*/ volatile unsigned short abcmu_hh;
+
+  /*0x1054*/ volatile unsigned short abcmd_ll;
+  /*0x1056*/ volatile unsigned short abcmd_ml;
+  /*0x1054*/ volatile unsigned short abcmd_mh;
+  /*0x1056*/ volatile unsigned short abcmd_hh;
+
 
   /* end of COIN_REFERENCE */ 
 

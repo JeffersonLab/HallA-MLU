@@ -532,9 +532,12 @@ v1495BCM_ReadCODA(unsigned int id)
 	}
 
   	int mode = 0x0080;    /*trig bit high, all others low*/
-	unsigned short a_bcm_l = 0;
-	unsigned short a_bcm_h = 0;
-	unsigned int a_bcm = 0;
+	unsigned short a_bcm_ll = 0;
+	unsigned short a_bcm_ml = 0;
+        unsigned short a_bcm_ll = 0;
+        unsigned short a_bcm_ml = 0;
+
+	unsigned long a_bcm = 0;
 	
   	v1495Write16(&v1495->mode, mode);
   	v1495Write16(&v1495->mode, mode);     /*twice, to make sure we wait long enough*/
@@ -546,20 +549,26 @@ v1495BCM_ReadCODA(unsigned int id)
 	switch(id)
 	{
 		case 0:
-  			a_bcm_l = v1495Read16(&v1495->abcmu_l);
-  			a_bcm_h = v1495Read16(&v1495->abcmu_h);
-  			a_bcm = a_bcm_l + (a_bcm_h<<16);
+  			a_bcm_ll = v1495Read16(&v1495->abcmu_ll);
+  			a_bcm_ml = v1495Read16(&v1495->abcmu_ml);
+                        a_bcm_mh = v1495Read16(&v1495->abcmu_mh);
+                        a_bcm_hh = v1495Read16(&v1495->abcmu_hh);
+
+  			a_bcm = a_bcm_ll + (a_bcm_ml<<16) + (a_bcm_mh<<32) + (a_bcm_hh<<48);
 			break;
 
 		case 1:
-                        a_bcm_l = v1495Read16(&v1495->abcmd_l);
-                        a_bcm_h = v1495Read16(&v1495->abcmd_h);
-                        a_bcm = a_bcm_l + (a_bcm_h<<16);
+                        a_bcm_ll = v1495Read16(&v1495->abcmd_ll);
+                        a_bcm_ml = v1495Read16(&v1495->abcmd_ml);
+                        a_bcm_mh = v1495Read16(&v1495->abcmd_mh);
+                        a_bcm_hh = v1495Read16(&v1495->abcmd_hh);
+
+                        a_bcm = a_bcm_ll + (a_bcm_ml<<16) + (a_bcm_mh<<32) + (a_bcm_hh<<48);
 			break;
 
 		default:
 			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-                	a_bcm = 0xBEEFDEAD;
+                	a_bcm = 0xBEEFDEADBEEFDEAD;
 
 	}
   	return a_bcm;

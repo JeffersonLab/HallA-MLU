@@ -21,7 +21,7 @@ PACKAGE v1495pkg IS
 -- Constants
 
 -- DEMO Revision
-constant REVISION : std_logic_vector(15 downto 0) := X"0211";
+constant REVISION : std_logic_vector(15 downto 0) := X"0212";
 
 -- Expansion Mezzanine Type ID-Codes
 constant A395A : std_logic_vector(2 downto 0) := "000"; -- 32CH IN LVDS/ECL INTERFACE
@@ -75,13 +75,17 @@ constant A_VAL161       : std_logic_vector(15 downto 0) := X"104E";
 constant A_VAL167       : std_logic_vector(15 downto 0) := X"1050";
 constant A_VAL94        : std_logic_vector(15 downto 0) := X"1052";
 
---32bit output
+--64bit output
 
-constant A_BCMu_L	: std_logic_vector(15 downto 0) := X"1054";
-constant A_BCMu_H	: std_logic_vector(15 downto 0) := X"1056";
+constant A_BCMu_LL	: std_logic_vector(15 downto 0) := X"1054";
+constant A_BCMu_ML	: std_logic_vector(15 downto 0) := X"1056";
+constant A_BCMu_MH      : std_logic_vector(15 downto 0) := X"1058";
+constant A_BCMu_HH      : std_logic_vector(15 downto 0) := X"105A";
 
-constant A_BCMd_L       : std_logic_vector(15 downto 0) := X"1058";
-constant A_BCMd_H       : std_logic_vector(15 downto 0) := X"1060";
+constant A_BCMd_LL      : std_logic_vector(15 downto 0) := X"105C";
+constant A_BCMd_ML      : std_logic_vector(15 downto 0) := X"105E";
+constant A_BCMd_MH      : std_logic_vector(15 downto 0) := X"1060";
+constant A_BCMd_HH      : std_logic_vector(15 downto 0) := X"1062";
 
 
 END v1495pkg;

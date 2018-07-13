@@ -28,7 +28,7 @@ begin
 
 	p_Add	: process(i_DV, i_reset) is
 	begin
-		if rising_edge(i_reset) then
+		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
 	
 		elsif rising_edge(i_DV) then

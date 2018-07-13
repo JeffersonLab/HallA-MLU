@@ -40,7 +40,7 @@ begin
 
 	p_Read	: process(i_read) is
 	begin
-		if i_read = '1' and i_read`event then
+		if i_read = '1' and i_read'event then
 			o_sum <= std_logic_vector(r_sum);
 			
 		end if;

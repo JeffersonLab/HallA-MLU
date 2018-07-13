@@ -14,6 +14,7 @@ entity bcm_integrator is
 		i_DV		: in std_logic;				--Data Valid
 		i_read		: in std_logic;				--Read Command
 		i_reset		: in std_logic;				--Reset Command
+		i_Clk		: in std_logic;				--Clock
 
 		o_sum		: out std_logic_vector(63 downto 0)	--Data Output
 	);
@@ -28,18 +29,18 @@ begin
 
 	p_Add	: process(i_DV, i_reset) is
 	begin
+
 		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
 	
-		elsif rising_edge(i_DV) then
+		elsif i_DV = '1' then
 			r_sum	<= r_sum + unsigned(i_data);
-			
 		end if;
 	end process p_Add;
 
 	p_Read	: process(i_read) is
 	begin
-		if rising_edge(i_read) then
+		if i_read = '1' and i_read`event then
 			o_sum <= std_logic_vector(r_sum);
 			
 		end if;

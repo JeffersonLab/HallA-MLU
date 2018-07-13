@@ -484,10 +484,10 @@ BEGIN
    		o_Count 	=> MLU_COUNT
    	);
 
-	bcmu_integrator_inst: bcm_integrator
+	bcmu_integrator_inst1: bcm_integrator
 	port map
 	(
-		i_data		=> std_logic_vector(to_unsigned(1, 64)),
+		i_data		=> std_logic_vector(to_unsigned(1, 32)),
 		i_DV		=> E(0),
 		i_read		=> MLU_COUNT_TRIG,	--MODE(7)
 		i_reset		=> MLU_COUNT_SYNC,	--MODE(6)
@@ -496,10 +496,10 @@ BEGIN
 
 	);
 
-        bcmd_integrator_inst: bcm_integrator
+        bcmd_integrator_inst2: bcm_integrator
         port map
         (
-                i_data          => std_logic_vector(to_unsigned(1, 64)),
+                i_data          => std_logic_vector(to_unsigned(1, 32)),
                 i_DV            => E(0),
                 i_read          => MLU_COUNT_TRIG,      --MODE(7)
                 i_reset         => MLU_COUNT_SYNC,      --MODE(6)

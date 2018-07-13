@@ -534,8 +534,8 @@ v1495BCM_ReadCODA(unsigned int id)
   	int mode = 0x0080;    /*trig bit high, all others low*/
 	unsigned short a_bcm_ll = 0;
 	unsigned short a_bcm_ml = 0;
-        unsigned short a_bcm_ll = 0;
-        unsigned short a_bcm_ml = 0;
+        unsigned short a_bcm_mh = 0;
+        unsigned short a_bcm_hh = 0;
 
 	unsigned long a_bcm = 0;
 	

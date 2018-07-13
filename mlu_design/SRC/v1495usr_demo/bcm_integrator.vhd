@@ -33,14 +33,14 @@ begin
 		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
 	
-		elsif i_DV = '1' then
+		elsif rising_edge(i_DV) then
 			r_sum	<= r_sum + unsigned(i_data);
 		end if;
 	end process p_Add;
 
 	p_Read	: process(i_read) is
 	begin
-		if i_read = '1' and i_read'event then
+		if rising_edge(i_read) then
 			o_sum <= std_logic_vector(r_sum);
 			
 		end if;

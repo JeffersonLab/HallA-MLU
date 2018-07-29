@@ -27,8 +27,9 @@ end entity count32;
 
 architecture rtl of count32 is
 
-  signal r_pointRead : unsigned(3 downto 0) := (others => '0');
-  signal r_pointWrite : unsigned(3 downto 0) := (others => '0');
+  signal r_Full : std_logic_vector (3 downto 1) := (others => '0');
+  signal r_pointRead : unsigned(1 downto 0) := (others => '0');
+  signal r_pointWrite : unsigned(1 downto 0) := (others => '0');
   signal r_Count : unsigned (63 downto 0) := (others => '0');
   signal r_Output0 : unsigned (31 downto 0) := (others => '0');
   signal r_Output1 : unsigned (31 downto 0) := (others => '0');
@@ -53,22 +54,21 @@ begin
         r_OldTrig <= r_Trig;
         r_Trig <= i_Trig;
         if (r_OldTrig = '0' and r_Trig = '1') then
-          if (r_pointWrite = 3) then
-             r_pointWrite <= to_unsigned(0,2);
-          else
-             r_pointWrite <= r_pointWrite + 1
-          end if;
-          if (r_pointWrite = '0') then
+          if (r_pointWrite = 0 and r_pointRead /= 1) then
             r_Output0 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1
           end if;
-          if (r_pointWrite = '1') then
+          if (r_pointWrite = 1 and r_pointRead /= 2) then
             r_Output1 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1
           end if;
-          if (r_pointWrite = '2') then
+          if (r_pointWrite = 2 and r_pointRead /= 3) then
             r_Output2 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1
           end if;
-          if (r_pointWrite = '3') then
+          if (r_pointWrite = 3 and r_pointRead /= 0) then
             r_Output3 <= r_Count(31 downto 0);
+            r_pointWrite <= to_unsigned(0,2);
           end if;
         end if;
       end if;

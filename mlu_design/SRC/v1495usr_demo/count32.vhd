@@ -18,7 +18,7 @@ entity count32 is
     i_Trig : in std_logic;
 
     --Output Word
-    o_Count : out std_logic_vector (31 downto 0) := (others => '0')
+    o_Count : out unsigned (31 downto 0) := (others => '0')
 
     );
 end entity count32;
@@ -37,6 +37,8 @@ architecture rtl of count32 is
   signal r_Buffer1 : unsigned (31 downto 0) := (others => '0');
   signal r_Buffer2 : unsigned (31 downto 0) := (others => '0');
   signal r_Buffer3 : unsigned (31 downto 0) := (others => '0');
+  signal r_OldTrig : std_logic := '0';
+  signal r_Trig : std_logic := '0';
   signal r_OldRead : std_logic := '0';
   signal r_Read : std_logic := '0';
   signal r_OldClk : std_logic := '0';
@@ -57,16 +59,16 @@ begin
         r_Trig <= i_Trig;
         r_OldRead <= r_Read;
         r_Read <= i_Read;
-        if (r_pointRead = '0') then
+        if (r_pointRead = 0) then
           r_Output <= r_Buffer0;
         end if;
-        if (r_pointRead = '1') then
+        if (r_pointRead = 1) then
           r_Output <= r_Buffer1;
         end if;
-        if (r_pointRead = '2') then
+        if (r_pointRead = 2) then
           r_Output <= r_Buffer2;
         end if;
-        if (r_pointRead = '3') then
+        if (r_pointRead = 3) then
           r_Output <= r_Buffer3;
         end if;
 
@@ -77,28 +79,28 @@ begin
 	--Read rising edge only
         elsif (r_OldRead = '0' and r_Read = '1' and r_Inhibit_Read = '0') then
           r_Inhibit_Write <= '0';  --We're reading out something, so enable writing
-          if (r_pointRead = '0') then
+          if (r_pointRead = 0) then
             r_pointRead <= r_pointRead + 1;
             r_Buffer0 <= to_unsigned(0,32);
             if (r_pointWrite = 1) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
-          if (r_pointRead = '1') then
+          if (r_pointRead = 1) then
             r_pointRead <= r_pointRead + 1;
             r_Buffer1 <= to_unsigned(0,32);
             if (r_pointWrite = 2) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
-          if (r_pointRead = '2') then
+          if (r_pointRead = 2) then
             r_pointRead <= r_pointRead + 1;
             r_Buffer2 <= to_unsigned(0,32);
             if (r_pointWrite = 3) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
-          if (r_pointRead = '3') then
+          if (r_pointRead = 3) then
             r_pointRead <= r_pointRead + 1;
             r_Buffer3 <= to_unsigned(0,32);
             if (r_pointWrite = 0) then
@@ -146,10 +148,10 @@ begin
   begin
     if rising_edge(i_LCLK) then
       if i_Reset = '1' then
-        o_Count <= std_logic_vector(to_unsigned(0,32));
+        o_Count <= to_unsigned(0,32);
         r_Count <= to_unsigned(0,64);
       else
-        o_Count <= std_logic_vector(r_Output);
+        o_Count <= r_Output;
 --        o_Count <= X"DEADBEEF";
         r_OldClk <= r_Clk;
         r_Clk <= i_Clk;

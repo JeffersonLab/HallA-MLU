@@ -27,16 +27,19 @@ end entity count32;
 
 architecture rtl of count32 is
 
+  type buff_array is array (0 to 3) of unsigned(31 downto 0);
+  signal r_Buffer : buff_array := (others => to_unsigned(0,32));
+
   signal r_Inhibit_Write : std_logic := '0';
   signal r_Inhibit_Read : std_logic := '0';
   signal r_pointRead : unsigned(1 downto 0) := (others => '0');
   signal r_pointWrite : unsigned(1 downto 0) := (others => '0');
   signal r_Count : unsigned (63 downto 0) := (others => '0');
   signal r_Output : unsigned (31 downto 0) := (others => '0');
-  signal r_Buffer0 : unsigned (31 downto 0) := (others => '0');
-  signal r_Buffer1 : unsigned (31 downto 0) := (others => '0');
-  signal r_Buffer2 : unsigned (31 downto 0) := (others => '0');
-  signal r_Buffer3 : unsigned (31 downto 0) := (others => '0');
+--  signal r_Buffer0 : unsigned (31 downto 0) := (others => '0');
+--  signal r_Buffer1 : unsigned (31 downto 0) := (others => '0');
+--  signal r_Buffer2 : unsigned (31 downto 0) := (others => '0');
+--  signal r_Buffer3 : unsigned (31 downto 0) := (others => '0');
   signal r_OldTrig : std_logic := '0';
   signal r_Trig : std_logic := '0';
   signal r_OldRead : std_logic := '0';
@@ -50,27 +53,16 @@ begin
   begin
     if rising_edge(i_LCLK) then
       if i_Reset = '1' then
-        r_Buffer0 <= to_unsigned(0,32);
-        r_Buffer1 <= to_unsigned(0,32);
-        r_Buffer2 <= to_unsigned(0,32);
-        r_Buffer3 <= to_unsigned(0,32);
+        r_Buffer(0) <= to_unsigned(0,32);
+        r_Buffer(1) <= to_unsigned(0,32);
+        r_Buffer(2) <= to_unsigned(0,32);
+        r_Buffer(3) <= to_unsigned(0,32);
       else
         r_OldTrig <= r_Trig;
         r_Trig <= i_Trig;
         r_OldRead <= r_Read;
         r_Read <= i_Read;
-        if (r_pointRead = 0) then
-          r_Output <= r_Buffer0;
-        end if;
-        if (r_pointRead = 1) then
-          r_Output <= r_Buffer1;
-        end if;
-        if (r_pointRead = 2) then
-          r_Output <= r_Buffer2;
-        end if;
-        if (r_pointRead = 3) then
-          r_Output <= r_Buffer3;
-        end if;
+        r_Output <= r_Buffer(to_integer(r_pointRead));
 
         --Read and Trigger rising edges in same clock cycle
         if (r_OldRead = '0' and r_Read = '1' and r_OldTrig = '0' and r_Trig = '1') then
@@ -81,28 +73,28 @@ begin
           r_Inhibit_Write <= '0';  --We're reading out something, so enable writing
           if (r_pointRead = 0) then
             r_pointRead <= r_pointRead + 1;
-            r_Buffer0 <= to_unsigned(0,32);
+            r_Buffer(0) <= to_unsigned(0,32);
             if (r_pointWrite = 1) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
           if (r_pointRead = 1) then
             r_pointRead <= r_pointRead + 1;
-            r_Buffer1 <= to_unsigned(0,32);
+            r_Buffer(1) <= to_unsigned(0,32);
             if (r_pointWrite = 2) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
           if (r_pointRead = 2) then
             r_pointRead <= r_pointRead + 1;
-            r_Buffer2 <= to_unsigned(0,32);
+            r_Buffer(2) <= to_unsigned(0,32);
             if (r_pointWrite = 3) then
               r_Inhibit_Read <= '1';
             end if;
           end if;
           if (r_pointRead = 3) then
             r_pointRead <= r_pointRead + 1;
-            r_Buffer3 <= to_unsigned(0,32);
+            r_Buffer(3) <= to_unsigned(0,32);
             if (r_pointWrite = 0) then
               r_Inhibit_Read <= '1';
             end if;
@@ -112,28 +104,28 @@ begin
         elsif (r_OldTrig = '0' and r_Trig = '1' and r_Inhibit_Write = '0') then
           r_Inhibit_Read <= '0';  --We're writing new info, so enable reading
           if (r_pointWrite = 0) then
-            r_Buffer0 <= r_Count(31 downto 0);
+            r_Buffer(0) <= r_Count(31 downto 0);
             r_pointWrite <= r_pointWrite + 1;
             if (r_pointRead = 1) then
               r_Inhibit_Write <= '1';
             end if;
           end if;
           if (r_pointWrite = 1) then
-            r_Buffer1 <= r_Count(31 downto 0);
+            r_Buffer(1) <= r_Count(31 downto 0);
             r_pointWrite <= r_pointWrite + 1;
             if (r_pointRead = 2) then
               r_Inhibit_Write <= '1';
             end if;
           end if;
           if (r_pointWrite = 2) then
-            r_Buffer2 <= r_Count(31 downto 0);
+            r_Buffer(2) <= r_Count(31 downto 0);
             r_pointWrite <= r_pointWrite + 1;
             if (r_pointRead = 3) then
               r_Inhibit_Write <= '1';
             end if;
           end if;
           if (r_pointWrite = 3) then
-            r_Buffer3 <= r_Count(31 downto 0);
+            r_Buffer(3) <= r_Count(31 downto 0);
             r_pointWrite <= to_unsigned(0,2);
             if (r_pointRead = 0) then
               r_Inhibit_Write <= '1';

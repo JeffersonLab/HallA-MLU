@@ -17,7 +17,7 @@ entity count32 is
     i_Read : in std_logic;
     i_Trig : in std_logic;
 
-    --Output Bit
+    --Output Word
     o_Count : out std_logic_vector (31 downto 0) := (others => '0')
 
     );
@@ -27,14 +27,16 @@ end entity count32;
 
 architecture rtl of count32 is
 
-  signal r_Full : std_logic_vector (3 downto 1) := (others => '0');
+  signal r_Inhibit_Write : std_logic := '0';
+  signal r_Inhibit_Read : std_logic := '0';
   signal r_pointRead : unsigned(1 downto 0) := (others => '0');
   signal r_pointWrite : unsigned(1 downto 0) := (others => '0');
   signal r_Count : unsigned (63 downto 0) := (others => '0');
-  signal r_Output0 : unsigned (31 downto 0) := (others => '0');
-  signal r_Output1 : unsigned (31 downto 0) := (others => '0');
-  signal r_Output2 : unsigned (31 downto 0) := (others => '0');
-  signal r_Output3 : unsigned (31 downto 0) := (others => '0');
+  signal r_Output : unsigned (31 downto 0) := (others => '0');
+  signal r_Buffer0 : unsigned (31 downto 0) := (others => '0');
+  signal r_Buffer1 : unsigned (31 downto 0) := (others => '0');
+  signal r_Buffer2 : unsigned (31 downto 0) := (others => '0');
+  signal r_Buffer3 : unsigned (31 downto 0) := (others => '0');
   signal r_OldRead : std_logic := '0';
   signal r_Read : std_logic := '0';
   signal r_OldClk : std_logic := '0';
@@ -42,47 +44,103 @@ architecture rtl of count32 is
 
 begin
 
-  p_Trigger : process(i_LCLK) is
+  p_ReadWrite : process(i_LCLK) is
   begin
     if rising_edge(i_LCLK) then
       if i_Reset = '1' then
-        r_Output0 <= to_unsigned(0,32);
-        r_Output1 <= to_unsigned(0,32);
-        r_Output2 <= to_unsigned(0,32);
-        r_Output3 <= to_unsigned(0,32);
+        r_Buffer0 <= to_unsigned(0,32);
+        r_Buffer1 <= to_unsigned(0,32);
+        r_Buffer2 <= to_unsigned(0,32);
+        r_Buffer3 <= to_unsigned(0,32);
       else
         r_OldTrig <= r_Trig;
         r_Trig <= i_Trig;
-        if (r_OldTrig = '0' and r_Trig = '1') then
-          if (r_pointWrite = 0 and r_pointRead /= 1) then
-            r_Output0 <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1
+        r_OldRead <= r_Read;
+        r_Read <= i_Read;
+        if (r_pointRead = '0') then
+          r_Output <= r_Buffer0;
+        end if;
+        if (r_pointRead = '1') then
+          r_Output <= r_Buffer1;
+        end if;
+        if (r_pointRead = '2') then
+          r_Output <= r_Buffer2;
+        end if;
+        if (r_pointRead = '3') then
+          r_Output <= r_Buffer3;
+        end if;
+
+        --Read and Trigger rising edges in same clock cycle
+        if (r_OldRead = '0' and r_Read = '1' and r_OldTrig = '0' and r_Trig = '1') then
+          --need to figure out a nice way to handle this....
+
+	--Read rising edge only
+        elsif (r_OldRead = '0' and r_Read = '1' and r_Inhibit_Read = '0') then
+          r_Inhibit_Write <= '0';  --We're reading out something, so enable writing
+          if (r_pointRead = '0') then
+            r_pointRead <= r_pointRead + 1;
+            r_Buffer0 <= to_unsigned(0,32);
+            if (r_pointWrite = 1) then
+              r_Inhibit_Read <= '1';
+            end if;
           end if;
-          if (r_pointWrite = 1 and r_pointRead /= 2) then
-            r_Output1 <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1
+          if (r_pointRead = '1') then
+            r_pointRead <= r_pointRead + 1;
+            r_Buffer1 <= to_unsigned(0,32);
+            if (r_pointWrite = 2) then
+              r_Inhibit_Read <= '1';
+            end if;
           end if;
-          if (r_pointWrite = 2 and r_pointRead /= 3) then
-            r_Output2 <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1
+          if (r_pointRead = '2') then
+            r_pointRead <= r_pointRead + 1;
+            r_Buffer2 <= to_unsigned(0,32);
+            if (r_pointWrite = 3) then
+              r_Inhibit_Read <= '1';
+            end if;
           end if;
-          if (r_pointWrite = 3 and r_pointRead /= 0) then
-            r_Output3 <= r_Count(31 downto 0);
+          if (r_pointRead = '3') then
+            r_pointRead <= r_pointRead + 1;
+            r_Buffer3 <= to_unsigned(0,32);
+            if (r_pointWrite = 0) then
+              r_Inhibit_Read <= '1';
+            end if;
+          end if;
+
+	--Trig rising edge only
+        elsif (r_OldTrig = '0' and r_Trig = '1' and r_Inhibit_Write = '0') then
+          r_Inhibit_Read <= '0';  --We're writing new info, so enable reading
+          if (r_pointWrite = 0) then
+            r_Buffer0 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1;
+            if (r_pointRead = 1) then
+              r_Inhibit_Write <= '1';
+            end if;
+          end if;
+          if (r_pointWrite = 1) then
+            r_Buffer1 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1;
+            if (r_pointRead = 2) then
+              r_Inhibit_Write <= '1';
+            end if;
+          end if;
+          if (r_pointWrite = 2) then
+            r_Buffer2 <= r_Count(31 downto 0);
+            r_pointWrite <= r_pointWrite + 1;
+            if (r_pointRead = 3) then
+              r_Inhibit_Write <= '1';
+            end if;
+          end if;
+          if (r_pointWrite = 3) then
+            r_Buffer3 <= r_Count(31 downto 0);
             r_pointWrite <= to_unsigned(0,2);
+            if (r_pointRead = 0) then
+              r_Inhibit_Write <= '1';
+            end if;
           end if;
         end if;
       end if;
     end if;
-  end process p_Trigger;
-
-  p_Read : process(i_LCLK) is
-  begin
-        r_OldRead <= r_Read;
-        r_Read <= i_Read;
-        if (r_OldRead = '0' and r_Read = '1') then
-          r_Output <= r_Count(31 downto 0);
-        end if;
-  end process p_Read;
+  end process p_ReadWrite;
 
   p_Count : process(i_LCLK) is
   begin

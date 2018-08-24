@@ -27,23 +27,23 @@ end entity count32;
 
 architecture rtl of count32 is
 
-  type buff_array is array (0 to 3) of unsigned(31 downto 0);
+  constant BUFF_DEPTH : integer := 3;	--counting from 0
+
+  type buff_array is array (0 to BUFF_DEPTH) of unsigned(31 downto 0);
   signal r_Buffer : buff_array := (others => to_unsigned(0,32));
 
-  signal r_Inhibit_Write : std_logic := '0';
-  signal r_Inhibit_Read : std_logic := '0';
-  signal r_pointRead : unsigned(1 downto 0) := (others => '0');
-  signal r_pointWrite : unsigned(1 downto 0) := (others => '0');
+  signal r_nStoredEvents   : unsigned(15 downto 0) := (others => '0');
+  signal r_maxStoredEvents : unsigned(15 downto 0) := (others => '0');
+  signal r_nMissedEvents   : unsigned(15 downto 0) := (others => '0');
   signal r_Count : unsigned (63 downto 0) := (others => '0');
   signal r_Output : unsigned (31 downto 0) := (others => '0');
---  signal r_Buffer0 : unsigned (31 downto 0) := (others => '0');
---  signal r_Buffer1 : unsigned (31 downto 0) := (others => '0');
---  signal r_Buffer2 : unsigned (31 downto 0) := (others => '0');
---  signal r_Buffer3 : unsigned (31 downto 0) := (others => '0');
+  signal r_EdgeTrig : std_logic := '0';
   signal r_OldTrig : std_logic := '0';
   signal r_Trig : std_logic := '0';
+  signal r_EdgeRead : std_logic := '0';
   signal r_OldRead : std_logic := '0';
   signal r_Read : std_logic := '0';
+  signal r_EdgeClk : std_logic := '0';
   signal r_OldClk : std_logic := '0';
   signal r_Clk : std_logic := '0';
 
@@ -53,85 +53,66 @@ begin
   begin
     if rising_edge(i_LCLK) then
       if i_Reset = '1' then
-        r_Buffer(0) <= to_unsigned(0,32);
-        r_Buffer(1) <= to_unsigned(0,32);
-        r_Buffer(2) <= to_unsigned(0,32);
-        r_Buffer(3) <= to_unsigned(0,32);
+        for i in 0 to BUFF_DEPTH loop
+          r_Buffer(0) <= to_unsigned(0,32);
+          r_Output <= to_unsigned(0,32);
+        end loop;
       else
         r_OldTrig <= r_Trig;
         r_Trig <= i_Trig;
+        r_EdgeTrig <= r_Trig and not r_OldTrig;
         r_OldRead <= r_Read;
         r_Read <= i_Read;
-        r_Output <= r_Buffer(to_integer(r_pointRead));
+        r_EdgeRead <= r_Read and not r_OldRead;
 
-        --Read and Trigger rising edges in same clock cycle
-        if (r_OldRead = '0' and r_Read = '1' and r_OldTrig = '0' and r_Trig = '1') then
-          --need to figure out a nice way to handle this....
+	--Read and trig rising edges
+        if (r_EdgeRead and r_EdgeTrig) then
+          if (r_nStoredEvents > 0 and r_nStoredEvents < r_maxStoredEvents) then
+            r_Output <= r_Buffer(0);
+            r_Buffer(BUFF_DEPTH) <= to_unsigned(0,32);	--for the array shift, write a zero at the high-end
+            for i in 0 to BUFF_DEPTH-1 loop
+              if i /= nStoredEvents:
+                r_Buffer(i) <= r_Buffer(i+1);
+              else
+                r_Buffer(i) <= r_Count(31 downto 0);
+              end if;
+            end loop;
+          elsif(r_nStoredEvents = 0)
+            r_Output <= to_unsigned(0,32);	--trying to read with no stored events, set output to zero
+            r_Buffer(to_integer(r_nStoredEvents)) <= r_Count(31 downto 0);
+            r_nStoredEvents <= r_nStoredEvents + 1;
+          elsif(r_nStoredEvents = r_maxStoredEvents)	--trying to trigger with full buffer, increment nMissedEvents
+            r_nMissedEvents <= r_nMissedEvents + 1;
+            r_Output <= r_Buffer(0);
+            r_nStoredEvents <= r_nStoredEvents - 1;
+            r_Buffer(BUFF_DEPTH) <= to_unsigned(0,32);	--for the array shift, write a zero at the high-end
+            for i in 0 to BUFF_DEPTH-1 loop
+              r_Buffer(i) <= r_Buffer(i+1);
+            end loop;
+          end if;
 
 	--Read rising edge only
-        elsif (r_OldRead = '0' and r_Read = '1' and r_Inhibit_Read = '0') then
-          r_Inhibit_Write <= '0';  --We're reading out something, so enable writing
-          if (r_pointRead = 0) then
-            r_pointRead <= r_pointRead + 1;
-            r_Buffer(0) <= to_unsigned(0,32);
-            if (r_pointWrite = 1) then
-              r_Inhibit_Read <= '1';
-            end if;
-          end if;
-          if (r_pointRead = 1) then
-            r_pointRead <= r_pointRead + 1;
-            r_Buffer(1) <= to_unsigned(0,32);
-            if (r_pointWrite = 2) then
-              r_Inhibit_Read <= '1';
-            end if;
-          end if;
-          if (r_pointRead = 2) then
-            r_pointRead <= r_pointRead + 1;
-            r_Buffer(2) <= to_unsigned(0,32);
-            if (r_pointWrite = 3) then
-              r_Inhibit_Read <= '1';
-            end if;
-          end if;
-          if (r_pointRead = 3) then
-            r_pointRead <= r_pointRead + 1;
-            r_Buffer(3) <= to_unsigned(0,32);
-            if (r_pointWrite = 0) then
-              r_Inhibit_Read <= '1';
-            end if;
+        elsif (r_EdgeRead and not r_EdgeTrig) then
+          if (r_nStoredEvents > 0) then
+            r_Output <= r_Buffer(0);
+            r_nStoredEvents <= r_nStoredEvents - 1;
+            for i in 0 to BUFF_DEPTH loop
+              r_Buffer(i) <= r_Buffer(i+1);
+            end loop;
+          else
+            r_Output <= to_unsigned(0,32);
           end if;
 
 	--Trig rising edge only
-        elsif (r_OldTrig = '0' and r_Trig = '1' and r_Inhibit_Write = '0') then
-          r_Inhibit_Read <= '0';  --We're writing new info, so enable reading
-          if (r_pointWrite = 0) then
-            r_Buffer(0) <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1;
-            if (r_pointRead = 1) then
-              r_Inhibit_Write <= '1';
-            end if;
-          end if;
-          if (r_pointWrite = 1) then
-            r_Buffer(1) <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1;
-            if (r_pointRead = 2) then
-              r_Inhibit_Write <= '1';
-            end if;
-          end if;
-          if (r_pointWrite = 2) then
-            r_Buffer(2) <= r_Count(31 downto 0);
-            r_pointWrite <= r_pointWrite + 1;
-            if (r_pointRead = 3) then
-              r_Inhibit_Write <= '1';
-            end if;
-          end if;
-          if (r_pointWrite = 3) then
-            r_Buffer(3) <= r_Count(31 downto 0);
-            r_pointWrite <= to_unsigned(0,2);
-            if (r_pointRead = 0) then
-              r_Inhibit_Write <= '1';
-            end if;
+        elsif (not r_EdgeRead and r_EdgeTrig) then
+	  if (r_nStoredEvents < r_maxStoredEvents) then
+            r_Buffer(to_integer(r_nStoredEvents)) <= r_Count(31 downto 0);
+            r_nStoredEvents <= r_nStoredEvents + 1;
+          elsif
+            r_nMissedEvents <= r_nMissedEvents + 1;	--trying to trigger with full buffer, increment nMissedEvents
           end if;
         end if;
+
       end if;
     end if;
   end process p_ReadWrite;

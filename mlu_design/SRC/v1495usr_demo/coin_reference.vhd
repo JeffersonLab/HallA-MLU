@@ -271,8 +271,9 @@ signal r_val167         : std_logic_vector(15 downto 0) := std_logic_vector(to_u
 signal r_val94		: std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR94
 
 signal PULSE_MODE : std_logic; --
-signal MLU_COUNT_SYNC : std_logic; -- Sync reset for MLU clock counter
-signal MLU_COUNT_TRIG : std_logic; -- Trigger to update counter output to current clock count
+signal MLU_SYNC : std_logic; -- Sync reset for MLU clock counter and BCM integrator
+signal MLU_READ : std_logic; -- Read out clock counter and BCM integrator
+signal MLU_EXT_TRIG : std_logic; -- Trigger from trigger supervisor, record current clock counter and BCM values
 
 
 -- Local Signals
@@ -393,8 +394,8 @@ BEGIN
    UNIT_MODE    <= MODE(3);
    OPERATOR     <= MODE(4);
    PULSE_MODE   <= MODE(5);
-   MLU_COUNT_SYNC	<= MODE(6);
-   MLU_COUNT_TRIG	<= MODE(7);
+   MLU_SYNC	<= MODE(6);
+   MLU_READ	<= MODE(7);
    
    --*************************************************
    -- Inport Port (A,B) Masking
@@ -477,10 +478,8 @@ BEGIN
 	(
    		i_LCLK 		=> LCLK,
    		i_Clk 		=> E(0),
---   		i_Reset 	=> E(1),
---   		i_Read 		=> E(2),
-   		i_Reset 	=> MLU_COUNT_SYNC,	--MODE(6)
-   		i_Read 		=> MLU_COUNT_TRIG,	--MODE(7)
+   		i_Reset 	=> MLU_SYNC,	--MODE(6)
+   		i_Read 		=> MLU_READ,	--MODE(7)
    		o_Count 	=> MLU_COUNT
    	);
 
@@ -489,8 +488,8 @@ BEGIN
 	(
 		i_data		=> std_logic_vector(to_unsigned(1, 32)),
 		i_DV		=> E(0),
-		i_read		=> MLU_COUNT_TRIG,	--MODE(7)
-		i_reset		=> MLU_COUNT_SYNC,	--MODE(6)
+		i_read		=> MLU_READ,	--MODE(7)
+		i_reset		=> MLU_SYNC,	--MODE(6)
 
 		o_sum		=> A_BCMu_DATA
 
@@ -501,8 +500,8 @@ BEGIN
         (
                 i_data          => std_logic_vector(to_unsigned(1, 32)),
                 i_DV            => E(0),
-                i_read          => MLU_COUNT_TRIG,      --MODE(7)
-                i_reset         => MLU_COUNT_SYNC,      --MODE(6)
+                i_read          => MLU_READ,      --MODE(7)
+                i_reset         => MLU_SYNC,      --MODE(6)
 
                 o_sum           => A_BCMd_DATA
 

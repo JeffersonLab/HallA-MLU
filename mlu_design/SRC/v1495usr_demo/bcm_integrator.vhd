@@ -3,6 +3,9 @@
 --Adam Kobert
 --7/12/18
 
+--TODO--
+-- put everthing in the same clock domain -- REM -- 2018-08-23
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;

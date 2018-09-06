@@ -8,7 +8,10 @@
 -- Model:           V1495 -  Multipurpose Programmable Trigger Unit
 -- FPGA Proj. Name: V1495USR_DEMO
 -- Device:          ALTERA EP1C4F400C6
--- Author:          (recent) Bob Michaels 
+-- Author:          
+--                  (most recent) Adam Kobert and Randall Evan McClellan
+--                  (more recent) Randall Evan McClellan and Tyler Hague
+--                  (recent) Bob Michaels 
 --                  (original) Luca Colombini (l.colombini@caen.it)
 -- Date:            (recent) Jan 2014;  (orig) 02-03-2006
 -- ----------------------------------------------------------------------------
@@ -27,6 +30,7 @@
 --   03 Feb 14    R.M.            2.0                  Bob's MLU design
 --   26 Apr 17    REM & TH        2.1?                 Evan and Tyler begin tinkering for Tritium
 --   08 Jun 18    AK		  2.2?		       Adam rewrites to conform to new design
+--   06 Sep 18    REM             2.3                  Evan adds BCM RX entity from Chad Seaton (Jefferson Lab)
 -- ############################################################################
 
 LIBRARY ieee;
@@ -217,6 +221,19 @@ ARCHITECTURE rtl OF coin_reference IS
 	        );
 	end component;
 
+        component bcm_rx is
+		port
+		(
+			reset_n		: in std_logic;		--Reset
+			clock		: in std_logic;		--40MHz clock
+			rx_in		: in std_logic;		--rx bcm data in
+
+			data_ch1	: out std_logic_vector(27 downto 0);	--bcm1 data out
+			data_ch2	: out std_logic_vector(27 downto 0);	--bcm2 data out
+			data_ready	: out std_logic				--bcm data ready
+		);
+	end component;
+
 -- Registers
 signal A_STATUS   : std_logic_vector(31 downto 0); -- R
 signal B_STATUS   : std_logic_vector(31 downto 0); -- R
@@ -240,8 +257,11 @@ signal PDL_DATA   : std_logic_vector(15 downto 0); -- R/W
 signal MLU_COUNT  : std_logic_vector(31 downto 0); -- R
 
 --Registers containing bcm data
-signal A_BCMu_DATA	: std_logic_vector(63 downto 0); --R
-signal A_BCMd_DATA	: std_logic_vector(63 downto 0); --R
+signal BCM_READY	: std_logic;	--BCM data ready
+signal BCMu_DATA	: std_logic_vector(63 downto 0); --individual data words from upstream BCM RX
+signal BCMd_DATA	: std_logic_vector(63 downto 0); --individual data words from downstream BCM RX
+signal BCMu_SUM		: std_logic_vector(63 downto 0); --running integral of upstream BCM since reset
+signal BCMd_SUM		: std_logic_vector(63 downto 0); --running integral of downstream BCM since reset
 
 -- Register Bits
 -- MODE Register
@@ -271,8 +291,8 @@ signal r_val167         : std_logic_vector(15 downto 0) := std_logic_vector(to_u
 signal r_val94		: std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(0, 16));        --User input value to be compared to LFSR94
 
 signal PULSE_MODE : std_logic; --
-signal MLU_COUNT_SYNC : std_logic; -- Sync reset for MLU clock counter
-signal MLU_COUNT_TRIG : std_logic; -- Trigger to update counter output to current clock count
+signal CODA_RESET : std_logic; -- reset for clock and bcm counters, i.e. started a new CODA run
+signal CODA_READ : std_logic; -- signal to update counts to readout registers
 
 
 -- Local Signals
@@ -393,8 +413,8 @@ BEGIN
    UNIT_MODE    <= MODE(3);
    OPERATOR     <= MODE(4);
    PULSE_MODE   <= MODE(5);
-   MLU_COUNT_SYNC	<= MODE(6);
-   MLU_COUNT_TRIG	<= MODE(7);
+   CODA_RESET	<= MODE(6);
+   CODA_READ	<= MODE(7);
    
    --*************************************************
    -- Inport Port (A,B) Masking
@@ -479,35 +499,46 @@ BEGIN
    		i_Clk 		=> E(0),
 --   		i_Reset 	=> E(1),
 --   		i_Read 		=> E(2),
-   		i_Reset 	=> MLU_COUNT_SYNC,	--MODE(6)
-   		i_Read 		=> MLU_COUNT_TRIG,	--MODE(7)
+   		i_Reset 	=> CODA_RESET,	--MODE(6)
+   		i_Read 		=> CODA_READ,	--MODE(7)
    		o_Count 	=> MLU_COUNT
    	);
 
 	bcmu_integrator_inst1: bcm_integrator
 	port map
 	(
-		i_data		=> std_logic_vector(to_unsigned(1, 32)),
-		i_DV		=> E(0),
-		i_read		=> MLU_COUNT_TRIG,	--MODE(7)
-		i_reset		=> MLU_COUNT_SYNC,	--MODE(6)
+		i_data		=> BCMu_DATA,
+		i_DV		=> BCM_READY,
+		i_read		=> CODA_READ,	--MODE(7)
+		i_reset		=> CODA_RESET,	--MODE(6)
 
-		o_sum		=> A_BCMu_DATA
+		o_sum		=> BCMu_SUM
 
 	);
 
         bcmd_integrator_inst2: bcm_integrator
         port map
         (
-                i_data          => std_logic_vector(to_unsigned(1, 32)),
-                i_DV            => E(0),
-                i_read          => MLU_COUNT_TRIG,      --MODE(7)
-                i_reset         => MLU_COUNT_SYNC,      --MODE(6)
+                i_data          => BCMd_DATA,
+                i_DV            => BCM_READY,
+                i_read          => CODA_READ   --MODE(7)
+                i_reset         => CODA_RESET,      --MODE(6)
 
-                o_sum           => A_BCMd_DATA
+                o_sum           => BCMd_SUM
 
         );
 
+        bcm_rx_inst: bcm_rx
+	port_map
+	(
+		reset_n		=> CODA_RESET,	--MODE(6)
+		clock		=> LCLK,		--internal 40MHz clock
+		rx_in		=> E(2),		--BCM RX data in
+
+		data_ch1	=> BCMu_DATA,		--single data word from upstream BCM
+		data_ch2	=> BCMd_DATA,		--single data word from downstream BCM
+		data_ready	=> BCM_READY
+	);
 
    -- Select Port C driver based on a configuration bit.
    P_C_DRIVE: process(UNIT_MODE, C, C_MASK, C_CONTROL)
@@ -811,15 +842,15 @@ BEGIN
              when A_EIDCODE     => REG_DOUT   	<= X"000" & '0' & E_IDCODE;
              when A_FIDCODE     => REG_DOUT   	<= X"000" & '0' & F_IDCODE;
              
-	     when A_BCMu_LL	=> REG_DOUT	<= A_BCMu_DATA(15 downto 0);	
-	     when A_BCMu_ML	=> REG_DOUT	<= A_BCMu_DATA(31 downto 16);
-	     when A_BCMu_MH	=> REG_DOUT	<= A_BCMu_DATA(47 downto 32);
-	     when A_BCMu_HH	=> REG_DOUT	<= A_BCMu_DATA(63 downto 48);
+	     when A_BCMu_LL	=> REG_DOUT	<= BCMu_SUM(15 downto 0);	
+	     when A_BCMu_ML	=> REG_DOUT	<= BCMu_SUM(31 downto 16);
+	     when A_BCMu_MH	=> REG_DOUT	<= BCMu_SUM(47 downto 32);
+	     when A_BCMu_HH	=> REG_DOUT	<= BCMu_SUM(63 downto 48);
 	     
-             when A_BCMd_LL     => REG_DOUT     <= A_BCMd_DATA(15 downto 0);
-             when A_BCMd_ML     => REG_DOUT     <= A_BCMd_DATA(31 downto 16);
-             when A_BCMd_MH     => REG_DOUT     <= A_BCMd_DATA(47 downto 32);
-             when A_BCMd_HH     => REG_DOUT     <= A_BCMd_DATA(63 downto 48);
+             when A_BCMd_LL     => REG_DOUT     <= BCMd_SUM(15 downto 0);
+             when A_BCMd_ML     => REG_DOUT     <= BCMd_SUM(31 downto 16);
+             when A_BCMd_MH     => REG_DOUT     <= BCMd_SUM(47 downto 32);
+             when A_BCMd_HH     => REG_DOUT     <= BCMd_SUM(63 downto 48);
 
              when A_VAL159      => REG_DOUT     <= r_val159;
              when A_VAL161      => REG_DOUT     <= r_val161;

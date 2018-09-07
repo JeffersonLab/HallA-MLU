@@ -1,3 +1,6 @@
 *compiled*
 *.rpt
 *.bak*
+*.dat
+*.out
+*.o

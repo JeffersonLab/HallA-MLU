@@ -510,7 +510,7 @@ v1495ClockCountRead(unsigned int address)
   return a_count;
 }
 
-unsigned int
+unsigned long
 v1495BCM_ReadCODA(unsigned int id)
 {
 	/*

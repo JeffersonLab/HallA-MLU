@@ -1,7 +1,8 @@
 --This module allows for a running sum
-
 --Adam Kobert
 --7/12/18
+--
+--Put everything in i_Clk domain (except for asychronous reset) -- Randall Evan McClellan -- 2018-09-07
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -22,27 +23,39 @@ end entity bcm_integrator;
 
 
 architecture rtl of bcm_integrator is
-	signal r_sum	: unsigned(63 downto 0)	:= to_unsigned(0, 64);	--Contains running sum
-
+	signal r_sum		: unsigned(63 downto 0)	:= to_unsigned(0, 64);	--Contains running sum
+	signal r_old_DV		: std_logic;
+	signal r_old_read	: std_logic;
 
 begin
 
+	p_edges	: process(i_Clk) is
+	begin
+		if rising_edge(i_Clk) then
+			r_old_DV <= i_DV;
+			r_old_read <= i_read;
+		end if;
+	end process p_edges;
+
 	p_Add	: process(i_DV, i_reset) is
 	begin
-
 		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
-	
-		elsif rising_edge(i_DV) then
-			r_sum	<= r_sum + unsigned(i_data);
+		elsif rising_edge(i_Clk) then
+			if (r_old_DV = '0' and i_DV = '1') then
+				r_sum	<= r_sum + unsigned(i_data);
+			end if;
 		end if;
 	end process p_Add;
 
 	p_Read	: process(i_read) is
 	begin
-		if rising_edge(i_read) then
-			o_sum <= std_logic_vector(r_sum);
-			
+		if i_reset = '1' then
+                        o_sum <= std_logic_vector(to_unsigned(0, 64));
+		elsif rising_edge(i_Clk) then
+			if (r_old_read = '0' and i_read = '1') then
+				o_sum <= std_logic_vector(r_sum);
+			end if;
 		end if;
 	end process p_Read;
 

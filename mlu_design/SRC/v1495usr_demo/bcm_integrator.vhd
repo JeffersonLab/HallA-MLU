@@ -14,7 +14,7 @@ use ieee.numeric_std.all;
 entity bcm_integrator is
 	port
 	(
-		i_data		: in std_logic_vector(31 downto 0);	--Data Input
+		i_data		: in std_logic_vector(27 downto 0);	--Data Input
 		i_DV		: in std_logic;				--Data Valid
 		i_read		: in std_logic;				--Read Command
 		i_reset		: in std_logic;				--Reset Command
@@ -40,7 +40,7 @@ begin
 		end if;
 	end process p_edges;
 
-	p_Add	: process(i_DV, i_reset) is
+	p_Add	: process(i_Clk, i_reset) is
 	begin
 		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
@@ -51,7 +51,7 @@ begin
 		end if;
 	end process p_Add;
 
-	p_Read	: process(i_read) is
+	p_Read	: process(i_Clk, i_reset) is
 	begin
 		if i_reset = '1' then
                         o_sum <= std_logic_vector(to_unsigned(0, 64));

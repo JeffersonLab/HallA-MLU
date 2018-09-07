@@ -212,7 +212,7 @@ ARCHITECTURE rtl OF coin_reference IS
 	component bcm_integrator is
 	        port
         	(
-        	        i_data          : in std_logic_vector(31 downto 0);     --Data Input
+        	        i_data          : in std_logic_vector(27 downto 0);     --Data Input
         	        i_DV            : in std_logic;                         --Data Valid
         	        i_read          : in std_logic;                         --Read Command
         	        i_reset         : in std_logic;                         --Reset Command
@@ -258,8 +258,8 @@ signal MLU_COUNT  : std_logic_vector(31 downto 0); -- R
 
 --Registers containing bcm data
 signal BCM_READY	: std_logic;	--BCM data ready
-signal BCMu_DATA	: std_logic_vector(63 downto 0); --individual data words from upstream BCM RX
-signal BCMd_DATA	: std_logic_vector(63 downto 0); --individual data words from downstream BCM RX
+signal BCMu_DATA	: std_logic_vector(27 downto 0); --individual data words from upstream BCM RX
+signal BCMd_DATA	: std_logic_vector(27 downto 0); --individual data words from downstream BCM RX
 signal BCMu_SUM		: std_logic_vector(63 downto 0); --running integral of upstream BCM since reset
 signal BCMd_SUM		: std_logic_vector(63 downto 0); --running integral of downstream BCM since reset
 
@@ -521,7 +521,7 @@ BEGIN
         (
                 i_data          => BCMd_DATA,
                 i_DV            => BCM_READY,
-                i_read          => CODA_READ   --MODE(7)
+                i_read          => CODA_READ,   --MODE(7)
                 i_reset         => CODA_RESET,      --MODE(6)
 
                 o_sum           => BCMd_SUM
@@ -529,7 +529,7 @@ BEGIN
         );
 
         bcm_rx_inst: bcm_rx
-	port_map
+	port map
 	(
 		reset_n		=> CODA_RESET,	--MODE(6)
 		clock		=> LCLK,		--internal 40MHz clock

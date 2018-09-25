@@ -658,7 +658,7 @@ v1495InitCODA(unsigned int address, int mode)
   
   v1495Write16(&v1495->mode, mode); 
   v1495Write16(&v1495->fctrl_l, 1);  /* NIM output */ 
-  v1495Write16(&v1495->ectrl_l, 1);  /* NIM input  */
+  v1495Write16(&v1495->ectrl_l, 3);  /* NIM input  */
   v1495Write16(&v1495->dctrl_l, 1);  /* ECL output */
 
   printf("\nInitialized MLU.  CAEN V1495 address = 0x%x\n",address);
@@ -691,7 +691,7 @@ v1495initMlu(unsigned int address, int mode)
 
   vmeWrite16(&v1495->mode, mode); 
   vmeWrite16(&v1495->fctrl_l, 1);  /* NIM output */ 
-  vmeWrite16(&v1495->ectrl_l, 1);  /* NIM input  */
+  vmeWrite16(&v1495->ectrl_l, 3);  /* NIM input  */
   vmeWrite16(&v1495->dctrl_l, 1);  /* ECL output */
 
   printf("about to close vme \n");

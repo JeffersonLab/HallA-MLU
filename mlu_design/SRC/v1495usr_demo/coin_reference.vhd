@@ -221,6 +221,7 @@ ARCHITECTURE rtl OF coin_reference IS
         	        i_DV            : in std_logic;                         --Data Valid
         	        i_read          : in std_logic;                         --Read Command
         	        i_reset         : in std_logic;                         --Reset Command
+			i_Clk		: in std_logic;				--Clock
 	
         	        o_sum           : out std_logic_vector(63 downto 0)     --Data Output
 	        );
@@ -528,6 +529,7 @@ BEGIN
 		i_DV		=> BCM_READY,
 		i_read		=> CODA_READ,	--MODE(7)
 		i_reset		=> CODA_RESET,	--MODE(6)
+		i_Clk		=> LCLK,	--Clock
 
 		o_sum		=> BCMu_SUM
 
@@ -540,6 +542,7 @@ BEGIN
                 i_DV            => BCM_READY,
                 i_read          => CODA_READ,   --MODE(7)
                 i_reset         => CODA_RESET,      --MODE(6)
+		i_Clk		=> LCLK,	--Clock
 
                 o_sum           => BCMd_SUM
 

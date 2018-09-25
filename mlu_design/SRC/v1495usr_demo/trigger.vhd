@@ -19,6 +19,11 @@ entity trigger is
                 i_trig167       : in std_logic;         --Trigger for LFSR167
                 i_trig94        : in std_logic;         --Trigger for LFSR94
 
+		bcm_debug1	: in std_logic;
+		bcm_debug2	: in std_logic;
+		bcm_debug3	: in std_logic;
+		bcm_debug4	: in std_logic;
+
     		E		: in std_logic_vector(31 downto 0);
 	 
     		C		: out std_logic_vector(31 downto 0);
@@ -36,10 +41,10 @@ begin
 		F(2) <= i_trig161;
 		F(3) <= i_trig167;
 
-		F(4) <= '0';
-                F(5) <= '0';
-                F(6) <= '0';
-                F(7) <= '0';
+		F(4) <= bcm_debug1;
+                F(5) <= bcm_debug2;
+                F(6) <= bcm_debug3;
+                F(7) <= i_Clk;
 
 		F(31 downto 8) <= (others => '0');
       	end process;

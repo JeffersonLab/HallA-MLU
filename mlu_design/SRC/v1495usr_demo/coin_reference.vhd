@@ -148,6 +148,11 @@ ARCHITECTURE rtl OF coin_reference IS
                 	i_trig167       : in std_logic;         --Trigger for LFSR167
                 	i_trig94        : in std_logic;         --Trigger for LFSR94
 
+			bcm_debug1	: in std_logic;
+			bcm_debug2	: in std_logic;
+			bcm_debug3	: in std_logic;
+			bcm_debug4	: in std_logic;
+
                 	E               : in std_logic_vector(31 downto 0);
 
                 	C               : out std_logic_vector(31 downto 0);
@@ -263,6 +268,10 @@ signal BCMd_DATA	: std_logic_vector(27 downto 0); --individual data words from d
 signal BCMu_SUM		: std_logic_vector(63 downto 0); --running integral of upstream BCM since reset
 signal BCMd_SUM		: std_logic_vector(63 downto 0); --running integral of downstream BCM since reset
 
+-- for BCM debugging
+signal BCMu_DATA_DEBUG	: std_logic;
+signal BCMu_SUM_DEBUG	: std_logic;
+
 -- Register Bits
 -- MODE Register
 signal DELAY_SEL  : std_logic_vector(1 downto 0); -- "00" : PDL0 => Programmable Delay Line 0
@@ -293,7 +302,6 @@ signal r_val94		: std_logic_vector(15 downto 0) := std_logic_vector(to_unsigned(
 signal PULSE_MODE : std_logic; --
 signal CODA_RESET : std_logic; -- reset for clock and bcm counters, i.e. started a new CODA run
 signal CODA_READ : std_logic; -- signal to update counts to readout registers
-
 
 -- Local Signals
 signal A     : std_logic_vector(31 downto 0);
@@ -428,6 +436,10 @@ BEGIN
    -- Masking of Port B 
    B <= B_DIN and B_MASK;
 
+   --DEBUGGING PREP
+   BCMu_DATA_DEBUG <= BCMu_DATA(0) or BCMu_DATA(1) or BCMu_DATA(2) or BCMu_DATA(3);
+   BCMu_SUM_DEBUG <= BCMu_SUM(0) or BCMu_SUM(1) or BCMu_SUM(2) or BCMu_SUM(3);
+
       --**********************************************************
    -- DRIVER of output ports   C, and F
    -- using input on E.   (A and B are ignored for now)
@@ -449,6 +461,11 @@ BEGIN
 		i_trig161	=> w_trig161,
 		i_trig167	=> w_trig167,
 		i_trig94	=> w_trig94,
+
+		bcm_debug1	=> E(2),
+		bcm_debug2	=> BCM_READY,
+		bcm_debug3	=> BCMu_DATA_DEBUG,
+		bcm_debug4	=> BCMu_SUM_DEBUG,
 
      		E  		=>  E,
      		C  		=>  C,

@@ -44,7 +44,7 @@ signal start :std_logic;
 begin
  
 -- buffer rx in
-D.rx(0) <= rx_in;
+D.rx(0) <= not rx_in;	--fix convention (idle of input is '0', this code expects '1') -- REM -- 2018-10-05
 D.rx(1) <= Q.rx(0);
 
 -- detect idle state between frames
@@ -97,7 +97,7 @@ data_ready <= Q.ready;
 -- registers
 reg: process(reset_n,clock)
 begin
-	if (reset_n = '0') then	
+	if (reset_n = '1') then		--fix convention, '1' for reset, '0' for no reset -- REM -- 2018-10-05
 		Q.idleCount 	<= (others => '0');
 		Q.syncCount 	<= (others => '0');
 		Q.periodCount 	<= (others => '0');

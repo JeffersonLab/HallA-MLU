@@ -438,7 +438,7 @@ BEGIN
    B <= B_DIN and B_MASK;
 
    --DEBUGGING PREP
-   BCMu_DATA_DEBUG <= BCMu_DATA(0) or BCMu_DATA(1) or BCMu_DATA(2) or BCMu_DATA(3);
+   BCMu_DATA_DEBUG <= BCMu_DATA(0);
    BCMu_SUM_DEBUG <= BCMu_SUM(0) or BCMu_SUM(1) or BCMu_SUM(2) or BCMu_SUM(3);
 
       --**********************************************************
@@ -464,9 +464,9 @@ BEGIN
 		i_trig94	=> w_trig94,
 
 		bcm_debug1	=> E(2),
-		bcm_debug2	=> BCM_READY,
-		bcm_debug3	=> BCMu_DATA_DEBUG,
-		bcm_debug4	=> BCMu_SUM_DEBUG,
+		bcm_debug2	=> CODA_RESET,
+		bcm_debug3	=> BCM_READY,
+		bcm_debug4	=> BCMu_DATA_DEBUG,
 
      		E  		=>  E,
      		C  		=>  C,

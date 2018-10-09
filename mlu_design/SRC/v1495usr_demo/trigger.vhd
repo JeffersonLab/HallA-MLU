@@ -44,7 +44,7 @@ begin
 		F(4) <= bcm_debug1;
                 F(5) <= bcm_debug2;
                 F(6) <= bcm_debug3;
-                F(7) <= i_Clk;
+                F(7) <= bcm_debug4;
 
 		F(31 downto 8) <= (others => '0');
       	end process;

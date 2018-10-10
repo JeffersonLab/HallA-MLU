@@ -44,7 +44,7 @@ signal start :std_logic;
 begin
  
 -- buffer rx in
-D.rx(0) <= not rx_in;	--fix convention (idle of input is '0', this code expects '1') -- REM -- 2018-10-05
+D.rx(0) <= rx_in;	--fix convention (idle of input is '0', this code expects '1') -- REM -- 2018-10-05 NO! EVIDENTLY IDLE IS '1', change it back -- REM -- 20181009
 D.rx(1) <= Q.rx(0);
 
 -- detect idle state between frames

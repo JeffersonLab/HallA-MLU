@@ -563,7 +563,7 @@ v1495BCM_ReadCODA(unsigned int id)
                         a_bcm_mh = v1495Read16(&v1495->abcmd_mh);
                         a_bcm_hh = v1495Read16(&v1495->abcmd_hh);
 
-                        a_bcm = a_bcm_ll + (a_bcm_ml<<16) + (a_bcm_mh<<32) + (a_bcm_hh<<48);
+                        a_bcm = (unsigned long)a_bcm_ll + ((unsigned long)a_bcm_ml<<16) + ((unsigned long)a_bcm_mh<<32) + ((unsigned long)a_bcm_hh<<48);
 			break;
 
 		default:

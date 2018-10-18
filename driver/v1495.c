@@ -510,12 +510,76 @@ v1495ClockCountRead(unsigned int address)
   return a_count;
 }
 
+unsigned short
+v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
+{
+	/*
+	 * Return bcm data
+	 */
+
+  	if (!v1495) 
+	{
+    		printf("v1495 not initialized.  must open_vme. \n");
+    		printf(" ... quitting ... \n");
+    		exit(0);
+  	}
+
+	if (id != 0 && id != 1)
+	{
+		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+		return 0xBEEFDEAD;
+
+	}
+
+  	int mode = 0x0080;    /*trig bit high, all others low*/
+
+	
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);     /*twice, to make sure we wait long enough*/
+  	v1495Write16(&v1495->mode, mode);     /*extra paranoia*/
+
+ 	mode = 0x0000;
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);
+
+	switch(id)
+	{
+		case 0:
+			switch(part)
+			{
+  				case 0: return v1495Read16(&v1495->abcmu_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495->abcmu_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495->abcmu_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495->abcmu_hh);	//case 3: return highest 16 bits
+				default: printf("Invalid part, should be 0, 1, 2, or 3");
+			}
+
+		case 1:
+			switch(part)
+			{
+  				case 0: return v1495Read16(&v1495->abcmd_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495->abcmd_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495->abcmd_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495->abcmd_hh);	//case 3: return highest 16 bits
+				default: printf("Invalid part, should be 0, 1, 2, or 3");
+			}
+
+		default:
+			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+                	return 0xBEEF;
+	}
+
+}
+
 unsigned long
 v1495BCM_ReadCODA(unsigned int id)
 {
 	/*
 	 * Return bcm data
 	 */
+
+	printf("THIS FUNCTION DOESNT WORK. YOU SHOULD NOT BE SEEING THIS MESSAGE!!!!\n");
 
   	if (!v1495) 
 	{
@@ -575,12 +639,12 @@ v1495BCM_ReadCODA(unsigned int id)
 
 }
 
-unsigned int
+unsigned long
 v1495BCM_Read(unsigned int address, unsigned int id)
 {
 	open_vme(address);	
 	
-	unsigned int a_bcm = v1495BCM_ReadCODA(id);
+	unsigned long a_bcm = v1495BCM_ReadCODA(id);
 	printf("BCM Value = 0x%x\n\n",a_bcm);
 
 	close_vme();

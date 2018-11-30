@@ -2,12 +2,24 @@ import socket
 import thread
 import Queue as qu
 
+def handleMessage(message):
+    print "New Message: ", message
+    vals = message.split(' ')
+    print "vals before: ", vals
+    for i,v in enumerate(vals):
+        try:
+            vals[i] = float(v)
+        except:
+            vals[i] = 'NaN'
+    print "vals after: ", vals
+
 def clientListen(aConnection, aQ):
     while True:
         buf = aConnection.recv(64)
         if buf == '':	#kill thread if empty buffer is sent (usually due to broken connection)
             print "Client left."
             break
+        handleMessage(buf)
         aQ.put(buf)
 
 def clientsBroadcast(aDict, aQ, aKillSwitch):

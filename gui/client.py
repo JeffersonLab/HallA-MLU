@@ -16,38 +16,23 @@ class message1:
         self.name = name
         self.master.title("?HRS MLU Random Pulser")
         self.recent_message = ''
+        self.focal = 0
 
         self.upper_frame = tk.Frame(self.master)
         self.upper_frame.pack()
 
-        self.label0 = tk.Label(self.upper_frame, text="F0")
-        self.label0.grid(row=0,column=0)
-        self.disp0 = tk.Text(self.upper_frame, height=1, width=20)
-        self.disp0.grid(row=0,column=2,padx=5,pady=5)
-        self.input0 = tk.Entry(self.upper_frame, width=20)
-        self.input0.grid(row=0,column=1,padx=5,pady=5)
-        self.input0.focus()
-
-        self.label1 = tk.Label(self.upper_frame, text="F1")
-        self.label1.grid(row=1,column=0)
-        self.disp1 = tk.Text(self.upper_frame, height=1, width=20)
-        self.disp1.grid(row=1,column=2,padx=5,pady=5)
-        self.input1 = tk.Entry(self.upper_frame, width=20)
-        self.input1.grid(row=1,column=1,padx=5,pady=5)
-
-        self.label2 = tk.Label(self.upper_frame, text="F2")
-        self.label2.grid(row=2,column=0)
-        self.disp2 = tk.Text(self.upper_frame, height=1, width=20)
-        self.disp2.grid(row=2,column=2,padx=5,pady=5)
-        self.input2 = tk.Entry(self.upper_frame, width=20)
-        self.input2.grid(row=2,column=1,padx=5,pady=5)
-
-        self.label3 = tk.Label(self.upper_frame, text="F3")
-        self.label3.grid(row=3,column=0)
-        self.disp3 = tk.Text(self.upper_frame, height=1, width=20)
-        self.disp3.grid(row=3,column=2,padx=5,pady=5)
-        self.input3 = tk.Entry(self.upper_frame, width=20)
-        self.input3.grid(row=3,column=1,padx=5,pady=5)
+        self.wLabel = []
+        self.wInput = []
+        self.wDisp  = []
+        for i in range(4):
+            self.wLabel.append(tk.Label(self.upper_frame, text="F"+str(i)))
+            self.wLabel[i].grid(row=i,column=0)
+            self.wDisp.append(tk.Text(self.upper_frame, height=1, width=20))
+            self.wDisp[i].grid(row=i,column=2,padx=5,pady=5)
+            self.wInput.append(tk.Entry(self.upper_frame, width=20, bg='white'))
+            self.wInput[i].grid(row=i,column=1,padx=5,pady=5)
+        self.wInput[self.focal].focus_set()
+        self.master.bind('<Tab>', self.tab)
 
         self.button_frame = tk.Frame(self.master)
         self.button_frame.pack(side=tk.BOTTOM)
@@ -59,8 +44,7 @@ class message1:
         self.apply_button = tk.Button(self.button_frame, text="Apply", fg="black", command=self.send_text)
         self.apply_button.pack(side=tk.RIGHT)
 
-        self.disp0.update()
-        master.after(100,self.check_queue)
+        self.master.after(100,self.check_queue)
 
         self.serverThread = th.start_new_thread(self.serverListen,tuple())
 
@@ -71,48 +55,38 @@ class message1:
                 self.bQ.put(inbound)
         self.server.close()
 
+    def tab(self, event):
+        self.focal += 1
+        if self.focal > 3:
+            self.focal = 0
+        self.wInput[self.focal].focus_set()
+        return("break")	#dont do the tab default behavior!
+
     def zeroall(self):
-        self.input0.delete(0,tk.END)
-        self.input1.delete(0,tk.END)
-        self.input2.delete(0,tk.END)
-        self.input3.delete(0,tk.END)
+        for i in range(4):
+            self.wInput[i].delete(0,tk.END)
         data = '0 0 0 0'
         self.server.send(data.encode())
 
     def quit(self):
         self.exit_request = True
-        data = self.name+" has left the chat."
-        self.server.send(data.encode())
         self.master.destroy()
 
     #def send_text(self, event):
     def send_text(self):
-        newText0 = self.input0.get().strip(' ')
-        newText1 = self.input1.get().strip(' ')
-        newText2 = self.input2.get().strip(' ')
-        newText3 = self.input3.get().strip(' ')
-        data = newText0+" "+newText1+" "+newText2+" "+newText3
+        newText = []
+        for i in range(4):
+            newText.append(self.wInput[i].get().strip(' '))
+        data = newText[0]+" "+newText[1]+" "+newText[2]+" "+newText[3]
         self.server.send(data.encode())
 
     def show_text(self):
-        self.disp0.delete(1.0, tk.END)
-        self.disp1.delete(1.0, tk.END)
-        self.disp2.delete(1.0, tk.END)
-        self.disp3.delete(1.0, tk.END)
-
         messages = self.recent_message.split(' ')
-        self.disp0.insert(tk.END, messages[0])
-        self.disp1.insert(tk.END, messages[1])
-        self.disp2.insert(tk.END, messages[2])
-        self.disp3.insert(tk.END, messages[3])
-        self.disp0.see(tk.END)
-        self.disp1.see(tk.END)
-        self.disp2.see(tk.END)
-        self.disp3.see(tk.END)
-        self.disp0.update()
-        self.disp1.update()
-        self.disp2.update()
-        self.disp3.update()
+        for i in range(4):
+            self.wDisp[i].delete(1.0, tk.END)
+            self.wDisp[i].insert(tk.END, messages[i])
+            self.wDisp[i].see(tk.END)
+            self.wDisp[i].update()
 
     def check_queue(self):
         while not self.bQ.empty():

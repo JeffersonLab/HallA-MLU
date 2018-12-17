@@ -5,10 +5,10 @@ import subprocess
 
 def execFreq(aIndex, aFreq):
     val = 'Error'	#default return value
-    p = subprocess.Popen(["fpga","freq",float(aIndex),aFreq], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["fpga","freq",aIndex,aFreq], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    print "Caught stdout:", out
-    print "Caught stderr:", err
+    #print "Caught stdout:", out
+    #print "Caught stderr:", err
     lines = out.split('\n')
     for line in lines:
         words = line.split(' ')
@@ -30,7 +30,7 @@ def handleMessage(message):
         except:
             vals[i] = 'NaN'
             continue
-        vals[i] = execFreq(i,v)
+        vals[i] = execFreq(str(i),v)
     print "vals after: ", vals
     return ' '.join([str(v) for v in vals])
 
@@ -50,7 +50,7 @@ def clientsBroadcast(aDict, aQ, aControlDict):
         for aC in aDict:
             aDict[aC].send(message)
         aControlDict["pauseFlag"] -= 1
-        aQ.task_done()
+        #aQ.task_done()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('', 1495))

@@ -1,0 +1,16 @@
+#!/bin/bash
+#Thanks to Bob Michaels! -- Randall Evan McClellan -- 2018-12-17
+
+# One or more of these are needed, 
+# else tkinter.TclError complains about improper Tcl index file
+export TCL_LIBRARY=""
+export ITCL_LIBRARY=""
+export TCLINCLUDE_DIR=""
+
+# ssh to intelha3, start the server
+xterm -geometry 60x5+${XPOS}+0 -hold -T "MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh" &
+sleep 8
+# launch the python client gui script. 
+python3 client.py
+echo "Done."
+

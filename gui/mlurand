@@ -8,7 +8,7 @@ export ITCL_LIBRARY=""
 export TCLINCLUDE_DIR=""
 
 # ssh to intelha3, start the server
-xterm -geometry 60x5+${XPOS}+0 -hold -T "MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh" &
+xterm -geometry 100x20+50+50 -hold -T "MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh" &
 sleep 8
 # launch the python client gui script. 
 python3 client.py

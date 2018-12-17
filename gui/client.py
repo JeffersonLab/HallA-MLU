@@ -33,6 +33,7 @@ class message1:
             self.wInput[i].grid(row=i,column=1,padx=5,pady=5)
         self.wInput[self.focal].focus_set()
         self.master.bind('<Tab>', self.tab)
+        self.master.bind('<Control-w>', self.quit)
 
         self.button_frame = tk.Frame(self.master)
         self.button_frame.pack(side=tk.BOTTOM)
@@ -68,7 +69,7 @@ class message1:
         data = '0 0 0 0'
         self.server.send(data.encode())
 
-    def quit(self):
+    def quit(self, event=None):
         self.exit_request = True
         self.master.destroy()
 

@@ -1,6 +1,24 @@
 import socket
 import thread
 import Queue as qu
+import subprocess
+
+def execFreq(aIndex, aFreq):
+    val = 'Error'	#default return value
+    p = subprocess.Popen(["fpga","freq",float(aIndex),aFreq], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    print "Caught stdout:", out
+    print "Caught stderr:", err
+    lines = out.split('\n')
+    for line in lines:
+        words = line.split(' ')
+        for i, word in enumerate(words):
+            if word=="Kilohertz":
+                try:
+                    val = float(words[i-1])
+                except:
+                    val = "NaN"
+    return val
 
 def handleMessage(message):
     print "New Message: ", message
@@ -11,7 +29,10 @@ def handleMessage(message):
             vals[i] = float(v)
         except:
             vals[i] = 'NaN'
+            continue
+        vals[i] = execFreq(i,v)
     print "vals after: ", vals
+    return ' '.join([str(v) for v in vals])
 
 def clientListen(aConnection, aQ):
     while True:
@@ -19,16 +40,16 @@ def clientListen(aConnection, aQ):
         if buf == '':	#kill thread if empty buffer is sent (usually due to broken connection)
             print "Client left."
             break
-        handleMessage(buf)
-        aQ.put(buf)
+        abuf = handleMessage(buf)
+        aQ.put(abuf)
 
-def clientsBroadcast(aDict, aQ, aKillSwitch):
+def clientsBroadcast(aDict, aQ, aControlDict):
     while True:
         message = aQ.get()
-        aKillSwitch[1] += 1
+        aControlDict["pauseFlag"] += 1
         for aC in aDict:
             aDict[aC].send(message)
-        aKillSwitch[1] -= 1
+        aControlDict["pauseFlag"] -= 1
         aQ.task_done()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,10 +57,11 @@ serversocket.bind(('', 1495))
 serversocket.listen(5) # become a server socket, maximum 5 connections
 
 clientDict = {}
-killSwitch = [False,0]	#first element is killswitch (now unused), second is pause (make this a "control dictionary" or "control object")
+controlDict = {}	#control dictionary
+controlDict["pauseFlag"] = 0
 q = qu.Queue()
 
-broadcaster = thread.start_new_thread(clientsBroadcast,(clientDict, q, killSwitch))
+broadcaster = thread.start_new_thread(clientsBroadcast,(clientDict, q, controlDict))
 
 print "Ready \n"
 
@@ -47,7 +69,7 @@ while True:
     connection, address = serversocket.accept()
     newClient = thread.start_new_thread(clientListen,(connection, q))
     print "Got new client! address = ", address
-    while killSwitch[1] != 0:
+    while controlDict["pauseFlag"] != 0:
         print "waiting for unpause..."
         pass
     clientDict[newClient] = connection

@@ -8,12 +8,24 @@ export TCL_LIBRARY=""
 export ITCL_LIBRARY=""
 export TCLINCLUDE_DIR=""
 
-# ssh to intelha3, start the server
-xterm -geometry 100x20+50+50 -hold -T "($1)HRS MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands$1.sh" &
+#check side from argument, set target vme hostname
+if [[ $1 == "R" ]]; then
+  vmehost='intelha3'
+elif [[ $1 == "L" ]]; then
+  vmehost='halladaq8'
+else
+  echo "Specify R or L"
+  exit 1
+fi
+
+# ssh to vme crate, start the server
+xterm -geometry 100x20+50+50 -hold -T "($1)HRS MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh $vmehost" &
 
 #save the PID of the xterm
 mluXtermPID=$!
-sleep 8
+
+#give the server a chance to start before launching the client
+sleep 9
 
 # launch the python client gui script. 
 python3 client.py $1

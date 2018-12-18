@@ -106,38 +106,12 @@ if len(sys.argv) == 2 and (sys.argv[1] == 'L' or sys.argv[1] == 'R'):
 else:
     print("Please specify which HRS with L or R")
 
-#initialize configuration dictionary
-configDict = {}
+if side == 'R':
+    serverIP = 'intelha3'
+if side == 'L':
+    serverIP = 'halladaq8'
 
-#open config file
-try:
-    with open('./mlu'+side+'.config', 'rt') as configFile:
-        for line in configFile:
-            if line.lstrip()[0] != '#':
-                configKey, configValue = line.split('=')
-                configDict[configKey] = configValue.rstrip()
-except IOError:
-    print("There was an error opening the config file!")
-    print("Creating a default config file...")
-    with open('./mlu'+side+'.config', 'wt') as newFile:
-        newFile.write("server=localhost\n")
-        newFile.write("port=1495")
-    print("...and exiting...")
-    sys.exit()
-
-#add server address to configuration dictionary
-try:
-    serverIP = configDict['server']
-except KeyError:
-    print("Must specify server IP address in mlu"+side+".config!")
-    sys.exit()
-
-#add server port to configuration dictionary
-try:
-    myPort = configDict['port']
-except KeyError:
-    myPort = '1495'
-    print("Default: Setting port to \'"+myPort+"\'")
+myPort = '1495'
 
 #start up threading and socket connection
 q = qu.Queue()

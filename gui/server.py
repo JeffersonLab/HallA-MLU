@@ -1,3 +1,6 @@
+
+#Randall Evan McClellan -- 2018-12-18
+
 import socket
 import thread
 import Queue as qu
@@ -5,12 +8,10 @@ import subprocess
 
 def execFreq(aIndex, aFreq):
     val = 'Error'	#default return value
-    p = subprocess.Popen(["fpga","freq",aIndex,aFreq], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    #print "Caught stdout:", out
-    #print "Caught stderr:", err
+    p = subprocess.Popen(["fpga","freq",aIndex,aFreq], stdout=subprocess.PIPE, stderr=subprocess.PIPE)	#execute fpga command
+    out, err = p.communicate()	#grab fpga stdout
     lines = out.split('\n')
-    for line in lines:
+    for line in lines:	#parse fpga stdout, saving the returned frequency (in Kilohertz) as a str(float)
         words = line.split(' ')
         for i, word in enumerate(words):
             if word=="Kilohertz":
@@ -20,6 +21,7 @@ def execFreq(aIndex, aFreq):
                     val = "NaN"
     return val
 
+#handle incoming message from client, check for valid floats, call execFreq() on each
 def handleMessage(message):
     print "New Message: ", message
     vals = message.split(' ')
@@ -33,24 +35,6 @@ def handleMessage(message):
         vals[i] = execFreq(str(i),v)
     print "vals after: ", vals
     return ' '.join([str(v) for v in vals])
-
-def clientListen(aConnection, aQ):
-    while True:
-        buf = aConnection.recv(64)
-        if buf == '':	#kill thread if empty buffer is sent (usually due to broken connection)
-            print "Client left."
-            break
-        abuf = handleMessage(buf)
-        aQ.put(abuf)
-
-def clientsBroadcast(aDict, aQ, aControlDict):
-    while True:
-        message = aQ.get()
-        aControlDict["pauseFlag"] += 1
-        for aC in aDict:
-            aDict[aC].send(message)
-        aControlDict["pauseFlag"] -= 1
-        #aQ.task_done()
 
 class serverClass:
     def __init__(self):
@@ -70,7 +54,7 @@ class serverClass:
     def clientListen(self, aConnection):
         while self.controlDict["killSwitch"] is False:
             buf = aConnection.recv(64)
-            if buf == '':	#kill thread if empty buffer is sent (usually due to broken connection)
+            if buf == '':	#kill threads, socket, and server if empty buffer is sent (usually due to broken connection)
                 print "Client left, killing server."
                 self.controlDict["killSwitch"] = True
                 dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

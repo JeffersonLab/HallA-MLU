@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+#Randall Evan McClellan -- 2018-12-18
 
 import tkinter as tk
 import time
@@ -7,14 +8,14 @@ import _thread as th
 import queue as qu
 import sys
 
+#tkinter gui class for MLU Random Pulser control
 class message1:
-    def __init__(self, master, bQ, aC, name):
+    def __init__(self, master, bQ, aC, aSide):
         self.master = master
         self.exit_request = False
         self.bQ = bQ
         self.server = aC
-        self.name = name
-        self.master.title("?HRS MLU Random Pulser")
+        self.master.title(aSide+"HRS MLU Random Pulser")
         self.recent_message = ''
         self.focal = 0
 
@@ -73,8 +74,7 @@ class message1:
         self.exit_request = True
         self.master.destroy()
 
-    #def send_text(self, event):
-    def send_text(self):
+    def send_text(self, event=None):
         newText = []
         for i in range(4):
             newText.append(self.wInput[i].get().strip(' '))
@@ -100,9 +100,18 @@ class message1:
             self.show_text()
         self.master.after(100, self.check_queue)
 
+#handle command line argument
+if len(sys.argv) == 2 and (sys.argv[1] == 'L' or sys.argv[1] == 'R'):
+    side = sys.argv[1]
+else:
+    print("Please specify which HRS with L or R")
+
+#initialize configuration dictionary
 configDict = {}
+
+#open config file
 try:
-    with open('./mlu.config', 'rt') as configFile:
+    with open('./mlu'+side+'.config', 'rt') as configFile:
         for line in configFile:
             if line.lstrip()[0] != '#':
                 configKey, configValue = line.split('=')
@@ -110,35 +119,32 @@ try:
 except IOError:
     print("There was an error opening the config file!")
     print("Creating a default config file...")
-    with open('./mlu.config', 'wt') as newFile:
-        newFile.write("name=anon\n")
+    with open('./mlu'+side+'.config', 'wt') as newFile:
         newFile.write("server=localhost\n")
         newFile.write("port=1495")
     print("...and exiting...")
     sys.exit()
 
-try:
-    myName = configDict['name']
-except KeyError:
-    myName = 'anon'
-    print("Default: Setting name to \'"+myName+"\'")
-
+#add server address to configuration dictionary
 try:
     serverIP = configDict['server']
 except KeyError:
-    print("Must specify server IP address in scopeChat.config!")
+    print("Must specify server IP address in mlu"+side+".config!")
     sys.exit()
 
+#add server port to configuration dictionary
 try:
     myPort = configDict['port']
 except KeyError:
     myPort = '1495'
     print("Default: Setting port to \'"+myPort+"\'")
 
+#start up threading and socket connection
 q = qu.Queue()
 serverconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverconnect.connect((serverIP, int(myPort)))
 
+#start up tkinter, open gui, pass control to tkinter main loop
 root = tk.Tk()
-my_gui = message1(root, q, serverconnect, myName)
+my_gui = message1(root, q, serverconnect, side)
 root.mainloop()

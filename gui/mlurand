@@ -1,5 +1,6 @@
 #!/bin/bash
-#Thanks to Bob Michaels! -- Randall Evan McClellan -- 2018-12-17
+#adapted from Bob Michaels -- Randall Evan McClellan -- 2018-12-17
+#this script launches the MLU Random Pulser control server and client
 
 # One or more of these are needed, 
 # else tkinter.TclError complains about improper Tcl index file
@@ -8,10 +9,15 @@ export ITCL_LIBRARY=""
 export TCLINCLUDE_DIR=""
 
 # ssh to intelha3, start the server
-xterm -geometry 100x20+50+50 -hold -T "MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh" &
+xterm -geometry 100x20+50+50 -hold -T "($1)HRS MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands$1.sh" &
+
+#save the PID of the xterm
 mluXtermPID=$!
 sleep 8
+
 # launch the python client gui script. 
-python3 client.py
+python3 client.py $1
+
+#client has exited (and the server should have self-destructed), kill the server xterm
 echo "Done."
 kill $mluXtermPID

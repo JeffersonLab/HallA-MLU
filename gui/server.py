@@ -53,14 +53,14 @@ def clientsBroadcast(aDict, aQ, aControlDict):
         #aQ.task_done()
 
 class serverClass:
-    def __init__():
+    def __init__(self):
         self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serversocket.bind(('', 1495))
         self.serversocket.listen(5) # become a server socket, maximum 5 connections
 
         self.clientDict = {}
         self.controlDict = {}	#control dictionary
-        self.controlDict["pauseFlag"] = 0
+        self.controlDict["killSwitch"] = False
         self.q = qu.Queue()
 
         self.broadcaster = thread.start_new_thread(self.clientsBroadcast,())

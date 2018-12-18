@@ -9,8 +9,9 @@ export TCLINCLUDE_DIR=""
 
 # ssh to intelha3, start the server
 xterm -geometry 100x20+50+50 -hold -T "MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh" &
+mluXtermPID=$!
 sleep 8
 # launch the python client gui script. 
 python3 client.py
 echo "Done."
-
+kill $mluXtermPID

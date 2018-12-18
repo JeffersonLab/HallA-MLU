@@ -52,24 +52,48 @@ def clientsBroadcast(aDict, aQ, aControlDict):
         aControlDict["pauseFlag"] -= 1
         #aQ.task_done()
 
-serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serversocket.bind(('', 1495))
-serversocket.listen(5) # become a server socket, maximum 5 connections
+class serverClass:
+    def __init__():
+        self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serversocket.bind(('', 1495))
+        self.serversocket.listen(5) # become a server socket, maximum 5 connections
 
-clientDict = {}
-controlDict = {}	#control dictionary
-controlDict["pauseFlag"] = 0
-q = qu.Queue()
+        self.clientDict = {}
+        self.controlDict = {}	#control dictionary
+        self.controlDict["pauseFlag"] = 0
+        self.q = qu.Queue()
 
-broadcaster = thread.start_new_thread(clientsBroadcast,(clientDict, q, controlDict))
+        self.broadcaster = thread.start_new_thread(self.clientsBroadcast,())
+        print "Ready \n"
+        self.mainLoop()
 
-print "Ready \n"
+    def clientListen(self, aConnection):
+        while self.controlDict["killSwitch"] is False:
+            buf = aConnection.recv(64)
+            if buf == '':	#kill thread if empty buffer is sent (usually due to broken connection)
+                print "Client left, killing server."
+                self.controlDict["killSwitch"] = True
+                dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                dummyconnect.connect(('localhost', 1495))
+                dummyconnect.send(''.encode())
+                break
+            abuf = handleMessage(buf)
+            self.q.put(abuf)
 
-while True:
-    connection, address = serversocket.accept()
-    newClient = thread.start_new_thread(clientListen,(connection, q))
-    print "Got new client! address = ", address
-    while controlDict["pauseFlag"] != 0:
-        print "waiting for unpause..."
-        pass
-    clientDict[newClient] = connection
+    def clientsBroadcast(self):
+        while self.controlDict["killSwitch"] is False:
+            message = self.q.get()
+            for aC in self.clientDict:
+                self.clientDict[aC].send(message)
+
+    def mainLoop(self):
+        while self.controlDict["killSwitch"] is False:
+            connection, address = self.serversocket.accept()
+            newClient = thread.start_new_thread(self.clientListen,(connection,))
+            print "Got new client! address = ", address
+            self.clientDict[newClient] = connection
+        self.serversocket.close()
+        return None
+
+serv = serverClass()
+print "Server Exiting..."

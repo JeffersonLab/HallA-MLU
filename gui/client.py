@@ -15,23 +15,34 @@ class message1:
         self.exit_request = False
         self.bQ = bQ
         self.server = aC
-        self.master.title(aSide+"HRS MLU Random Pulser")
+        self.master.title(aSide+"HRS MLU Random Pulser Control")
         self.recent_message = ''
         self.focal = 0
+
+        self.uber_frame = tk.Frame(self.master)
+        self.uber_frame.pack()
+        self.sigLabel = tk.Label(self.uber_frame, text='Contact: Evan McClellan (randallm@jlab.org)')
+        self.sigLabel.pack(side=tk.TOP)
 
         self.upper_frame = tk.Frame(self.master)
         self.upper_frame.pack()
 
         self.wLabel = []
+        self.k1Label = []
+        self.k2Label = []
         self.wInput = []
         self.wDisp  = []
         for i in range(4):
-            self.wLabel.append(tk.Label(self.upper_frame, text="F"+str(i)))
+            self.wLabel.append(tk.Label(self.upper_frame, text='F('+str(i)+')'))
             self.wLabel[i].grid(row=i,column=0)
-            self.wDisp.append(tk.Text(self.upper_frame, height=1, width=20))
-            self.wDisp[i].grid(row=i,column=2,padx=5,pady=5)
             self.wInput.append(tk.Entry(self.upper_frame, width=20, bg='white'))
             self.wInput[i].grid(row=i,column=1,padx=5,pady=5)
+            self.k1Label.append(tk.Label(self.upper_frame, text='kHz'))
+            self.k1Label[i].grid(row=i,column=2)
+            self.wDisp.append(tk.Text(self.upper_frame, state='disabled', background='gray80', height=1, width=20))
+            self.wDisp[i].grid(row=i,column=3,padx=5,pady=5)
+            self.k2Label.append(tk.Label(self.upper_frame, text='kHz'))
+            self.k2Label[i].grid(row=i,column=4)
         self.wInput[self.focal].focus_set()
         self.master.bind('<Tab>', self.tab)
         self.master.bind('<Control-w>', self.quit)
@@ -84,9 +95,11 @@ class message1:
     def show_text(self):
         messages = self.recent_message.split(' ')
         for i in range(4):
+            self.wDisp[i].configure(state='normal')
             self.wDisp[i].delete(1.0, tk.END)
             self.wDisp[i].insert(tk.END, messages[i])
             self.wDisp[i].see(tk.END)
+            self.wDisp[i].configure(state='disabled')
             self.wDisp[i].update()
 
     def check_queue(self):

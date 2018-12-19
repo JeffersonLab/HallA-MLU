@@ -54,12 +54,14 @@ class serverClass:
     def clientListen(self, aConnection):
         while self.controlDict["killSwitch"] is False:
             buf = aConnection.recv(64)
-            if buf == '':	#kill threads, socket, and server if empty buffer is sent (usually due to broken connection)
-                print "Client left, killing server."
-                self.controlDict["killSwitch"] = True
-                dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                dummyconnect.connect(('localhost', 1495))
-                dummyconnect.send(''.encode())
+            if buf == '':	#kill clientListen thread if empty buffer is sent (usually due to broken connection)
+                del self.clientDict[thread.get_ident()]		#remove client thread from client dictionary
+                if len(self.clientDict) == 0:	#kill threads, socket, and server if this was the last client
+                    print "All clients left, killing server."
+                    self.controlDict["killSwitch"] = True
+                    dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    dummyconnect.connect(('localhost', 1495))
+                    dummyconnect.send(''.encode())
                 break
             abuf = handleMessage(buf)
             self.q.put(abuf)

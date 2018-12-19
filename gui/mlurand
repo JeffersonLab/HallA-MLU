@@ -28,7 +28,7 @@ mluXtermPID=$!
 sleep 9
 
 # launch the python client gui script. 
-python3 client.py $1
+python3 /adaqfs/home/adaq/HallA-MLU/gui/client.py $1
 
 #client has exited (and the server should have self-destructed), kill the server xterm
 echo "Done."

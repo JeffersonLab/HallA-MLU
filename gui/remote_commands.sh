@@ -4,9 +4,8 @@
 #to be executed in an xterm by the 'mlurand' script
 
 ssh -t -t $1 << EOF
-cd /adaqfs/home/adaq/MLUright/driver
+cd /adaqfs/home/adaq/HallA-MLU/driver
 python /adaqfs/home/adaq/HallA-MLU/gui/server.py
 echo "MLU Random Pulser Control Server Closed."
 exit
 EOF
-exit

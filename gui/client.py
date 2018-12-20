@@ -50,6 +50,8 @@ class message1:
         self.button_frame = tk.Frame(self.master)
         self.button_frame.pack(side=tk.BOTTOM)
 
+        self.kill_button = tk.Button(self.button_frame, text="Kill All", fg="red", command=self.killall)
+        self.kill_button.pack(side=tk.LEFT,padx=15)
         self.zero_button = tk.Button(self.button_frame, text="Zero All", fg="red", command=self.zeroall)
         self.zero_button.pack(side=tk.LEFT,padx=10)
         self.quit_button = tk.Button(self.button_frame, text="Quit", fg="red", command=self.quit)
@@ -65,7 +67,10 @@ class message1:
         while not self.exit_request:
             inbound = self.server.recv(1024).decode()
             if len(inbound) > 0:
-                self.bQ.put(inbound)
+                if inbound == 'killall':
+                    self.quit()
+                else:
+                    self.bQ.put(inbound)
         self.server.close()
 
     def tab(self, event):
@@ -75,11 +80,19 @@ class message1:
         self.wInput[self.focal].focus_set()
         return("break")	#dont do the tab default behavior!
 
+    def killall(self):
+        self.server.send('killall'.encode())
+        self.quit()
+
     def zeroall(self):
         for i in range(4):
             self.wInput[i].delete(0,tk.END)
         data = '0 0 0 0'
-        self.server.send(data.encode())
+        try:
+            self.server.send(data.encode())
+        except:
+            print("Server lost, exiting...")
+            self.quit()
 
     def quit(self, event=None):
         self.exit_request = True
@@ -90,7 +103,11 @@ class message1:
         for i in range(4):
             newText.append(self.wInput[i].get().strip(' '))
         data = newText[0]+" "+newText[1]+" "+newText[2]+" "+newText[3]
-        self.server.send(data.encode())
+        try:
+            self.server.send(data.encode())
+        except:
+            print("Server lost, exiting...")
+            self.quit()
 
     def show_text(self):
         messages = self.recent_message.split(' ')

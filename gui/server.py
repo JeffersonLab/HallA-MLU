@@ -51,6 +51,14 @@ class serverClass:
         print "Ready \n"
         self.mainLoop()
 
+    def selfDestruct(self):
+        self.controlDict["killSwitch"] = True
+        for aC in self.clientDict:
+            self.clientDict[aC].send('killall')
+        dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        dummyconnect.connect(('localhost', 1495))
+        dummyconnect.send(''.encode())
+
     def clientListen(self, aConnection):
         while self.controlDict["killSwitch"] is False:
             buf = aConnection.recv(64)
@@ -58,10 +66,11 @@ class serverClass:
                 del self.clientDict[thread.get_ident()]		#remove client thread from client dictionary
                 if len(self.clientDict) == 0:	#kill threads, socket, and server if this was the last client
                     print "All clients left, killing server."
-                    self.controlDict["killSwitch"] = True
-                    dummyconnect = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    dummyconnect.connect(('localhost', 1495))
-                    dummyconnect.send(''.encode())
+                    self.selfDestruct()
+                break
+            if buf == 'killall':
+                print "Kill All request received, killing server."
+                self.selfDestruct()
                 break
             abuf = handleMessage(buf)
             self.q.put(abuf)

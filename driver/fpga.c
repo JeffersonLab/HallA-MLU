@@ -27,13 +27,13 @@ int main(int argc, char *argv[]) {
   printf("hostname: %s\n", hostname);
   if(!strcmp(hostname,"intelha3"))
   {
-    printf("Right Arm!\n");
     address=0x530000;   //RHRS
+    printf("Right Arm! 0x%X\n", address);
   }
   else if (!strcmp(hostname,"halladaq8"))
   {
-    printf("Left Arm!\n");
-    address=0x520000;   //LHRS
+    address=0x0A0000;   //LHRS
+    printf("Left Arm! 0x%X\n", address);
   }
   else
   {

@@ -18,9 +18,28 @@
 #include <stdlib.h>
 #include "v1495.h"
 
-int address=0x530000;
+int address;
 
 int main(int argc, char *argv[]) {
+
+  char hostname[1024];
+  gethostname(hostname,1024);
+  printf("hostname: %s\n", hostname);
+  if(!strcmp(hostname,"intelha3"))
+  {
+    address=0x530000;   //RHRS
+    printf("Right Arm! 0x%X\n", address);
+  }
+  else if (!strcmp(hostname,"halladaq8"))
+  {
+    address=0xA00000;   //LHRS
+    printf("Left Arm! 0x%X\n", address);
+  }
+  else
+  {
+    printf("Invalid hostname!\n");
+    return 0;
+  }
 
   /* Intel PC version:  do NOT want fa520000, only 520000 */
 

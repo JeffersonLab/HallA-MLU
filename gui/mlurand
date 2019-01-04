@@ -1,0 +1,31 @@
+#!/bin/bash
+#adapted from Bob Michaels -- Randall Evan McClellan -- 2018-12-17
+#this script launches the MLU Random Pulser control server and client
+
+# One or more of these are needed, 
+# else tkinter.TclError complains about improper Tcl index file
+export TCL_LIBRARY=""
+export ITCL_LIBRARY=""
+export TCLINCLUDE_DIR=""
+
+#check side from argument, set target vme hostname
+if [[ $1 == "R" ]]; then
+  vmehost='intelha3'
+elif [[ $1 == "L" ]]; then
+  vmehost='halladaq8'
+else
+  echo "Specify R or L"
+  exit 1
+fi
+
+# ssh to vme crate, start the server
+xterm -geometry 100x20+50+50 -T "($1)HRS MLU Random Pulser Server" -bg  "black" -fg "green" -e /bin/tcsh -c "/adaqfs/home/adaq/HallA-MLU/gui/remote_commands.sh $vmehost" &
+
+#give the server a chance to start before launching the client
+sleep 9
+
+# launch the python client gui script. 
+python3 /adaqfs/home/adaq/HallA-MLU/gui/client.py $1
+
+#client has exited (and the server should have self-destructed)
+echo "Done."

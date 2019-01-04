@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   }
   else if (!strcmp(hostname,"halladaq8"))
   {
-    address=0x0A0000;   //LHRS
+    address=0xA00000;   //LHRS
     printf("Left Arm! 0x%X\n", address);
   }
   else

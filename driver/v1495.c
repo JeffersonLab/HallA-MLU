@@ -533,16 +533,16 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 
   	int mode = 0x0080;    /*trig bit high, all others low*/
 
-	
+/*  Not needed, since the associated ClockCount Read has already updated the BCM values for this event
   	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);     /*twice, to make sure we wait long enough*/
-  	v1495Write16(&v1495->mode, mode);     /*extra paranoia*/
+  	v1495Write16(&v1495->mode, mode);     //twice, to make sure we wait long enough
+  	v1495Write16(&v1495->mode, mode);     //extra paranoia
 
  	mode = 0x0000;
   	v1495Write16(&v1495->mode, mode);
   	v1495Write16(&v1495->mode, mode);
   	v1495Write16(&v1495->mode, mode);
-
+*/
 	switch(id)
 	{
 		case 0:
@@ -725,6 +725,7 @@ v1495InitCODA(unsigned int address, int mode)
   v1495Write16(&v1495->ectrl_l, 3);  /* NIM input  */
   v1495Write16(&v1495->dctrl_l, 1);  /* ECL output */
 
+  printf("v1495 Driver Version 3.14\n");
   printf("\nInitialized MLU.  CAEN V1495 address = 0x%x\n",address);
   printf("mode register = 0x%x \n",mode);
 

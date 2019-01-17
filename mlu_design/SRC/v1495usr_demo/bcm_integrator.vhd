@@ -20,13 +20,15 @@ entity bcm_integrator is
 		i_reset		: in std_logic;				--Reset Command
 		i_Clk		: in std_logic;				--Clock
 
-		o_sum		: out std_logic_vector(63 downto 0)	--Data Output
+		o_sum		: out std_logic_vector(63 downto 0);	--Sum Output
+		o_current	: out std_logic_vector(31 downto 0)	--Current Output
 	);
 end entity bcm_integrator;
 
 
 architecture rtl of bcm_integrator is
 	signal r_sum		: unsigned(63 downto 0)	:= to_unsigned(0, 64);	--Contains running sum
+	signal r_current	: unsigned(31 downto 0)	:= to_unsigned(0, 32);	--Contains latest current
 	signal r_old_DV		: std_logic;
 	signal r_old_read	: std_logic;
 
@@ -47,6 +49,7 @@ begin
 		elsif rising_edge(i_Clk) then
 			if (r_old_DV = '0' and i_DV = '1') then
 				r_sum	<= r_sum + unsigned(i_data);
+				r_current <= to_unsigned(0,4) & unsigned(i_data);
 			end if;
 		end if;
 	end process p_Add;
@@ -58,6 +61,7 @@ begin
 		elsif rising_edge(i_Clk) then
 			if (r_old_read = '0' and i_read = '1') then
 				o_sum <= std_logic_vector(r_sum);
+				o_current <= std_logic_vector(r_current);
 			end if;
 		end if;
 	end process p_Read;

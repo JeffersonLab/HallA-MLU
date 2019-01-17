@@ -463,12 +463,6 @@ v1495ClockCountRead(unsigned int address)
 
 
   open_vme(address);
-//  open_vme_coda(address);
-//  long laddr;
-//  int res = 0;
-//  res = vmeBusToLocalAdrs(0x39, address, &laddr);
-//  v1495 = (struct v1495_struct *)laddr;
-
 
   if (!v1495) {
     printf("v1495 not initialized.  must open_vme. \n");
@@ -508,68 +502,6 @@ v1495ClockCountRead(unsigned int address)
 //  printf("closing time \n");
 
   return a_count;
-}
-
-unsigned short
-v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
-{
-	/*
-	 * Return bcm data
-	 */
-
-  	if (!v1495) 
-	{
-    		printf("v1495 not initialized.  must open_vme. \n");
-    		printf(" ... quitting ... \n");
-    		exit(0);
-  	}
-
-	if (id != 0 && id != 1)
-	{
-		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-		return 0xBEEFDEAD;
-
-	}
-
-  	int mode = 0x0080;    /*trig bit high, all others low*/
-
-/*  Not needed, since the associated ClockCount Read has already updated the BCM values for this event
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);     //twice, to make sure we wait long enough
-  	v1495Write16(&v1495->mode, mode);     //extra paranoia
-
- 	mode = 0x0000;
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);
-*/
-	switch(id)
-	{
-		case 0:
-			switch(part)
-			{
-  				case 0: return v1495Read16(&v1495->abcmu_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495->abcmu_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495->abcmu_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495->abcmu_hh);	//case 3: return highest 16 bits
-				default: printf("Invalid part, should be 0, 1, 2, or 3");
-			}
-
-		case 1:
-			switch(part)
-			{
-  				case 0: return v1495Read16(&v1495->abcmd_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495->abcmd_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495->abcmd_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495->abcmd_hh);	//case 3: return highest 16 bits
-				default: printf("Invalid part, should be 0, 1, 2, or 3");
-			}
-
-		default:
-			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-                	return 0xBEEF;
-	}
-
 }
 
 unsigned long
@@ -613,19 +545,19 @@ v1495BCM_ReadCODA(unsigned int id)
 	switch(id)
 	{
 		case 0:
-  			a_bcm_ll = v1495Read16(&v1495->abcmu_ll);
-  			a_bcm_ml = v1495Read16(&v1495->abcmu_ml);
-                        a_bcm_mh = v1495Read16(&v1495->abcmu_mh);
-                        a_bcm_hh = v1495Read16(&v1495->abcmu_hh);
+  			a_bcm_ll = v1495Read16(&v1495->bcmu_ll);
+  			a_bcm_ml = v1495Read16(&v1495->bcmu_ml);
+                        a_bcm_mh = v1495Read16(&v1495->bcmu_mh);
+                        a_bcm_hh = v1495Read16(&v1495->bcmu_hh);
 
   			a_bcm = a_bcm_ll + (a_bcm_ml<<16) + (a_bcm_mh<<32) + (a_bcm_hh<<48);
 			break;
 
 		case 1:
-                        a_bcm_ll = v1495Read16(&v1495->abcmd_ll);
-                        a_bcm_ml = v1495Read16(&v1495->abcmd_ml);
-                        a_bcm_mh = v1495Read16(&v1495->abcmd_mh);
-                        a_bcm_hh = v1495Read16(&v1495->abcmd_hh);
+                        a_bcm_ll = v1495Read16(&v1495->bcmd_ll);
+                        a_bcm_ml = v1495Read16(&v1495->bcmd_ml);
+                        a_bcm_mh = v1495Read16(&v1495->bcmd_mh);
+                        a_bcm_hh = v1495Read16(&v1495->bcmd_hh);
 
                         a_bcm = (unsigned long)a_bcm_ll + ((unsigned long)a_bcm_ml<<16) + ((unsigned long)a_bcm_mh<<32) + ((unsigned long)a_bcm_hh<<48);
 			break;
@@ -636,6 +568,50 @@ v1495BCM_ReadCODA(unsigned int id)
 
 	}
   	return a_bcm;
+
+}
+
+unsigned int
+v1495BCMcurrent_ReadCODA(unsigned int id)
+{
+	/*
+	 * Return bcm latest current data
+	 */
+	unsigned short bcmI_l = 0;
+	unsigned short bcmI_h = 0;
+	unsigned int bcmI = 0;
+
+  	if (!v1495) 
+	{
+    		printf("v1495 not initialized.  must open_vme. \n");
+    		printf(" ... quitting ... \n");
+    		exit(0);
+  	}
+
+	if (id != 0 && id != 1)
+	{
+		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+		return 0xBEEFDEAD;
+
+	}
+
+	switch(id)
+	{
+		case 0:	//upstream BCM
+  			bcmI_l = v1495Read16(&v1495->bcmui_l);	//low 16 bits
+  			bmcI_l = v1495Read16(&v1495->bcmui_h);	//high 16 bits
+			bcmI = bcmI_l + (bcmI_h << 16);
+
+		case 1:	//downstream BCM
+  			bcmI_l = v1495Read16(&v1495->bcmdi_l);	//low 16 bits
+  			bmcI_l = v1495Read16(&v1495->bcmdi_h);	//high 16 bits
+			bcmI = bcmI_l + (bcmI_h << 16);
+
+		default:
+			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+                	bcmI = 0xDEADBEEF;
+	}
+	return bcmI;
 
 }
 
@@ -781,10 +757,10 @@ v1495status(unsigned int address){
   }
   
   printf("USER revision= 0x%x\n",vmeRead16(&v1495->revision));
-  printf("Val159= 0x%x\n",vmeRead16(&v1495->aval159));
-  printf("Val161= 0x%x\n",vmeRead16(&v1495->aval161));
-  printf("Val167= 0x%x\n",vmeRead16(&v1495->aval167));
-  printf("Val94= 0x%x\n\n",vmeRead16(&v1495->aval94));
+  printf("Val159= 0x%x\n",vmeRead16(&v1495->val159));
+  printf("Val161= 0x%x\n",vmeRead16(&v1495->val161));
+  printf("Val167= 0x%x\n",vmeRead16(&v1495->val167));
+  printf("Val94= 0x%x\n\n",vmeRead16(&v1495->val94));
 
   printf("\ndcrtl_l= 0x%x\n",vmeRead16(&v1495->dctrl_l));
   printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495->ectrl_l));
@@ -868,22 +844,22 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 	switch (LFSR)
 	{
 		case 0:
-			LFSRadd = &v1495->aval94;
+			LFSRadd = &v1495->val94;
 			printf("LFSR94 assigned threshold value: ");
 			break;
 
 		case 1:
-                        LFSRadd = &v1495->aval159;
+                        LFSRadd = &v1495->val159;
                         printf("LFSR159 assigned threshold value: ");
 			break;
 
 		case 2:
-                        LFSRadd = &v1495->aval161;
+                        LFSRadd = &v1495->val161;
                         printf("LFSR161 assigned threshold value: ");
 			break;
 
 		case 3:
-                        LFSRadd = &v1495->aval167;
+                        LFSRadd = &v1495->val167;
                         printf("LFSR167 assigned threshold value: ");			
 			break;
 

@@ -54,25 +54,30 @@ typedef struct v1495_struct
   /*0x1048*/ volatile unsigned short count_l;
   /*0x104A*/ volatile unsigned short count_h;
 
-  /*0x104C*/ volatile unsigned short aval159;
-  /*0x104E*/ volatile unsigned short aval161;
-  /*0x1050*/ volatile unsigned short aval167;
-  /*0x1052*/ volatile unsigned short aval94;
+  /*0x104C*/ volatile unsigned short val159;
+  /*0x104E*/ volatile unsigned short val161;
+  /*0x1050*/ volatile unsigned short val167;
+  /*0x1052*/ volatile unsigned short val94;
 
-  /*0x1054*/ volatile unsigned short abcmu_ll;
-  /*0x1056*/ volatile unsigned short abcmu_ml;
-  /*0x1058*/ volatile unsigned short abcmu_mh;
-  /*0x105A*/ volatile unsigned short abcmu_hh;
+  /*0x1054*/ volatile unsigned short bcmu_ll;
+  /*0x1056*/ volatile unsigned short bcmu_ml;
+  /*0x1058*/ volatile unsigned short bcmu_mh;
+  /*0x105A*/ volatile unsigned short bcmu_hh;
 
-  /*0x105C*/ volatile unsigned short abcmd_ll;
-  /*0x105E*/ volatile unsigned short abcmd_ml;
-  /*0x1060*/ volatile unsigned short abcmd_mh;
-  /*0x1062*/ volatile unsigned short abcmd_hh;
+  /*0x105C*/ volatile unsigned short bcmd_ll;
+  /*0x105E*/ volatile unsigned short bcmd_ml;
+  /*0x1060*/ volatile unsigned short bcmd_mh;
+  /*0x1062*/ volatile unsigned short bcmd_hh;
 
+  /*0x1064*/ volatile unsigned short bcmui_l;
+  /*0x1066*/ volatile unsigned short bcmui_h;
+
+  /*0x1068*/ volatile unsigned short bcmdi_l;
+  /*0x106A*/ volatile unsigned short bcmdi_h;
 
   /* end of COIN_REFERENCE */ 
 
-  /*0x1064*/ volatile unsigned char data[0x8000 - 0x1064];    /* R/W  skip ahead to 'bridge fpga' address space*/
+  /*0x106C*/ volatile unsigned char data[0x8000 - 0x106C];    /* R/W  skip ahead to 'bridge fpga' address space*/
   /*0x8000*/ volatile unsigned short control;        /* R/W */
   /*0x8002*/ volatile unsigned short status;         /* R */
   /*0x8004*/ volatile unsigned short intLevel;       /* R/W */

@@ -206,7 +206,8 @@ int open_vme(base_address)
 
   if (!isok) {
     printf("The v1495 seems to not be addressable\n");
-    v1495=0;
+    v1495user=0;
+    v1495vme=0;
     printf("Exiting ....\n");
     exit(0);
   }
@@ -251,7 +252,7 @@ write_flash_page1(unsigned int addr, unsigned char *page, int pagenum, int flag)
 
   printf("write_flash 0x%x\n",addr);
 
-  if (!v1495) {
+  if (!v1495vme) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -434,16 +435,16 @@ read_flash_page1(unsigned int addr, unsigned char *page, int pagenum, int flag)
 unsigned int
 v1495ClockCountReadCODA()
 {
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
   }
 
   int mode = 0x0080;	/*trig bit high, all others low*/
-  unsigned short a_count_l = 0;
-  unsigned short a_count_h = 0;
-  unsigned int a_count = 0;
+  unsigned short count_l = 0;
+  unsigned short count_h = 0;
+  unsigned int count = 0;
 
 
   v1495Write16(&v1495user->mode, mode); 
@@ -453,11 +454,11 @@ v1495ClockCountReadCODA()
   v1495Write16(&v1495user->mode, mode); 
   v1495Write16(&v1495user->mode, mode); 
 
-  a_count_l = v1495Read16(&v1495user->count_l);
-  a_count_h = v1495Read16(&v1495user->count_h);
-  a_count = a_count_l + (a_count_h<<16);
+  count_l = v1495Read16(&v1495user->count_l);
+  count_h = v1495Read16(&v1495user->count_h);
+  count = count_l + (count_h<<16);
 
-  return a_count;
+  return count;
 }
 
 unsigned int
@@ -475,16 +476,16 @@ v1495ClockCountRead(unsigned int address)
 //  v1495 = (struct v1495_struct *)laddr;
 
 
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
   }
 
   int mode = 0x0080;	/*trig bit high, all others low*/
-  unsigned short a_count_l = 0;
-  unsigned short a_count_h = 0;
-  unsigned int a_count = 0;
+  unsigned short count_l = 0;
+  unsigned short count_h = 0;
+  unsigned int count = 0;
 
 //  printf("about to set mode bits = 0x%x\n",mode);
 
@@ -497,14 +498,14 @@ v1495ClockCountRead(unsigned int address)
   v1495Write16(&v1495user->mode, mode); 
 //  v1495user->mode = mode; 
 
-  a_count_l = v1495Read16(&v1495user->count_l);
-//  a_count_l = v1495user->count_l;
-  a_count_h = v1495Read16(&v1495user->count_h);
-//  a_count_h = v1495user->count_h;
-  a_count = a_count_l + (a_count_h<<16);
-//  printf("count_l= 0x%x\n\n",a_count_l);
-//  printf("count_h= 0x%x\n\n",a_count_h);
-  printf("MLU Clock Count = 0x%x\n\n",a_count);
+  count_l = v1495Read16(&v1495user->count_l);
+//  count_l = v1495user->count_l;
+  count_h = v1495Read16(&v1495user->count_h);
+//  count_h = v1495user->count_h;
+  count = count_l + (count_h<<16);
+//  printf("count_l= 0x%x\n\n",count_l);
+//  printf("count_h= 0x%x\n\n",count_h);
+  printf("MLU Clock Count = 0x%x\n\n",count);
 
 
   //close_vme_coda();
@@ -512,7 +513,7 @@ v1495ClockCountRead(unsigned int address)
 
 //  printf("closing time \n");
 
-  return a_count;
+  return count;
 }
 
 unsigned short
@@ -522,7 +523,7 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 	 * Return bcm data
 	 */
 
-  	if (!v1495) 
+  	if (!v1495user) 
 	{
     		printf("v1495 not initialized.  must open_vme. \n");
     		printf(" ... quitting ... \n");
@@ -580,7 +581,7 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 int
 v1495ClockCountSyncCODA(unsigned int address)
 { 
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -610,7 +611,7 @@ v1495ClockCountSync(unsigned int address)
 
   printf("opened vme \n");
 
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -640,10 +641,12 @@ v1495InitCODA(unsigned int address, int mode)
 {
   long laddr;
   int res = 0;
-  v1495 = 0;
+  v1495user = 0;
+  v1495vme = 0;
 
   res = vmeBusToLocalAdrs(0x39, address, &laddr);
-  v1495 = (struct v1495_struct *)laddr;
+  v1495user = (struct v1495_struct *)laddr;
+  v1495vme = (struct v1495_bridge *)laddr;
   
   v1495Write16(&v1495user->mode, mode); 
   v1495Write16(&v1495user->fctrl_l, 1);  /* NIM output */ 
@@ -671,7 +674,7 @@ v1495initMlu(unsigned int address, int mode)
 
   printf("opened vme \n");
 
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -699,7 +702,7 @@ v1495status(unsigned int address){
   
   open_vme(address);
   
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -730,7 +733,7 @@ v1495turnOff(unsigned int address)
 {
   open_vme(address);
 
-  if(!v1495) {
+  if(!v1495user) {
     printf("v1495 not initialized. must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);
@@ -755,7 +758,7 @@ v1495WriteCmask(unsigned int address, int cmask_l)
 
   open_vme(address);
 
-  if (!v1495) {
+  if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
     printf(" ... quitting ... \n");
     exit(0);

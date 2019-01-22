@@ -521,7 +521,7 @@ v1495BCMcurrent_ReadCODA(unsigned int id)
 	unsigned short bcmI_h = 0;
 	unsigned int bcmI = 0;
 
-  	if (!v1495) 
+  	if (!v1495user) 
 	{
     		printf("v1495 not initialized.  must open_vme. \n");
     		printf(" ... quitting ... \n");
@@ -538,13 +538,13 @@ v1495BCMcurrent_ReadCODA(unsigned int id)
 	switch(id)
 	{
 		case 0:	//upstream BCM
-  			bcmI_l = v1495Read16(&v1495->bcmui_l);	//low 16 bits
-  			bmcI_l = v1495Read16(&v1495->bcmui_h);	//high 16 bits
+  			bcmI_l = v1495Read16(&v1495user->bcmui_l);	//low 16 bits
+  			bcmI_l = v1495Read16(&v1495user->bcmui_h);	//high 16 bits
 			bcmI = bcmI_l + (bcmI_h << 16);
 
 		case 1:	//downstream BCM
-  			bcmI_l = v1495Read16(&v1495->bcmdi_l);	//low 16 bits
-  			bmcI_l = v1495Read16(&v1495->bcmdi_h);	//high 16 bits
+  			bcmI_l = v1495Read16(&v1495user->bcmdi_l);	//low 16 bits
+  			bcmI_l = v1495Read16(&v1495user->bcmdi_h);	//high 16 bits
 			bcmI = bcmI_l + (bcmI_h << 16);
 
 		default:

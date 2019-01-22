@@ -21,7 +21,7 @@ PACKAGE v1495pkg IS
 -- Constants
 
 -- DEMO Revision
-constant REVISION : std_logic_vector(15 downto 0) := X"021B";
+constant REVISION : std_logic_vector(15 downto 0) := X"021C";
 
 -- Expansion Mezzanine Type ID-Codes
 constant A395A : std_logic_vector(2 downto 0) := "000"; -- 32CH IN LVDS/ECL INTERFACE
@@ -87,5 +87,10 @@ constant A_BCMd_ML      : std_logic_vector(15 downto 0) := X"105E";
 constant A_BCMd_MH      : std_logic_vector(15 downto 0) := X"1060";
 constant A_BCMd_HH      : std_logic_vector(15 downto 0) := X"1062";
 
+constant A_BCMuI_L	: std_logic_vector(15 downto 0) := X"1064";
+constant A_BCMuI_H	: std_logic_vector(15 downto 0) := X"1066";
+
+constant A_BCMdI_L	: std_logic_vector(15 downto 0) := X"1068";
+constant A_BCMdI_H	: std_logic_vector(15 downto 0) := X"106A";
 
 END v1495pkg;

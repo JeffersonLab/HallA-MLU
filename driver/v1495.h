@@ -69,6 +69,12 @@ typedef struct v1495_struct
   /*0x1060*/ volatile unsigned short bcmd_mh;
   /*0x1062*/ volatile unsigned short bcmd_hh;
 
+  /*0x1064*/ volatile unsigned short bcmui_l;
+  /*0x1066*/ volatile unsigned short bcmui_h;
+
+  /*0x1068*/ volatile unsigned short bcmdi_l;
+  /*0x106A*/ volatile unsigned short bcmdi_h;
+
   /* end of COIN_REFERENCE */ 
 } V1495user;
 

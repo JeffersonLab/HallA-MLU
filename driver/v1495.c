@@ -469,12 +469,6 @@ v1495ClockCountRead(unsigned int address)
 
 
   open_vme(address);
-//  open_vme_coda(address);
-//  long laddr;
-//  int res = 0;
-//  res = vmeBusToLocalAdrs(0x39, address, &laddr);
-//  v1495 = (struct v1495_struct *)laddr;
-
 
   if (!v1495user) {
     printf("v1495 not initialized.  must open_vme. \n");
@@ -516,14 +510,18 @@ v1495ClockCountRead(unsigned int address)
   return count;
 }
 
-unsigned short
-v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
+
+unsigned int
+v1495BCMcurrent_ReadCODA(unsigned int id)
 {
 	/*
-	 * Return bcm data
+	 * Return bcm latest current data
 	 */
+	unsigned short bcmI_l = 0;
+	unsigned short bcmI_h = 0;
+	unsigned int bcmI = 0;
 
-  	if (!v1495user) 
+  	if (!v1495) 
 	{
     		printf("v1495 not initialized.  must open_vme. \n");
     		printf(" ... quitting ... \n");
@@ -537,44 +535,23 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 
 	}
 
-  	int mode = 0x0080;    /*trig bit high, all others low*/
-
-/*  Not needed, since the associated ClockCount Read has already updated the BCM values for this event
-  	v1495Write16(&v1495user->mode, mode);
-  	v1495Write16(&v1495user->mode, mode);     //twice, to make sure we wait long enough
-  	v1495Write16(&v1495user->mode, mode);     //extra paranoia
-
- 	mode = 0x0000;
-  	v1495Write16(&v1495user->mode, mode);
-  	v1495Write16(&v1495user->mode, mode);
-  	v1495Write16(&v1495user->mode, mode);
-*/
 	switch(id)
 	{
-		case 0:
-			switch(part)
-			{
-  				case 0: return v1495Read16(&v1495user->bcmu_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495user->bcmu_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495user->bcmu_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495user->bcmu_hh);	//case 3: return highest 16 bits
-				default: printf("Invalid part, should be 0, 1, 2, or 3");
-			}
+		case 0:	//upstream BCM
+  			bcmI_l = v1495Read16(&v1495->bcmui_l);	//low 16 bits
+  			bmcI_l = v1495Read16(&v1495->bcmui_h);	//high 16 bits
+			bcmI = bcmI_l + (bcmI_h << 16);
 
-		case 1:
-			switch(part)
-			{
-  				case 0: return v1495Read16(&v1495user->bcmd_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495user->bcmd_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495user->bcmd_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495user->bcmd_hh);	//case 3: return highest 16 bits
-				default: printf("Invalid part, should be 0, 1, 2, or 3");
-			}
+		case 1:	//downstream BCM
+  			bcmI_l = v1495Read16(&v1495->bcmdi_l);	//low 16 bits
+  			bmcI_l = v1495Read16(&v1495->bcmdi_h);	//high 16 bits
+			bcmI = bcmI_l + (bcmI_h << 16);
 
 		default:
 			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-                	return 0xBEEF;
+                	bcmI = 0xDEADBEEF;
 	}
+	return bcmI;
 
 }
 
@@ -721,7 +698,6 @@ v1495status(unsigned int address){
   printf("ddata_h= 0x%x\n\n",vmeRead16(&v1495user->ddata_h));
   printf("count_l= 0x%x\n\n",vmeRead16(&v1495user->count_l));
   printf("count_h= 0x%x\n\n",vmeRead16(&v1495user->count_h));
-  
   close_vme();
   
   return 0;

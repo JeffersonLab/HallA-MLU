@@ -223,7 +223,8 @@ ARCHITECTURE rtl OF coin_reference IS
         	        i_reset         : in std_logic;                         --Reset Command
 			i_Clk		: in std_logic;				--Clock
 	
-        	        o_sum           : out std_logic_vector(63 downto 0)     --Data Output
+        	        o_sum           : out std_logic_vector(63 downto 0);     --Data Output
+        	        o_current       : out std_logic_vector(31 downto 0)     --Data Output
 	        );
 	end component;
 
@@ -268,6 +269,8 @@ signal BCMu_DATA	: std_logic_vector(27 downto 0); --individual data words from u
 signal BCMd_DATA	: std_logic_vector(27 downto 0); --individual data words from downstream BCM RX
 signal BCMu_SUM		: std_logic_vector(63 downto 0); --running integral of upstream BCM since reset
 signal BCMd_SUM		: std_logic_vector(63 downto 0); --running integral of downstream BCM since reset
+signal BCMu_CURRENT	: std_logic_vector(31 downto 0); --latest current of upstream BCM
+signal BCMd_CURRENT	: std_logic_vector(31 downto 0); --latest current of downstream BCM
 
 -- for BCM debugging
 signal BCMu_DATA_DEBUG	: std_logic;
@@ -531,7 +534,8 @@ BEGIN
 		i_reset		=> CODA_RESET,	--MODE(6)
 		i_Clk		=> LCLK,	--Clock
 
-		o_sum		=> BCMu_SUM
+		o_sum		=> BCMu_SUM,
+		o_current	=> BCMu_CURRENT
 
 	);
 
@@ -544,7 +548,8 @@ BEGIN
                 i_reset         => CODA_RESET,      --MODE(6)
 		i_Clk		=> LCLK,	--Clock
 
-                o_sum           => BCMd_SUM
+                o_sum           => BCMd_SUM,
+                o_current       => BCMd_CURRENT
 
         );
 
@@ -871,6 +876,12 @@ BEGIN
              when A_BCMd_ML     => REG_DOUT     <= BCMd_SUM(31 downto 16);
              when A_BCMd_MH     => REG_DOUT     <= BCMd_SUM(47 downto 32);
              when A_BCMd_HH     => REG_DOUT     <= BCMd_SUM(63 downto 48);
+             
+	     when A_BCMuI_L	=> REG_DOUT	<= BCMu_CURRENT(15 downto 0);	
+	     when A_BCMuI_H	=> REG_DOUT	<= BCMu_CURRENT(31 downto 16);
+
+	     when A_BCMdI_L	=> REG_DOUT	<= BCMd_CURRENT(15 downto 0);	
+	     when A_BCMdI_H	=> REG_DOUT	<= BCMd_CURRENT(31 downto 16);
 
              when A_VAL159      => REG_DOUT     <= r_val159;
              when A_VAL161      => REG_DOUT     <= r_val161;

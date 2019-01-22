@@ -510,6 +510,68 @@ v1495ClockCountRead(unsigned int address)
   return count;
 }
 
+unsigned short
+v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
+{
+	/*
+	 * Return bcm data
+	 */
+
+  	if (!v1495user) 
+	{
+    		printf("v1495 not initialized.  must open_vme. \n");
+    		printf(" ... quitting ... \n");
+    		exit(0);
+  	}
+
+	if (id != 0 && id != 1)
+	{
+		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+		return 0xBEEFDEAD;
+
+	}
+
+  	int mode = 0x0080;    /*trig bit high, all others low*/
+
+/*  Not needed, since the associated ClockCount Read has already updated the BCM values for this event
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);     //twice, to make sure we wait long enough
+  	v1495Write16(&v1495->mode, mode);     //extra paranoia
+
+ 	mode = 0x0000;
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495->mode, mode);
+*/
+	switch(id)
+	{
+		case 0:
+			switch(part)
+			{
+  				case 0: return v1495Read16(&v1495user->bcmu_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495user->bcmu_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495user->bcmu_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495user->bcmu_hh);	//case 3: return highest 16 bits
+				default: printf("Invalid part, should be 0, 1, 2, or 3");
+			}
+
+		case 1:
+			switch(part)
+			{
+  				case 0: return v1495Read16(&v1495user->bcmd_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495user->bcmd_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495user->bcmd_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495user->bcmd_hh);	//case 3: return highest 16 bits
+				default: printf("Invalid part, should be 0, 1, 2, or 3");
+			}
+
+		default:
+			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+                	return 0xBEEF;
+	}
+
+}
+
 
 unsigned int
 v1495BCMcurrent_ReadCODA(unsigned int id)

@@ -81,7 +81,8 @@ More adjustment by R. Michaels, Jan 2014 for using 1495 as an MLU
 #define MAIN_MEM_PAGE_READ          0x00D2
 #define MAIN_MEM_PAGE_PROG_TH_BUF1  0x0082
 
-volatile V1495 *v1495=0;
+volatile V1495user *v1495user=0;
+volatile V1495vme *v1495vme=0;
 
 int MLU_lock_test(base_address)
 {
@@ -121,13 +122,15 @@ int open_vme_coda(base_address)
 {
   long laddr;
   int res = 0;
-  v1495 = 0;
+  v1495user = 0;
+  v1495vme = 0;
 
 //  vmeOpenDefaultWindows();	//CODA already knows about the VME!
 //  vmeBusLock();
 
   res = vmeBusToLocalAdrs(0x39, base_address, &laddr);
-  v1495 = (struct v1495_struct *)laddr;
+  v1495user = (struct v1495_struct *)laddr;
+  v1495vme = (struct v1495_bridge *)laddr;
 
   printf("Opened VME (CODA mode)\n");
   return 1;
@@ -140,7 +143,8 @@ int open_vme(base_address)
   unsigned short sdat;
   int isok= 0;
   int res = 0;
-  v1495 = 0;
+  v1495user = 0;
+  v1495vme = 0;
 
   vmeOpenDefaultWindows();
   vmeBusLock();
@@ -155,47 +159,48 @@ int open_vme(base_address)
        printf("address %x\n", laddr);
   }  
 
-  /*0x0000*/ volatile unsigned short data[14300];    /* R/W */
-  /*0x8000*/ volatile unsigned short control;        /* R/W */
-  /*0x8002*/ volatile unsigned short status;         /* R */
-  /*0x8004*/ volatile unsigned short intLevel;       /* R/W */
-  /*0x8006*/ volatile unsigned short intVector;      /* R/W */
-  /*0x8008*/ volatile unsigned short geoAddr;        /* R */
-  /*0x800A*/ volatile unsigned short moduleReset;    /* W */
-  /*0x800C*/ volatile unsigned short firmwareRev;    /* R */
+//  /*0x0000*/ volatile unsigned short bskip[0x8000];    /* R/W */
+//  /*0x8000*/ volatile unsigned short control;        /* R/W */
+//  /*0x8002*/ volatile unsigned short status;         /* R */
+//  /*0x8004*/ volatile unsigned short intLevel;       /* R/W */
+//  /*0x8006*/ volatile unsigned short intVector;      /* R/W */
+//  /*0x8008*/ volatile unsigned short geoAddr;        /* R */
+//  /*0x800A*/ volatile unsigned short moduleReset;    /* W */
+//  /*0x800C*/ volatile unsigned short firmwareRev;    /* R */
 
 
-  v1495 = (struct v1495_struct *)laddr;
+  v1495user = (struct v1495_struct *)laddr;
+  v1495vme = (struct v1495_bridge *)laddr;
 
   isok = 1;
-  sdat = vmeRead16(&v1495->control);
-  printf("control address = 0x%x\n",&v1495->control);
+  sdat = vmeRead16(&v1495vme->control);
+  printf("control address = 0x%x\n",&v1495vme->control);
   printf("control = 0x%x\n",sdat);
 
-  printf("astatus_l address = 0x%x\n",&v1495->astatus_l);
+  printf("astatus_l address = 0x%x\n",&v1495user->astatus_l);
 
-  printf("diff control skip = 0x%x\n",(int)&v1495->control - (int)&v1495->skip);
+  printf("diff control skip = 0x%x\n",(int)&v1495vme->control - (int)&v1495user->skip);
 
-  sdat = vmeRead16(&v1495->status);
+  sdat = vmeRead16(&v1495vme->status);
   printf("status = 0x%x\n",sdat);
   if (sdat == 0xffff) isok=0;
 
-  sdat = vmeRead16(&v1495->intLevel);
+  sdat = vmeRead16(&v1495vme->intLevel);
   printf("intLevel = 0x%x\n",sdat);
   if (sdat == 0xffff) isok=0;
 
-  sdat = vmeRead16(&v1495->intVector);
+  sdat = vmeRead16(&v1495vme->intVector);
   printf("intVector = 0x%x\n",sdat); 
   if (sdat == 0xffff) isok=0;
 
-  sdat = vmeRead16(&v1495->geoAddr);
+  sdat = vmeRead16(&v1495vme->geoAddr);
   printf("geoAddr = 0x%x\n",sdat);
   if (sdat == 0xffff) isok=0;
 
-  sdat = vmeRead16(&v1495->moduleReset);
+  sdat = vmeRead16(&v1495vme->moduleReset);
   printf("moduleReset = 0x%x\n",sdat);
 
-  sdat = vmeRead16(&v1495->firmwareRev); 
+  sdat = vmeRead16(&v1495vme->firmwareRev); 
   printf("firmwareRev = 0x%x\n",sdat); 
   if (sdat == 0xffff) isok=0;
 
@@ -254,15 +259,15 @@ write_flash_page1(unsigned int addr, unsigned char *page, int pagenum, int flag)
 
   if(flag==1)
   {
-    Sel_Flash = (short *)&(v1495->selflashVME);
-    RW_Flash = (short *)&(v1495->flashVME);
+    Sel_Flash = (short *)&(v1495vme->selflashVME);
+    RW_Flash = (short *)&(v1495vme->flashVME);
   }
   else
   {
-    Sel_Flash = (short *)&(v1495->selflashUSER);
-    RW_Flash = (short *)&(v1495->flashUSER);
-    printf("Write selflashUSER address = 0x%x\n", (int)&v1495->selflashUSER);
-    printf("Write flashUSER address = 0x%x\n", (int)&v1495->flashUSER);
+    Sel_Flash = (short *)&(v1495vme->selflashUSER);
+    RW_Flash = (short *)&(v1495vme->flashUSER);
+    printf("Write selflashUSER address = 0x%x\n", (int)&v1495vme->selflashUSER);
+    printf("Write flashUSER address = 0x%x\n", (int)&v1495vme->flashUSER);
   }
 
 
@@ -279,7 +284,7 @@ write_flash_page1(unsigned int addr, unsigned char *page, int pagenum, int flag)
   /* enable flash (NCS = 0) */
   data16 = 0;
 
-  vmeWrite16(&v1495->selflashUSER,data16); /* *Sel_Flash = data; */
+  vmeWrite16(&v1495vme->selflashUSER,data16); /* *Sel_Flash = data; */
 
 
   EIEIO;
@@ -348,15 +353,15 @@ read_flash_page1(unsigned int addr, unsigned char *page, int pagenum, int flag)
 
   if(flag==1)
   {
-    Sel_Flash = (short *)&(v1495->selflashVME);
-    RW_Flash = (short *)&(v1495->flashVME);
+    Sel_Flash = (short *)&(v1495vme->selflashVME);
+    RW_Flash = (short *)&(v1495vme->flashVME);
   }
   else
   {
-    Sel_Flash = (short *)&(v1495->selflashUSER);
-    RW_Flash = (short *)&(v1495->flashUSER);
-    printf("Read selflashUSER address = 0x%x\n", (int)&v1495->selflashUSER);
-    printf("Read flashUSER address = 0x%x\n", (int)&v1495->flashUSER);
+    Sel_Flash = (short *)&(v1495vme->selflashUSER);
+    RW_Flash = (short *)&(v1495vme->flashUSER);
+    printf("Read selflashUSER address = 0x%x\n", (int)&v1495vme->selflashUSER);
+    printf("Read flashUSER address = 0x%x\n", (int)&v1495vme->flashUSER);
   }
 
   EIEIO;
@@ -441,15 +446,15 @@ v1495ClockCountReadCODA()
   unsigned int a_count = 0;
 
 
-  v1495Write16(&v1495->mode, mode); 
-  v1495Write16(&v1495->mode, mode);	/*twice, to make sure we wait long enough*/ 
+  v1495Write16(&v1495user->mode, mode); 
+  v1495Write16(&v1495user->mode, mode);	/*twice, to make sure we wait long enough*/ 
 
   mode = 0x0000;
-  v1495Write16(&v1495->mode, mode); 
-  v1495Write16(&v1495->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
 
-  a_count_l = v1495Read16(&v1495->count_l);
-  a_count_h = v1495Read16(&v1495->count_h);
+  a_count_l = v1495Read16(&v1495user->count_l);
+  a_count_h = v1495Read16(&v1495user->count_h);
   a_count = a_count_l + (a_count_h<<16);
 
   return a_count;
@@ -483,19 +488,19 @@ v1495ClockCountRead(unsigned int address)
 
 //  printf("about to set mode bits = 0x%x\n",mode);
 
-  v1495Write16(&v1495->mode, mode); 
-//  v1495->mode = mode; 
-  v1495Write16(&v1495->mode, mode);	/*twice, to make sure we wait long enough*/ 
-//  v1495->mode = mode;	/*twice, to make sure we wait long enough*/ 
+  v1495Write16(&v1495user->mode, mode); 
+//  v1495user->mode = mode; 
+  v1495Write16(&v1495user->mode, mode);	/*twice, to make sure we wait long enough*/ 
+//  v1495user->mode = mode;	/*twice, to make sure we wait long enough*/ 
 
   mode = 0x0000;
-  v1495Write16(&v1495->mode, mode); 
-//  v1495->mode = mode; 
+  v1495Write16(&v1495user->mode, mode); 
+//  v1495user->mode = mode; 
 
-  a_count_l = v1495Read16(&v1495->count_l);
-//  a_count_l = v1495->count_l;
-  a_count_h = v1495Read16(&v1495->count_h);
-//  a_count_h = v1495->count_h;
+  a_count_l = v1495Read16(&v1495user->count_l);
+//  a_count_l = v1495user->count_l;
+  a_count_h = v1495Read16(&v1495user->count_h);
+//  a_count_h = v1495user->count_h;
   a_count = a_count_l + (a_count_h<<16);
 //  printf("count_l= 0x%x\n\n",a_count_l);
 //  printf("count_h= 0x%x\n\n",a_count_h);
@@ -534,34 +539,34 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
   	int mode = 0x0080;    /*trig bit high, all others low*/
 
 /*  Not needed, since the associated ClockCount Read has already updated the BCM values for this event
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);     //twice, to make sure we wait long enough
-  	v1495Write16(&v1495->mode, mode);     //extra paranoia
+  	v1495Write16(&v1495user->mode, mode);
+  	v1495Write16(&v1495user->mode, mode);     //twice, to make sure we wait long enough
+  	v1495Write16(&v1495user->mode, mode);     //extra paranoia
 
  	mode = 0x0000;
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);
+  	v1495Write16(&v1495user->mode, mode);
+  	v1495Write16(&v1495user->mode, mode);
+  	v1495Write16(&v1495user->mode, mode);
 */
 	switch(id)
 	{
 		case 0:
 			switch(part)
 			{
-  				case 0: return v1495Read16(&v1495->abcmu_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495->abcmu_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495->abcmu_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495->abcmu_hh);	//case 3: return highest 16 bits
+  				case 0: return v1495Read16(&v1495user->bcmu_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495user->bcmu_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495user->bcmu_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495user->bcmu_hh);	//case 3: return highest 16 bits
 				default: printf("Invalid part, should be 0, 1, 2, or 3");
 			}
 
 		case 1:
 			switch(part)
 			{
-  				case 0: return v1495Read16(&v1495->abcmd_ll);	//case 0: return lowest 16 bits
-  				case 1: return v1495Read16(&v1495->abcmd_ml);	//case 1: return midlow 16 bits
-  				case 2: return v1495Read16(&v1495->abcmd_mh);	//case 2: return midhigh 16 bits
-  				case 3: return v1495Read16(&v1495->abcmd_hh);	//case 3: return highest 16 bits
+  				case 0: return v1495Read16(&v1495user->bcmd_ll);	//case 0: return lowest 16 bits
+  				case 1: return v1495Read16(&v1495user->bcmd_ml);	//case 1: return midlow 16 bits
+  				case 2: return v1495Read16(&v1495user->bcmd_mh);	//case 2: return midhigh 16 bits
+  				case 3: return v1495Read16(&v1495user->bcmd_hh);	//case 3: return highest 16 bits
 				default: printf("Invalid part, should be 0, 1, 2, or 3");
 			}
 
@@ -570,86 +575,6 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
                 	return 0xBEEF;
 	}
 
-}
-
-unsigned long
-v1495BCM_ReadCODA(unsigned int id)
-{
-	/*
-	 * Return bcm data
-	 */
-
-	printf("THIS FUNCTION DOESNT WORK. YOU SHOULD NOT BE SEEING THIS MESSAGE!!!!\n");
-
-  	if (!v1495) 
-	{
-    		printf("v1495 not initialized.  must open_vme. \n");
-    		printf(" ... quitting ... \n");
-    		exit(0);
-  	}
-
-	if (id != 0 && id != 1)
-	{
-		printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-		return 0xBEEFDEAD;
-
-	}
-
-  	int mode = 0x0080;    /*trig bit high, all others low*/
-	unsigned short a_bcm_ll = 0;
-	unsigned short a_bcm_ml = 0;
-        unsigned short a_bcm_mh = 0;
-        unsigned short a_bcm_hh = 0;
-
-	unsigned long a_bcm = 0;
-	
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);     /*twice, to make sure we wait long enough*/
-
- 	mode = 0x0000;
-  	v1495Write16(&v1495->mode, mode);
-  	v1495Write16(&v1495->mode, mode);
-
-	switch(id)
-	{
-		case 0:
-  			a_bcm_ll = v1495Read16(&v1495->abcmu_ll);
-  			a_bcm_ml = v1495Read16(&v1495->abcmu_ml);
-                        a_bcm_mh = v1495Read16(&v1495->abcmu_mh);
-                        a_bcm_hh = v1495Read16(&v1495->abcmu_hh);
-
-  			a_bcm = a_bcm_ll + (a_bcm_ml<<16) + (a_bcm_mh<<32) + (a_bcm_hh<<48);
-			break;
-
-		case 1:
-                        a_bcm_ll = v1495Read16(&v1495->abcmd_ll);
-                        a_bcm_ml = v1495Read16(&v1495->abcmd_ml);
-                        a_bcm_mh = v1495Read16(&v1495->abcmd_mh);
-                        a_bcm_hh = v1495Read16(&v1495->abcmd_hh);
-
-                        a_bcm = (unsigned long)a_bcm_ll + ((unsigned long)a_bcm_ml<<16) + ((unsigned long)a_bcm_mh<<32) + ((unsigned long)a_bcm_hh<<48);
-			break;
-
-		default:
-			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
-                	a_bcm = 0xBEEFDEADBEEFDEAD;
-
-	}
-  	return a_bcm;
-
-}
-
-unsigned long
-v1495BCM_Read(unsigned int address, unsigned int id)
-{
-	open_vme(address);	
-	
-	unsigned long a_bcm = v1495BCM_ReadCODA(id);
-	printf("BCM Value = 0x%x\n\n",a_bcm);
-
-	close_vme();
-
-	return a_bcm;
 }
 
 int
@@ -663,12 +588,12 @@ v1495ClockCountSyncCODA(unsigned int address)
 
   int mode = 0x0040;	/*sync bit high, all others low*/
 
-  v1495Write16(&v1495->mode, mode); 
-  v1495Write16(&v1495->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
 
   mode = 0x0000;	/*all bits 0*/
-  v1495Write16(&v1495->mode, mode); 
-  v1495Write16(&v1495->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
+  v1495Write16(&v1495user->mode, mode); 
 
   return 0;
 }
@@ -695,11 +620,11 @@ v1495ClockCountSync(unsigned int address)
 
   printf("about to set mode bits = 0x%x\n",mode);
 
-  vmeWrite16(&v1495->mode, mode); 
-  vmeWrite16(&v1495->mode, mode); 
+  vmeWrite16(&v1495user->mode, mode); 
+  vmeWrite16(&v1495user->mode, mode); 
 
   mode = 0x0000;	/*all bits 0*/
-  vmeWrite16(&v1495->mode, mode); 
+  vmeWrite16(&v1495user->mode, mode); 
 
   printf("about to close vme \n");
 
@@ -720,10 +645,10 @@ v1495InitCODA(unsigned int address, int mode)
   res = vmeBusToLocalAdrs(0x39, address, &laddr);
   v1495 = (struct v1495_struct *)laddr;
   
-  v1495Write16(&v1495->mode, mode); 
-  v1495Write16(&v1495->fctrl_l, 1);  /* NIM output */ 
-  v1495Write16(&v1495->ectrl_l, 3);  /* NIM input  */
-  v1495Write16(&v1495->dctrl_l, 1);  /* ECL output */
+  v1495Write16(&v1495user->mode, mode); 
+  v1495Write16(&v1495user->fctrl_l, 1);  /* NIM output */ 
+  v1495Write16(&v1495user->ectrl_l, 3);  /* NIM input  */
+  v1495Write16(&v1495user->dctrl_l, 1);  /* ECL output */
 
   printf("v1495 Driver Version 3.14\n");
   printf("\nInitialized MLU.  CAEN V1495 address = 0x%x\n",address);
@@ -754,10 +679,10 @@ v1495initMlu(unsigned int address, int mode)
 
   printf("about to set bits \n");
 
-  vmeWrite16(&v1495->mode, mode); 
-  vmeWrite16(&v1495->fctrl_l, 1);  /* NIM output */ 
-  vmeWrite16(&v1495->ectrl_l, 3);  /* NIM input  */
-  vmeWrite16(&v1495->dctrl_l, 1);  /* ECL output */
+  vmeWrite16(&v1495user->mode, mode); 
+  vmeWrite16(&v1495user->fctrl_l, 1);  /* NIM output */ 
+  vmeWrite16(&v1495user->ectrl_l, 3);  /* NIM input  */
+  vmeWrite16(&v1495user->dctrl_l, 1);  /* ECL output */
 
   printf("about to close vme \n");
 
@@ -780,19 +705,19 @@ v1495status(unsigned int address){
     exit(0);
   }
   
-  printf("USER revision= 0x%x\n",vmeRead16(&v1495->revision));
-  printf("Val159= 0x%x\n",vmeRead16(&v1495->aval159));
-  printf("Val161= 0x%x\n",vmeRead16(&v1495->aval161));
-  printf("Val167= 0x%x\n",vmeRead16(&v1495->aval167));
-  printf("Val94= 0x%x\n\n",vmeRead16(&v1495->aval94));
+  printf("USER revision= 0x%x\n",vmeRead16(&v1495user->revision));
+  printf("Val159= 0x%x\n",vmeRead16(&v1495user->val159));
+  printf("Val161= 0x%x\n",vmeRead16(&v1495user->val161));
+  printf("Val167= 0x%x\n",vmeRead16(&v1495user->val167));
+  printf("Val94= 0x%x\n\n",vmeRead16(&v1495user->val94));
 
-  printf("\ndcrtl_l= 0x%x\n",vmeRead16(&v1495->dctrl_l));
-  printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495->ectrl_l));
-  printf("fcrtl_l= 0x%x\n\n",vmeRead16(&v1495->fctrl_l));
-  printf("ddata_l= 0x%x\n",vmeRead16(&v1495->ddata_l));
-  printf("ddata_h= 0x%x\n\n",vmeRead16(&v1495->ddata_h));
-  printf("count_l= 0x%x\n\n",vmeRead16(&v1495->count_l));
-  printf("count_h= 0x%x\n\n",vmeRead16(&v1495->count_h));
+  printf("\ndcrtl_l= 0x%x\n",vmeRead16(&v1495user->dctrl_l));
+  printf("ecrtl_l= 0x%x\n",vmeRead16(&v1495user->ectrl_l));
+  printf("fcrtl_l= 0x%x\n\n",vmeRead16(&v1495user->fctrl_l));
+  printf("ddata_l= 0x%x\n",vmeRead16(&v1495user->ddata_l));
+  printf("ddata_h= 0x%x\n\n",vmeRead16(&v1495user->ddata_h));
+  printf("count_l= 0x%x\n\n",vmeRead16(&v1495user->count_l));
+  printf("count_h= 0x%x\n\n",vmeRead16(&v1495user->count_h));
   
   close_vme();
   
@@ -811,9 +736,9 @@ v1495turnOff(unsigned int address)
     exit(0);
   }
 
-  vmeWrite16(&v1495->dctrl_l, 0);
-  vmeWrite16(&v1495->ectrl_l, 0);
-  vmeWrite16(&v1495->fctrl_l, 0);
+  vmeWrite16(&v1495user->dctrl_l, 0);
+  vmeWrite16(&v1495user->ectrl_l, 0);
+  vmeWrite16(&v1495user->fctrl_l, 0);
 
   close_vme();
 
@@ -836,7 +761,7 @@ v1495WriteCmask(unsigned int address, int cmask_l)
     exit(0);
   }
 
-  vmeWrite16(&v1495->cmask_l, cmask_l); 
+  vmeWrite16(&v1495user->cmask_l, cmask_l); 
 
   close_vme();
 
@@ -868,22 +793,22 @@ v1495SetTriggerRate(unsigned int address, unsigned short LFSR, int thresh)
 	switch (LFSR)
 	{
 		case 0:
-			LFSRadd = &v1495->aval94;
+			LFSRadd = &v1495user->val94;
 			printf("LFSR94 assigned threshold value: ");
 			break;
 
 		case 1:
-                        LFSRadd = &v1495->aval159;
+                        LFSRadd = &v1495user->val159;
                         printf("LFSR159 assigned threshold value: ");
 			break;
 
 		case 2:
-                        LFSRadd = &v1495->aval161;
+                        LFSRadd = &v1495user->val161;
                         printf("LFSR161 assigned threshold value: ");
 			break;
 
 		case 3:
-                        LFSRadd = &v1495->aval167;
+                        LFSRadd = &v1495user->val167;
                         printf("LFSR167 assigned threshold value: ");			
 			break;
 
@@ -1078,7 +1003,7 @@ v1495firmware(unsigned int baseaddr, char *filename, int page, int user_vme)
   if(user_vme == 0)
   {
     printf("Activating updated version of the User FPGA, should be running now\n");
-    vmeWrite16(&v1495->configUSER,1); 
+    vmeWrite16(&v1495vme->configUSER,1); 
   }
   else
   {

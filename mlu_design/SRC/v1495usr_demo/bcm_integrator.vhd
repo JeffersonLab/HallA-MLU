@@ -28,9 +28,9 @@ end entity bcm_integrator;
 
 architecture rtl of bcm_integrator is
 	signal r_sum		: unsigned(63 downto 0)	:= to_unsigned(0, 64);	--Contains running sum
-	signal r_current	: unsigned(31 downto 0)	:= to_unsigned(0, 32);	--Contains latest current
-	signal r_sum_out	: std_logic_vector(63 downto 0);	--Contains last triggered running sum
-	signal r_current_out	: std_logic_vector(31 downto 0);	--Contains last triggered current
+	signal r_current	: std_logic_vector(31 downto 0)	:= std_logic_vector(to_unsigned(0,32));	--Contains latest current
+	signal r_sum_out	: std_logic_vector(63 downto 0)	:= std_logic_vector(to_unsigned(0,64));	--Contains last triggered running sum
+	signal r_current_out	: std_logic_vector(31 downto 0)	:= std_logic_vector(to_unsigned(0,32));	--Contains last triggered current
 	signal r_old_DV		: std_logic;
 	signal r_old_read	: std_logic;
 
@@ -50,10 +50,11 @@ begin
 	begin
 		if i_reset = '1' then
                         r_sum <= to_unsigned(0, 64);
+                        r_current <= std_logic_vector(to_unsigned(0, 32));
 		elsif rising_edge(i_Clk) then
 			if (r_old_DV = '0' and i_DV = '1') then
 				r_sum	<= r_sum + unsigned(i_data);
-				r_current <= to_unsigned(0,4) & unsigned(i_data);
+				r_current <= "0000" & i_data;
 			end if;
 		end if;
 	end process p_Add;
@@ -66,7 +67,7 @@ begin
 		elsif rising_edge(i_Clk) then
 			if (r_old_read = '0' and i_read = '1') then
 				r_sum_out <= std_logic_vector(r_sum);
-				r_current_out <= std_logic_vector(r_current);
+				r_current_out <= r_current;
 			end if;
 		end if;
 	end process p_Read;

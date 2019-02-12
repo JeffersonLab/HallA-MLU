@@ -95,6 +95,11 @@ int main(int argc, char *argv[]) {
       printf("Testing Lock/Unlock \n");
       MLU_lock_test(address);
 
+    }else if(strcmp(argv[args_processed],"bcm")==0){
+      args_processed++;
+      printf("Reading BCM currents \n");
+      v1495BCM_Status(address);
+
     }else if(strcmp(argv[args_processed],"trig")==0||strcmp(argv[args_processed],"Trig")==0||strcmp(argv[args_processed],"TRIG")==0){
       args_processed++;
       printf("v1495: Reading Clock Counter \n");

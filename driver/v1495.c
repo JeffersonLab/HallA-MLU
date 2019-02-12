@@ -549,21 +549,31 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 			switch(part)
 			{
   				case 0: return v1495Read16(&v1495user->bcmu_ll);	//case 0: return lowest 16 bits
+				break;
   				case 1: return v1495Read16(&v1495user->bcmu_ml);	//case 1: return midlow 16 bits
+				break;
   				case 2: return v1495Read16(&v1495user->bcmu_mh);	//case 2: return midhigh 16 bits
+				break;
   				case 3: return v1495Read16(&v1495user->bcmu_hh);	//case 3: return highest 16 bits
+				break;
 				default: printf("Invalid part, should be 0, 1, 2, or 3");
 			}
+			break;
 
 		case 1:
 			switch(part)
 			{
   				case 0: return v1495Read16(&v1495user->bcmd_ll);	//case 0: return lowest 16 bits
+				break;
   				case 1: return v1495Read16(&v1495user->bcmd_ml);	//case 1: return midlow 16 bits
+				break;
   				case 2: return v1495Read16(&v1495user->bcmd_mh);	//case 2: return midhigh 16 bits
+				break;
   				case 3: return v1495Read16(&v1495user->bcmd_hh);	//case 3: return highest 16 bits
+				break;
 				default: printf("Invalid part, should be 0, 1, 2, or 3");
 			}
+			break;
 
 		default:
 			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
@@ -571,7 +581,6 @@ v1495BCM_ReadCODAindi(unsigned int id, unsigned int part)
 	}
 
 }
-
 
 unsigned int
 v1495BCMcurrent_ReadCODA(unsigned int id)
@@ -601,20 +610,34 @@ v1495BCMcurrent_ReadCODA(unsigned int id)
 	{
 		case 0:	//upstream BCM
   			bcmI_l = v1495Read16(&v1495user->bcmui_l);	//low 16 bits
-  			bcmI_l = v1495Read16(&v1495user->bcmui_h);	//high 16 bits
+  			bcmI_h = v1495Read16(&v1495user->bcmui_h);	//high 16 bits
 			bcmI = bcmI_l + (bcmI_h << 16);
+			break;
 
 		case 1:	//downstream BCM
   			bcmI_l = v1495Read16(&v1495user->bcmdi_l);	//low 16 bits
-  			bcmI_l = v1495Read16(&v1495user->bcmdi_h);	//high 16 bits
+  			bcmI_h = v1495Read16(&v1495user->bcmdi_h);	//high 16 bits
 			bcmI = bcmI_l + (bcmI_h << 16);
+			break;
 
 		default:
-			printf("Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
+			printf("v1495BCMcurrent_ReadCODA: Invalid BCM ID. 0 for upstream, 1 for downstream. \n");
                 	bcmI = 0xDEADBEEF;
 	}
 	return bcmI;
 
+}
+
+void
+v1495BCM_Status(unsigned int address)
+{
+	open_vme(address);
+
+	printf("\nReading BCM upstream current   : %i\n", v1495BCMcurrent_ReadCODA(0));
+	printf("Reading BCM upstream integral  : %04X %04X %04X %04X\n",v1495BCM_ReadCODAindi(0,3),v1495BCM_ReadCODAindi(0,2),v1495BCM_ReadCODAindi(0,1),v1495BCM_ReadCODAindi(0,0));
+	printf("\nReading BCM downstream current : %i\n", v1495BCMcurrent_ReadCODA(1));
+	printf("Reading BCM downstream integral  : %04X %04X %04X %04X\n\n",v1495BCM_ReadCODAindi(1,3),v1495BCM_ReadCODAindi(1,2),v1495BCM_ReadCODAindi(1,1),v1495BCM_ReadCODAindi(1,0));
+        close_vme();
 }
 
 int
